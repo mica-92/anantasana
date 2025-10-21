@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ŚABDAKOŚAḤ</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #000000;
+            --primary-color: #feeed5ff;
+            --accent-color: #f6732fff;
+            --border-color: #fff7ccff;
+            --hover-color: #333333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inconsolata", monospace;
+        }
+
+body {
+    background-color: var(--primary-color);
+    border: 10px solid var(--accent-color);
+    box-shadow: inset 0 0 0 2px #333; /* Borde interno sólido de 2px */
+    color: var(--accent-color);
+    line-height: 1.4;
+    min-height: 100dvh;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section {
+            display: none;
+        }
+        .content {
+            padding: 20px;
+
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .tag-filters {
+            display: flex;
+            justify-content: center;
+            padding-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 8px;
+            padding-bottom: 10px;
+        }
+
+        .tag-btn {
+            background: var(--primary-color);
+            border: 2px solid #333;
+            color: #333;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .tag-btn.active {
+            background: #f8dc3dff;
+            color: #333;
+        }
+
+        .tag-btn:hover {
+            background: var(--accent-color);
+            color: var(--primary-color);
+        }
+
+        .study-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .card {
+            border: 4px solid var(--border-color);
+            width: 100%;
+            max-width: 500px;
+            background: var(--primary-color);
+        }
+
+        .card-header {
+            background: #f8dc3dff;
+            color: #333;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 2px solid #333;
+        }
+
+        .card-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .card-image {
+            max-width: 100%;
+            height: 250px;
+            object-fit: contain;
+            filter: hue-rotate(170deg);
+            background-color: transparent;
+        }
+
+        .card-details {
+            width: 100%;
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 5px;
+        }
+
+        .detail-label {
+            font-weight: bold;
+            width: 120px;
+            flex-shrink: 0;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            color: #333;
+        }
+
+        .circular-controls {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            width: 100%;
+        }
+
+        .circular-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            border: 1px solid #333;
+            color: #333;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .circular-btn:hover {
+            background: #f8dc3dff;
+            color: var(--accent-color);
+            transform: scale(1.1);
+        }
+
+        .list-container {
+            display: block;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .list-item {
+            border: 2px solid #333;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 15px;
+            box-shadow: 6px 6px 5px rgba(246, 115, 47, 0.3);
+        }
+
+        .list-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .list-item:hover {
+            background: #f8dc3d40;
+            color: var(--primary-color);
+        }
+
+        .list-item h3 {
+            background-color: #f8dc3dff;
+            color: #333;
+            padding: 10px;
+            border-bottom: 2px solid #333;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-size: 1.1rem;
+        }
+
+        .list-item p {
+            padding: 10px;
+            font-size: 0.9rem;
+        }
+
+        .list-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin: 10px;
+            justify-content: center;
+        }
+
+        .tag {
+            background: #f6442f40;
+            border: 1px solid #333;
+            color: #333;
+            padding: 3px 8px;
+            font-size: 0.9rem;
+            text-transform: lowercase;
+        }
+
+        .search-box {
+            max-width: 500px;
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #333;
+            background: var(--primary-color);
+            color: var(--accent-color);
+            margin: 8px auto 10px auto;
+            font-size: 1rem;
+            display: block;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        /* Nuevos estilos para secciones Vinyāsa y Aṣṭāṅga */
+        .series-section {
+            margin-bottom: 30px;
+        }
+
+        .series-title {
+            background: #f6442fff;
+            color: var(--primary-color);
+            padding: 15px;
+            text-align: center;
+            border: 2px solid #333;
+            margin: 15px 0;
+            text-transform: uppercase;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .sequence-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .sequence-item {
+            border: 2px solid #333;
+            padding: 15px;
+            background: var(--primary-color);
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 200px;
+            text-align: center;
+        }
+
+        .sequence-item:hover {
+            background: #f8dc3d40;
+        }
+
+        .sequence-item.active {
+            background: var(--accent-color);
+            color: var(--primary-color);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+            font-size: 1.2rem;
+            border: 2px solid var(--border-color);
+            margin: 20px 0;
+        }
+
+        .error {
+            background: #330000;
+            color: #ff6666;
+            padding: 15px;
+            border: 2px solid #ff0000;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .stats {
+            background: #111111;
+            padding: 10px;
+            border: 2px solid var(--border-color);
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .brutalist-border {
+            border: 2px solid #333;
+            box-shadow: 6px 6px 5px rgba(246, 115, 47, 0.3);
+        }
+
+        .brutalist-btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .brutalist-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .brutalist-btn:hover::after {
+            left: 100%;
+        }
+
+        /* Estilos para el menú hamburguesa flotante */
+        .floating-menu {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .burger-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            border: 3px solid #333;
+            color: var(--primary-color);
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.2);
+        }
+
+        .burger-btn:hover {
+            background: #f8dc3dff;
+            color: #333;
+            transform: scale(1.05);
+        }
+
+        .menu-content {
+            position: absolute;
+            bottom: 70px;
+            left: 0;
+            background: var(--primary-color);
+            border: 3px solid #333;
+            padding: 15px;
+            min-width: 250px;
+            display: none;
+            box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.2);
+        }
+
+        .menu-content.active {
+            display: block;
+        }
+
+        .menu-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .menu-nav-btn {
+            background: var(--primary-color);
+            border: 2px solid #333;
+            color: #333;
+            padding: 12px 15px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .menu-nav-btn.active {
+            background: var(--accent-color);
+            color: var(--primary-color);
+        }
+
+        .menu-nav-btn:hover {
+            background: #f8dc3dff;
+            color: #333;
+        }
+
+        .menu-tag-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .menu-tag-btn {
+            background: var(--primary-color);
+            border: 2px solid #333;
+            color: #333;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+            flex: 1;
+            min-width: calc(50% - 5px);
+        }
+
+        .menu-tag-btn.active {
+            background: #f8dc3dff;
+            color: #333;
+        }
+
+        .menu-tag-btn:hover {
+            background: var(--accent-color);
+            color: var(--primary-color);
+        }
+
+        /* Estilos para enlaces de asanas */
+        .asana-link {
+            color: #2f49f6ff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+
+        .asana-link:hover {
+            text-decoration: #2f49f660;
+        }
+
+        /* Estilos para listas unificadas */
+        .unified-list-container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .unified-list-item {
+            border: 2px solid #333;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 15px;
+            box-shadow: 6px 6px 5px rgba(246, 115, 47, 0.3);
+        }
+
+        .unified-list-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .unified-list-item:hover {
+            background: #f8dc3d40;
+        }
+
+        .unified-list-header {
+            background-color: #f8dc3dff;
+            color: #333;
+            padding: 10px;
+            border-bottom: 2px solid #333;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-size: 1.1rem;
+        }
+
+        .unified-list-image {
+            max-width: 100%;
+            height: 200px;
+            object-fit: contain;
+            filter: hue-rotate(170deg);
+            background-color: transparent;
+            display: block;
+            margin: 0 auto 10px auto;
+        }
+
+        .unified-list-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin: 5px 0 5px 0;
+
+        }
+
+        .unified-list-details {
+            padding: 10px;
+            font-size: 0.9rem;
+        }
+
+        /* Ajuste para nombres largos en móviles */
+        .card-header h2 {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        @media (max-width: 768px) {
+            .list-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .circular-controls {
+                gap: 20px;
+            }
+            
+            .sequence-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .sequence-item {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .menu-content {
+                min-width: 200px;
+            }
+            
+            /* Ajuste de tamaño de fuente para nombres largos */
+            .card-header h2 {
+                font-size: clamp(0.9rem, 4vw, 1.5rem);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .study-container {
+                flex-direction: row;
+                align-items: flex-start;
+                gap: 40px;
+                max-width: 1000px;
+                margin: 0 auto;
+            }
+            
+            .card {
+                max-width: 600px;
+                flex: 1;
+            }
+            
+            .image-column {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+            
+            .card-image {
+                height: 400px;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+    <main>
+        <section id="study" class="section active">
+            <div class="study-container">
+                <div class="card brutalist-border">
+                    <div class="card-header">
+                        <h2 id="card-title" class="brutalist-text">SELECT ASANA</h2>
+                    </div>
+                    <div class="card-body">
+                        <img id="card-image" src="" alt="Asana" class="card-image" style="display: none;">
+                        <div class="card-details" id="card-details">
+                            <p>USE FILTERS AND NAVIGATION TO EXPLORE ASANAS</p>
+                        </div>
+                        <div class="circular-controls">
+                            <button class="circular-btn brutalist-btn" id="prev-btn">‹</button>
+                            <button class="circular-btn brutalist-btn" id="next-btn">›</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="vinyasa" class="section">
+            <div id="vinyasa-container" class="unified-list-container">
+                <p>LOADING VINYĀSA SEQUENCES...</p>
+            </div>
+        </section>
+        
+        <section id="ashtanga" class="section">
+            <div id="ashtanga-container" class="unified-list-container">
+                <p>LOADING AṢṬĀṄGA SEQUENCES...</p>
+            </div>
+        </section>
+        
+        <section id="list" class="section">
+            <input type="text" id="search" class="search-box" placeholder="buscador de āsanas">
+            <div class="list-container" id="list-container">
+                <p>USE SEARCH BOX TO FIND ASANAS</p>
+            </div>
+        </section>
+        
+        <div id="loading" class="loading brutalist-border" style="display: none;">LOADING ASANA DATA...</div>
+        <div id="error" class="error brutalist-border" style="display: none;"></div>
+    </main>
+    
+    <!-- Menú hamburguesa flotante -->
+    <div class="floating-menu">
+        <button class="burger-btn brutalist-btn" id="burger-btn">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="menu-content brutalist-border" id="menu-content">
+            <div class="menu-nav">
+                <button class="menu-nav-btn active brutalist-btn" data-section="study">japāsana</button>
+                <button class="menu-nav-btn brutalist-btn" data-section="vinyasa">vinyāsa</button>
+                <button class="menu-nav-btn brutalist-btn" data-section="ashtanga">aṣṭāṅga</button>
+                <button class="menu-nav-btn brutalist-btn" data-section="list">saṅgraha</button>
+            </div>
+            <div class="menu-tag-filters" id="menu-tag-filters">
+                <!-- Tag buttons will be generated here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Global variables
+    let asanaData = [];
+    let filteredAsanas = [];
+    let currentAsanaIndex = 0;
+    let activeTags = new Set();
+    let allTags = [];
+
+    // Mapeo de series
+    const seriesMapping = {
+        'ādhāra': 'ādhāra - <i>foundation</i>',
+        'yoga cikitsā': 'yoga cikitsā - <i>primera</i>',
+        'nāḍī śodhana': 'nāḍī śodhana - <i>segunda</i>',
+        'tṛtīya śreṇī': 'tṛtīya śreṇī - <i>tercera</i>',
+        'pṛṣṭhavakrāsana': 'pṛṣṭhavakrāsana - <i>backbends</i>',
+        'samāpana': 'samāpana - <i>cierre</i>'
+    };
+
+    // Mapeo de SeriesHot
+    const seriesHotMapping = {
+        'Despertar': 'bodha - <i>awakening</i>',
+        'Apertura': 'vikāsa - <i>opening</i>',
+        'Vitalidad': 'jīvanaśakti - <i>vitality</i>',
+        'Integracion': 'saṃyoga - <i>integration</i>',
+        'Equilibrio': 'tulā - <i>balance</i>',
+        'Entrega': 'samarpaṇa - <i>surrender</i>',
+        'Esfuerzo': 'vīrya - <i>effort</i>',
+        'Conexion': 'sambandha - <i>Cconnection</i>'
+    };
+
+    // DOM elements
+    const studySection = document.getElementById('study');
+    const listSection = document.getElementById('list');
+    const vinyasaSection = document.getElementById('vinyasa');
+    const ashtangaSection = document.getElementById('ashtanga');
+    const cardTitle = document.getElementById('card-title');
+    const cardImage = document.getElementById('card-image');
+    const cardDetails = document.getElementById('card-details');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const searchBox = document.getElementById('search');
+    const listContainer = document.getElementById('list-container');
+    const vinyasaContainer = document.getElementById('vinyasa-container');
+    const ashtangaContainer = document.getElementById('ashtanga-container');
+    const loadingElement = document.getElementById('loading');
+    const errorElement = document.getElementById('error');
+    
+    // Menu elements
+    const burgerBtn = document.getElementById('burger-btn');
+    const menuContent = document.getElementById('menu-content');
+    const menuNavButtons = document.querySelectorAll('.menu-nav-btn');
+    const menuTagFilters = document.getElementById('menu-tag-filters');
+
+    // Función para mezclar array aleatoriamente
+    function shuffleArray(array) {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+    }
+
+    // Función para construir secuencia basada en before/after
+    function buildSequence(startAsana) {
+        const sequence = [startAsana];
+        let current = startAsana;
+        
+        // Seguir la cadena de BEFORE
+        while (current.Before) {
+            const prevAsana = findAsanaByName(current.Before);
+            if (prevAsana && !sequence.find(a => a.Name === prevAsana.Name)) {
+                sequence.unshift(prevAsana);
+                current = prevAsana;
+            } else {
+                break;
+            }
+        }
+        
+        // Resetear a la asana inicial
+        current = startAsana;
+        
+        // Seguir la cadena de AFTER
+        while (current.After) {
+            const nextAsana = findAsanaByName(current.After);
+            if (nextAsana && !sequence.find(a => a.Name === nextAsana.Name)) {
+                sequence.push(nextAsana);
+                current = nextAsana;
+            } else {
+                break;
+            }
+        }
+        
+        return sequence;
+    }
+
+    // Render Aṣṭāṅga sequences - VERSIÓN UNIFICADA CON LIST ITEMS
+    function renderAshtangaSequences() {
+        // Usar YogaSeries para identificar Aṣṭāṅga
+        const ashtangaAsanas = asanaData.filter(asana => {
+            return asana.YogaSeries && asana.YogaSeries.trim() !== '';
+        });
+        
+        const seriesGroups = {};
+        
+        console.log(`Aṣṭāṅga asanas encontradas: ${ashtangaAsanas.length}`);
+        
+        // Agrupar por YogaSeries
+        ashtangaAsanas.forEach(asana => {
+            if (asana.YogaSeries && asana.YogaSeries.trim()) {
+                const seriesName = asana.YogaSeries.trim();
+                if (!seriesGroups[seriesName]) {
+                    seriesGroups[seriesName] = [];
+                }
+                seriesGroups[seriesName].push(asana);
+            }
+        });
+        
+        console.log('Grupos de Aṣṭāṅga:', Object.keys(seriesGroups));
+        
+        let html = '';
+        
+        if (Object.keys(seriesGroups).length === 0) {
+            html = '<p>NO AṢṬĀṄGA ASANAS FOUND</p>';
+        } else {
+            // ORDEN ESPECÍFICO PARA AṢṬĀṄGA
+            const ashtangaOrder = [
+                'ādhāra',
+                'yoga cikitsā', 
+                'nāḍī śodhana',
+                'tṛtīya śreṇī',
+                'pṛṣṭhavakrāsana',
+                'samāpana'
+            ];
+            
+            // Renderizar en el orden especificado
+            ashtangaOrder.forEach(seriesName => {
+                if (seriesGroups[seriesName]) {
+                    const mappedSeriesName = seriesMapping[seriesName] || seriesName;
+                    html += `
+                        <div class="series-section">
+                            <div class="series-title">${mappedSeriesName}</div>
+                    `;
+                    
+                    // Para Aṣṭāṅga, intentar ordenar por secuencia si hay datos de Before/After
+                    const sequencedAsanas = buildSequencesForGroup(seriesGroups[seriesName]);
+                    
+                    sequencedAsanas.forEach(asana => {
+                        const tags = getAsanaTags(asana);
+                        const tagsHtml = tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+                        
+                        html += `
+                            <div class="unified-list-item brutalist-border" data-asana="${asana.Name}">
+                                <div class="unified-list-header">
+                                    <h3>${asana.Sandhi.toUpperCase()} - ${asana.English || 'N/A'}</h3>
+                                <div class="unified-list-tags">
+                                    ${tagsHtml}
+                                </div>
+                                </div>
+                                <img src="images/${asana.Name}.png" alt="${asana.Name}" class="unified-list-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzAwMDAwMCIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQ291cmllciBOZXcsIG1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+Tk8gSU1BR0UgQVZBSUxBQkxFPC90ZXh0Pjwvc3ZnPg=='">
+                            </div>
+                        `;
+                    });
+                    
+                    html += `
+                        </div>
+                    `;
+                }
+            });
+        }
+        
+        ashtangaContainer.innerHTML = html;
+        
+        // Agregar event listeners
+        ashtangaContainer.querySelectorAll('.unified-list-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const asanaName = item.dataset.asana;
+                const asana = findAsanaByName(asanaName);
+                if (asana) {
+                    switchSection('study');
+                    // Buscar en filteredAsanas
+                    const filteredIndex = filteredAsanas.findIndex(a => a.Name === asana.Name);
+                    if (filteredIndex !== -1) {
+                        currentAsanaIndex = filteredIndex;
+                    }
+                    renderAsanaCard();
+                }
+            });
+        });
+    }
+
+    // Render Vinyāsa sequences - VERSIÓN UNIFICADA CON LIST ITEMS
+    function renderVinyasaSequences() {
+        // Usar SeriesHot para identificar Vinyāsa
+        const vinyasaAsanas = asanaData.filter(asana => {
+            return asana.SeriesHot && asana.SeriesHot.trim() !== '';
+        });
+        
+        const seriesGroups = {};
+        
+        console.log(`Vinyāsa asanas encontradas: ${vinyasaAsanas.length}`);
+        
+        // Agrupar por SeriesHot
+        vinyasaAsanas.forEach(asana => {
+            if (asana.SeriesHot && asana.SeriesHot.trim()) {
+                const seriesName = asana.SeriesHot.trim();
+                if (!seriesGroups[seriesName]) {
+                    seriesGroups[seriesName] = [];
+                }
+                seriesGroups[seriesName].push(asana);
+            }
+        });
+        
+        console.log('Grupos de Vinyāsa:', Object.keys(seriesGroups));
+        
+        let html = '';
+        
+        if (Object.keys(seriesGroups).length === 0) {
+            html = '<p>NO VINYĀSA ASANAS FOUND</p>';
+        } else {
+            // ORDEN ESPECÍFICO PARA VINYĀSA
+            const vinyasaOrder = [
+                'Despertar',
+                'Apertura',
+                'Vitalidad',
+                'Integracion',
+                'Equilibrio',
+                'Entrega',
+                'Esfuerzo',
+                'Conexion'
+            ];
+            
+            // Renderizar en el orden especificado
+            vinyasaOrder.forEach(seriesName => {
+                if (seriesGroups[seriesName]) {
+                    const mappedSeriesName = seriesHotMapping[seriesName] || seriesName;
+                    html += `
+                        <div class="series-section">
+                            <div class="series-title">${mappedSeriesName}</div>
+                    `;
+                    
+                    // Para Vinyāsa, ordenar alfabéticamente por Sandhi o Name
+                    const sortedAsanas = [...seriesGroups[seriesName]].sort((a, b) => {
+                        const nameA = (a.Sandhi || a.Name).toLowerCase();
+                        const nameB = (b.Sandhi || b.Name).toLowerCase();
+                        return nameA.localeCompare(nameB);
+                    });
+                    
+                    sortedAsanas.forEach(asana => {
+                        const tags = getAsanaTags(asana);
+                        const tagsHtml = tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+                        
+                        html += `
+                            <div class="unified-list-item brutalist-border" data-asana="${asana.Name}">
+                                <div class="unified-list-header">
+                                    <h3>${asana.Sandhi.toUpperCase()} - ${asana.English || 'N/A'}</h3>
+                                <div class="unified-list-tags">
+                                    ${tagsHtml}
+                                </div>
+                                </div>
+                                <img src="images/${asana.Name}.png" alt="${asana.Name}" class="unified-list-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzAwMDAwMCIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQ291cmllciBOZXcsIG1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+Tk8gSU1BR0UgQVZBSUxBQkxFPC90ZXh0Pjwvc3ZnPg=='">
+                            </div>
+                        `;
+                    });
+                    
+                    html += `
+                        </div>
+                    `;
+                }
+            });
+        }
+        
+        vinyasaContainer.innerHTML = html;
+        
+        // Agregar event listeners
+        vinyasaContainer.querySelectorAll('.unified-list-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const asanaName = item.dataset.asana;
+                const asana = findAsanaByName(asanaName);
+                if (asana) {
+                    switchSection('study');
+                    // Buscar en filteredAsanas
+                    const filteredIndex = filteredAsanas.findIndex(a => a.Name === asana.Name);
+                    if (filteredIndex !== -1) {
+                        currentAsanaIndex = filteredIndex;
+                    }
+                    renderAsanaCard();
+                }
+            });
+        });
+    }
+
+    // Render asana list - VERSIÓN ORDENADA ALFABÉTICAMENTE
+    function renderAsanaList() {
+        listContainer.innerHTML = '';
+        
+        if (filteredAsanas.length === 0) {
+            listContainer.innerHTML = '<p>NO ASANAS MATCH FILTERS</p>';
+            return;
+        }
+        
+        // Ordenar alfabéticamente por Sandhi o Name
+        const sortedAsanas = [...filteredAsanas].sort((a, b) => {
+            const nameA = (a.Sandhi || a.Name).toLowerCase();
+            const nameB = (b.Sandhi || b.Name).toLowerCase();
+            return nameA.localeCompare(nameB);
+        });
+        
+        sortedAsanas.forEach(asana => {
+            const item = document.createElement('div');
+            item.className = 'list-item';
+            item.addEventListener('click', () => {
+                // Switch to study view and show this asana
+                switchSection('study');
+                const index = filteredAsanas.findIndex(a => a.ID === asana.ID);
+                if (index !== -1) {
+                    currentAsanaIndex = index;
+                    renderAsanaCard();
+                }
+            });
+            
+            const tags = getAsanaTags(asana);
+            const tagsHtml = tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+            
+            item.innerHTML = `
+                <h3>${asana.Sandhi.toUpperCase()} - ${asana.English || 'N/A'}</h3>
+                <div class="list-tags">
+                    ${tagsHtml}
+                </div>
+            `;
+            
+            listContainer.appendChild(item);
+        });
+    }
+
+    // Función auxiliar para construir secuencias para un grupo de asanas - MEJORADA
+    function buildSequencesForGroup(asanas) {
+        // Si hay suficientes datos de Before/After, intentar construir secuencias
+        const asanasWithSequence = asanas.filter(asana => asana.Before || asana.After);
+        
+        if (asanasWithSequence.length === 0) {
+            // Si no hay secuencia, ordenar alfabéticamente
+            return [...asanas].sort((a, b) => {
+                const nameA = (a.Sandhi || a.Name).toLowerCase();
+                const nameB = (b.Sandhi || b.Name).toLowerCase();
+                return nameA.localeCompare(nameB);
+            });
+        }
+        
+        // Encontrar asanas de inicio (sin BEFORE o cuyo BEFORE no está en el grupo)
+        const startAsanas = asanas.filter(asana => {
+            if (!asana.Before) return true;
+            return !asanas.find(a => a.Name === asana.Before || a.Sandhi === asana.Before);
+        });
+        
+        if (startAsanas.length === 0) {
+            // Si no se puede determinar inicio, ordenar alfabéticamente
+            return [...asanas].sort((a, b) => {
+                const nameA = (a.Sandhi || a.Name).toLowerCase();
+                const nameB = (b.Sandhi || b.Name).toLowerCase();
+                return nameA.localeCompare(nameB);
+            });
+        }
+        
+        // Construir secuencia desde la primera asana de inicio
+        const sequence = buildSequence(startAsanas[0]);
+        
+        // Agregar las asanas que no están en la secuencia al final, ordenadas alfabéticamente
+        const remainingAsanas = asanas.filter(asana => 
+            !sequence.find(seqAsana => seqAsana.Name === asana.Name)
+        ).sort((a, b) => {
+            const nameA = (a.Sandhi || a.Name).toLowerCase();
+            const nameB = (b.Sandhi || b.Name).toLowerCase();
+            return nameA.localeCompare(nameB);
+        });
+        
+        return [...sequence, ...remainingAsanas];
+    }
+
+    // Función para encontrar asana por nombre - MEJORADA
+    function findAsanaByName(name) {
+        if (!name) return null;
+        
+        // Limpiar el nombre de búsqueda
+        const cleanName = name.trim().toLowerCase();
+        
+        // Buscar por Name exacto (case insensitive)
+        let asana = asanaData.find(a => a.Name.toLowerCase() === cleanName);
+        if (asana) return asana;
+        
+        // Buscar por Sandhi exacto (case insensitive)
+        asana = asanaData.find(a => a.Sandhi && a.Sandhi.toLowerCase() === cleanName);
+        if (asana) return asana;
+        
+        // Buscar por coincidencia parcial en Name
+        asana = asanaData.find(a => a.Name.toLowerCase().includes(cleanName));
+        if (asana) return asana;
+        
+        // Buscar por coincidencia parcial en Sandhi
+        asana = asanaData.find(a => a.Sandhi && a.Sandhi.toLowerCase().includes(cleanName));
+        if (asana) return asana;
+        
+        // Buscar por coincidencia parcial en English name
+        asana = asanaData.find(a => a.English && a.English.toLowerCase().includes(cleanName));
+        
+        return asana || null;
+    }
+
+    // Show error message
+    function showError(message) {
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+    }
+
+    // Initialize the app - CORREGIDA
+    async function init() {
+        try {
+            await loadCSVData();
+            
+            // DEPURACIÓN: Verificar estructura de datos
+            console.log('Total asanas cargadas:', asanaData.length);
+            console.log('Columnas disponibles:', Object.keys(asanaData[0] || {}));
+            
+            // Mostrar algunas asanas de ejemplo
+            console.log('Primeras 3 asanas:', asanaData.slice(0, 3));
+            
+            // Verificar datos de series
+            const asanasConSeriesHot = asanaData.filter(a => a.SeriesHot && a.SeriesHot.trim());
+            const asanasConYogaSeries = asanaData.filter(a => a.YogaSeries && a.YogaSeries.trim());
+            
+            console.log('Asanas con SeriesHot:', asanasConSeriesHot.length);
+            console.log('Asanas con YogaSeries:', asanasConYogaSeries.length);
+            console.log('Valores únicos de SeriesHot:', [...new Set(asanasConSeriesHot.map(a => a.SeriesHot))]);
+            console.log('Valores únicos de YogaSeries:', [...new Set(asanasConYogaSeries.map(a => a.YogaSeries))]);
+            
+            populateTagFilters();
+            
+            // Activar Sākṣāt por defecto
+            const saksatBtn = document.querySelector('[data-tag="Sākṣāt"]');
+            if (saksatBtn) {
+                saksatBtn.classList.add('active');
+                activeTags.add('Sākṣāt');
+            }
+            
+            // NO MEZCLAR TODAS LAS ASANAS AL INICIO - solo se mezclará cuando Sākṣāt esté activo
+            applyFilters();
+            renderVinyasaSequences();
+            renderAshtangaSequences();
+            setupEventListeners();
+            
+            console.log('Aplicación inicializada correctamente');
+        } catch (error) {
+            console.error('Error en init:', error);
+            showError(`Failed to load data: ${error.message}`);
+        }
+    }
+
+    // Load CSV data
+    async function loadCSVData() {
+        loadingElement.style.display = 'block';
+        
+        try {
+            const response = await fetch('asana.csv');
+            if (!response.ok) throw new Error('CSV file not found');
+            
+            const csvText = await response.text();
+            
+            return new Promise((resolve, reject) => {
+                Papa.parse(csvText, {
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: function(results) {
+                        loadingElement.style.display = 'none';
+                        
+                        if (results.errors.length > 0) {
+                            reject(new Error(results.errors[0].message));
+                            return;
+                        }
+                        
+                        asanaData = results.data.map(row => {
+                            const cleanRow = {};
+                            for (const key in row) {
+                                cleanRow[key] = row[key] ? row[key].trim() : '';
+                            }
+                            return cleanRow;
+                        });
+                        
+                        // Calculate tags AFTER loading data
+                        allTags = ['Sākṣāt', 'aṣṭāṅga', 'vinyāsa', 'niṣkriya', 'Cālanī'];
+                        
+                        resolve(asanaData);
+                    },
+                    error: function(error) {
+                        loadingElement.style.display = 'none';
+                        reject(new Error(`Failed to parse CSV: ${error.message}`));
+                    }
+                });
+            });
+        } catch (error) {
+            loadingElement.style.display = 'none';
+            throw error;
+        }
+    }
+
+    // Populate tag filters
+    function populateTagFilters() {
+        // Clear existing tag buttons
+        menuTagFilters.innerHTML = '';
+        
+        allTags.forEach(tag => {
+            const button = document.createElement('button');
+            button.className = 'menu-tag-btn brutalist-btn';
+            button.innerHTML = tag;
+            button.dataset.tag = tag;
+            button.addEventListener('click', toggleTagFilter);
+            menuTagFilters.appendChild(button);
+            
+            // Activar Sākṣāt por defecto
+            if (tag === 'Sākṣāt') {
+                button.classList.add('active');
+                activeTags.add('Sākṣāt');
+            }
+        });
+    }
+
+    // Toggle tag filter
+    function toggleTagFilter(e) {
+        const tag = e.target.dataset.tag;
+        
+        if (tag === 'Sākṣāt') {
+            // Reset all filters
+            activeTags.clear();
+            document.querySelectorAll('.menu-tag-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            e.target.classList.add('active');
+            activeTags.add('Sākṣāt');
+        } else if (tag === 'Cālanī') {
+            // Show advanced filters modal
+            showAdvancedFilters();
+            return;
+        } else {
+            // Remove Sākṣāt if another tag is selected
+            if (activeTags.has('Sākṣāt')) {
+                activeTags.delete('Sākṣāt');
+                document.querySelectorAll('.menu-tag-btn').forEach(btn => {
+                    if (btn.dataset.tag === 'Sākṣāt') {
+                        btn.classList.remove('active');
+                    }
+                });
+            }
+            
+            if (activeTags.has(tag)) {
+                activeTags.delete(tag);
+                e.target.classList.remove('active');
+            } else {
+                activeTags.add(tag);
+                e.target.classList.add('active');
+            }
+        }
+        
+        applyFilters();
+    }
+
+    // Show advanced filters modal
+    function showAdvancedFilters() {
+        // Create modal for advanced filters
+        const modal = document.createElement('div');
+        modal.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        `;
+        
+        modal.innerHTML = `
+            <div style="background: var(--primary-color); border: 4px solid var(--accent-color); padding: 20px; max-width: 500px; width: 90%;">
+                <h3 style="color: var(--accent-color); margin-bottom: 20px; text-transform: uppercase;">CĀLANĪ - FILTROS AVANZADOS</h3>
+                
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: var(--accent-color); margin-bottom: 10px; border-bottom: 2px solid var(--accent-color);">AṢṬĀṄGA</h4>
+                    <div id="ashtanga-filters" style="display: flex; flex-direction: column; gap: 5px;">
+                        ${Object.values(seriesMapping).map(series => `
+                            <label style="color: var(--accent-color); cursor: pointer;">
+                                <input type="checkbox" value="${Object.keys(seriesMapping).find(key => seriesMapping[key] === series)}" style="margin-right: 8px;">
+                                ${series}
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: var(--accent-color); margin-bottom: 10px; border-bottom: 2px solid var(--accent-color);">VINYĀSA</h4>
+                    <div id="vinyasa-filters" style="display: flex; flex-direction: column; gap: 5px;">
+                        ${Object.values(seriesHotMapping).map(series => `
+                            <label style="color: var(--accent-color); cursor: pointer;">
+                                <input type="checkbox" value="${Object.keys(seriesHotMapping).find(key => seriesHotMapping[key] === series)}" style="margin-right: 8px;">
+                                ${series}
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button id="apply-advanced" style="background: var(--accent-color); color: #fff; border: 2px solid var(--accent-color); padding: 8px 16px; cursor: pointer; text-transform: uppercase;">APLICAR</button>
+                    <button id="cancel-advanced" style="background: var(--accent-color); color: #fff; border: 2px solid var(--accent-color); padding: 8px 16px; cursor: pointer; text-transform: uppercase;">CANCELAR</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Event listeners for modal
+        document.getElementById('apply-advanced').addEventListener('click', function() {
+            const selectedAshtanga = Array.from(document.querySelectorAll('#ashtanga-filters input:checked')).map(input => input.value);
+            const selectedVinyasa = Array.from(document.querySelectorAll('#vinyasa-filters input:checked')).map(input => input.value);
+            
+            // Apply advanced filters
+            applyAdvancedFilters(selectedAshtanga, selectedVinyasa);
+            document.body.removeChild(modal);
+        });
+        
+        document.getElementById('cancel-advanced').addEventListener('click', function() {
+            document.body.removeChild(modal);
+        });
+    }
+
+    // Apply advanced filters
+    function applyAdvancedFilters(selectedAshtanga, selectedVinyasa) {
+        // Clear previous filters
+        activeTags.clear();
+        document.querySelectorAll('.menu-tag-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        // Add advanced filters to active tags
+        if (selectedAshtanga.length > 0) {
+            activeTags.add('aṣṭāṅga');
+            document.querySelector('[data-tag="aṣṭāṅga"]').classList.add('active');
+        }
+        
+        if (selectedVinyasa.length > 0) {
+            activeTags.add('vinyāsa');
+            document.querySelector('[data-tag="vinyāsa"]').classList.add('active');
+        }
+        
+        // Store advanced filter selections
+        activeTags.advancedAshtanga = selectedAshtanga;
+        activeTags.advancedVinyasa = selectedVinyasa;
+        
+        applyFilters();
+    }
+
+    // Apply filters to asana data - CORREGIDA
+    function applyFilters() {
+        filteredAsanas = asanaData.filter(asana => {
+            // Filter by tags
+            if (activeTags.has('Sākṣāt')) {
+                return true; // Show all asanas
+            }
+            
+            let matchesTag = false;
+            
+            // Check aṣṭāṅga filter
+            if (activeTags.has('aṣṭāṅga')) {
+                if (activeTags.advancedAshtanga && activeTags.advancedAshtanga.length > 0) {
+                    // Advanced aṣṭāṅga filter
+                    if (activeTags.advancedAshtanga.includes(asana.YogaSeries)) {
+                        matchesTag = true;
+                    }
+                } else if (asana.Ashtanga) {
+                    // Basic aṣṭāṅga filter
+                    matchesTag = true;
+                }
+            }
+            
+            // Check vinyāsa filter
+            if (activeTags.has('vinyāsa')) {
+                if (activeTags.advancedVinyasa && activeTags.advancedVinyasa.length > 0) {
+                    // Advanced vinyāsa filter
+                    if (activeTags.advancedVinyasa.includes(asana.SeriesHot)) {
+                        matchesTag = true;
+                    }
+                } else if (asana.Baptiste) {
+                    // Basic vinyāsa filter
+                    matchesTag = true;
+                }
+            }
+            
+            // Check niṣkriya filter
+            if (activeTags.has('niṣkriya') && asana.Yin) {
+                matchesTag = true;
+            }
+            
+            return matchesTag;
+        });
+        
+        // SOLO MEZCLAR ALEATORIAMENTE CUANDO EL FILTRO ACTIVO ES SĀKṢĀT
+        if (activeTags.has('Sākṣāt')) {
+            filteredAsanas = shuffleArray(filteredAsanas);
+        } else {
+            // Para otros filtros, mantener orden alfabético
+            filteredAsanas.sort((a, b) => {
+                const nameA = (a.Sandhi || a.Name).toLowerCase();
+                const nameB = (b.Sandhi || b.Name).toLowerCase();
+                return nameA.localeCompare(nameB);
+            });
+        }
+        
+        // Reset current index
+        currentAsanaIndex = 0;
+        
+        renderAsanaCard();
+        renderAsanaList();
+    }
+    
+    // Render current asana card
+    function renderAsanaCard() {
+        if (filteredAsanas.length === 0) {
+            cardTitle.textContent = "NO ASANAS MATCH FILTERS";
+            cardImage.src = "";
+            cardDetails.innerHTML = "<p>ADJUST FILTERS TO SEE ASANAS</p>";
+            return;
+        }
+        
+        const asana = filteredAsanas[currentAsanaIndex];
+        // MOSTRAR EL SANDHI EN EL TÍTULO
+        cardTitle.textContent = asana.Sandhi ? asana.Sandhi.toUpperCase() : asana.Name.toUpperCase();
+        
+        // Set image - using the local image path
+        cardImage.src = `images/${asana.Name}.png`;
+        cardImage.alt = asana.Name;
+        cardImage.style.display = 'block';
+        
+        // Handle missing images
+        cardImage.onerror = function() {
+            this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzAwMDAwMCIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQ291cmllciBOZXcsIG1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+Tk8gSU1BR0UgQVZBSUxBQkxFPC90ZXh0Pjwvc3ZnPg==';
+            this.alt = 'IMAGE NOT AVAILABLE';
+            this.style.filter = 'grayscale(100%)';
+        };
+        
+        // Función para convertir [[AsanaName]] en enlaces
+        function createAsanaLinks(text) {
+            if (!text) return 'N/A';
+            return text.replace(/\[\[(.*?)\]\]/g, function(match, asanaName) {
+                return `<a href="#" class="asana-link" data-asana="${asanaName}">${asanaName}</a>`;
+            });
+        }
+
+        // Construir el HTML de detalles dinámicamente
+        let detailsHTML = `
+            <div class="detail-row">
+                <span class="detail-label">DEVANAGARI:</span>
+                <span>${asana.Devanagari || 'N/A'}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">ENGLISH:</span>
+                <span>${asana.English || 'N/A'}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">ETYMOLOGY:</span>
+                <span>${asana.Etymology || 'N/A'}</span>
+            </div>`;
+        // AGREGAR HOT SERIES SI EXISTE (MAPEADO)
+        if (asana.SeriesHot) {
+            const mappedHotSeries = seriesHotMapping[asana.SeriesHot] || asana.SeriesHot;
+            detailsHTML += `
+            <div class="detail-row">
+                <span class="detail-label">VINYĀSA Series:</span>
+                <span style="font-weight: bold; font-style: italic; color: #f6442fff">${mappedHotSeries}</span>
+            </div>`;
+        }
+
+        // AGREGAR YOGA SERIES SI EXISTE (MAPEADO)
+        if (asana.YogaSeries) {
+            const mappedYogaSeries = seriesMapping[asana.YogaSeries] || asana.YogaSeries;
+            detailsHTML += `
+            <div class="detail-row">
+                <span class="detail-label">aṣṭāṅga Series:</span>
+                <span style="font-weight: bold; font-style: italic; color: #f6442fff">${mappedYogaSeries}</span>
+            </div>`;
+        }
+
+        // AGREGAR BEFORE SOLO SI EXISTE
+        if (asana.Before) {
+            const beforeAsana = findAsanaByName(asana.Before);
+            const beforeDisplayName = beforeAsana ? (beforeAsana.Sandhi || beforeAsana.Name) : asana.Before;
+            
+            detailsHTML += `
+            <div class="detail-row">
+                <span class="detail-label">BEFORE:</span>
+                <span><a href="#" class="asana-link" data-asana="${asana.Before}">${beforeDisplayName}</a></span>
+            </div>`;
+        }
+
+        // AGREGAR AFTER SOLO SI EXISTE
+        if (asana.After) {
+            const afterAsana = findAsanaByName(asana.After);
+            const afterDisplayName = afterAsana ? (afterAsana.Sandhi || afterAsana.Name) : asana.After;
+            
+            detailsHTML += `
+            <div class="detail-row">
+                <span class="detail-label">AFTER:</span>
+                <span><a href="#" class="asana-link" data-asana="${asana.After}">${afterDisplayName}</a></span>
+            </div>`;
+        }
+        
+
+            
+
+        // AGREGAR NUEVAS COLUMNAS SI NO ESTÁN VACÍAS
+        if (asana.Open && asana.Open.trim() !== '') {
+            detailsHTML += `
+            <div class="detail-row">
+                <span class="detail-label">OPEN:</span>
+                <span>${asana.Open}</span>
+            </div>`;
+        }
+
+        if (asana.OpenAsana && asana.OpenAsana.trim() !== '') {
+            detailsHTML += `
+            <div class="detail-row">
+                <span class="detail-label">OPEN ĀSANA:</span>
+                <span>${createAsanaLinks(asana.OpenAsana)}</span>
+            </div>`;
+        }
+
+        if (asana.Stable && asana.Stable.trim() !== '') {
+            detailsHTML += `
+            <div class="detail-row">
+                <span class="detail-label">STABLE:</span>
+                <span>${asana.Stable}</span>
+            </div>`;
+        }
+
+        if (asana.StableAsana && asana.StableAsana.trim() !== '') {
+            detailsHTML += `
+            <div class="detail-row">
+                <span class="detail-label">STABLE ĀSANA:</span>
+                <span>${createAsanaLinks(asana.StableAsana)}</span>
+            </div>`;
+        }
+
+        if (asana.Preparation && asana.Preparation.trim() !== '') {
+            detailsHTML += `
+            <div class="detail-row">
+                <span class="detail-label">PREPARATION FOR:</span>
+                <span>${createAsanaLinks(asana.Preparation)}</span>
+            </div>`;
+        }
+
+        if (asana.Counterposes && asana.Counterposes.trim() !== '') {
+            detailsHTML += `
+            <div class="detail-row">
+                <span class="detail-label">COUNTER ĀSANA:</span>
+                <span>${createAsanaLinks(asana.Counterposes)}</span>
+            </div>`;
+        }
+        
+                // Siempre mostrar TAGS
+        detailsHTML += `
+            <div class="detail-row">
+                <span class="detail-label">TAGS:</span>
+                <span style="font-style: italic; color: #f6442fff">${getAsanaTags(asana).join(', ') || 'N/A'}</span>
+            </div>
+        `;
+
+        
+        cardDetails.innerHTML = detailsHTML;
+
+        // Agregar event listeners para los enlaces de asanas
+        cardDetails.querySelectorAll('.asana-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const asanaName = this.dataset.asana;
+                const asana = findAsanaByName(asanaName);
+                if (asana) {
+                    // Buscar en filteredAsanas
+                    const filteredIndex = filteredAsanas.findIndex(a => a.Name === asana.Name);
+                    if (filteredIndex !== -1) {
+                        currentAsanaIndex = filteredIndex;
+                        renderAsanaCard();
+                    } else {
+                        // Si no está en los filtros actuales, cambiar a Sākṣāt y buscar
+                        activeTags.clear();
+                        document.querySelectorAll('.menu-tag-btn').forEach(btn => {
+                            btn.classList.remove('active');
+                        });
+                        const saksatBtn = document.querySelector('[data-tag="Sākṣāt"]');
+                        if (saksatBtn) {
+                            saksatBtn.classList.add('active');
+                            activeTags.add('Sākṣāt');
+                        }
+                        applyFilters();
+                        
+                        // Buscar la asana en los nuevos filteredAsanas
+                        const newIndex = filteredAsanas.findIndex(a => a.Name === asana.Name);
+                        if (newIndex !== -1) {
+                            currentAsanaIndex = newIndex;
+                            renderAsanaCard();
+                        }
+                    }
+                }
+            });
+        });
+    }
+
+    // Get tags for an asana display
+    function getAsanaTags(asana) {
+        const tags = [];
+        if (asana.Ashtanga) tags.push("aṣṭāṅga");
+        if (asana.Yin) tags.push("niṣkriya");
+        if (asana.Baptiste) tags.push("vinyāsa");
+        if (asana.SeriesHot) {
+            const mapped = seriesHotMapping[asana.SeriesHot];
+            tags.push(mapped ? mapped.split(' - ')[0] : asana.SeriesHot);
+        }
+        if (asana.YogaSeries) {
+            const mapped = seriesMapping[asana.YogaSeries];
+            tags.push(mapped ? mapped.split(' - ')[0] : asana.YogaSeries);
+        }
+        return tags;
+    }
+
+    // Switch between sections
+    function switchSection(sectionId) {
+        // Update nav buttons
+        menuNavButtons.forEach(btn => {
+            if (btn.dataset.section === sectionId) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+        
+        // Show/hide sections
+        document.querySelectorAll('.section').forEach(section => {
+            if (section.id === sectionId) {
+                section.classList.add('active');
+            } else {
+                section.classList.remove('active');
+            }
+        });
+        
+        // Close menu after selection
+        menuContent.classList.remove('active');
+    }
+
+    // Set up event listeners
+    function setupEventListeners() {
+        // Menu toggle
+        burgerBtn.addEventListener('click', () => {
+            menuContent.classList.toggle('active');
+        });
+        
+        // Navigation
+        menuNavButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                switchSection(btn.dataset.section);
+            });
+        });
+        
+        // Card controls
+        prevBtn.addEventListener('click', () => {
+            if (filteredAsanas.length === 0) return;
+            currentAsanaIndex = (currentAsanaIndex - 1 + filteredAsanas.length) % filteredAsanas.length;
+            renderAsanaCard();
+        });
+        
+        nextBtn.addEventListener('click', () => {
+            if (filteredAsanas.length === 0) return;
+            currentAsanaIndex = (currentAsanaIndex + 1) % filteredAsanas.length;
+            renderAsanaCard();
+        });
+        
+        // Search
+        searchBox.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            filteredAsanas = asanaData.filter(asana => 
+                asana.Name.toLowerCase().includes(searchTerm) ||
+                asana.English.toLowerCase().includes(searchTerm) ||
+                asana.Sandhi.toLowerCase().includes(searchTerm)
+            );
+            // Mezclar resultados de búsqueda también
+            filteredAsanas = shuffleArray(filteredAsanas);
+            currentAsanaIndex = 0;
+            renderAsanaList();
+            if (document.getElementById('study').classList.contains('active')) {
+                renderAsanaCard();
+            }
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!menuContent.contains(e.target) && !burgerBtn.contains(e.target)) {
+                menuContent.classList.remove('active');
+            }
+        });
+    }
+
+    // Initialize the app when the page loads
+    document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
