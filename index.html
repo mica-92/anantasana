@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ŚABDAKOŚAḤ</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'><path d='M201.7 291.5C236 310.2 266.2 335.6 290.5 366C301.6 379.9 311.5 394.9 319.9 410.8C328.4 394.9 338.2 380 349.3 366C373.6 335.5 403.8 310.1 438.1 291.5C479.8 268.8 527.5 256 577.8 256L587.7 256C598.8 256 607.8 265 607.8 276.1C607.8 424.1 487.9 544 339.9 544L299.7 544C151.9 544 32 424.1 32 276.1C32 265 41 256 52.1 256L62 256C112.4 256 160.1 268.8 201.7 291.5zM335.9 102C352.8 117.9 397.3 165.4 424.9 244.3C384.8 264.5 349.1 292.5 320 326.4C290.8 292.5 255.2 264.6 215.1 244.3C242.7 165.4 287.3 117.9 304.1 102C308.4 97.9 314.1 96 320 96C325.9 96 331.6 98 335.9 102z'/></svg>">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
             --bg-color: #000000;
@@ -620,7 +622,37 @@ body {
                 <p>USE SEARCH BOX TO FIND ASANAS</p>
             </div>
         </section>
+
         
+<section id="lexicon" class="section">
+    <div class="study-container">
+        <div class="card brutalist-border">
+            <div class="card-header">
+                <h2 id="lexicon-title" class="brutalist-text">SELECT TERM</h2>
+            </div>
+            <div class="card-body">
+                <div class="card-details" id="lexicon-details">
+                    <p>USE NAVIGATION TO EXPLORE TERMS</p>
+                </div>
+                <div class="circular-controls">
+                    <button class="circular-btn brutalist-btn" id="lexicon-prev-btn">‹</button>
+                    <button class="circular-btn brutalist-btn" id="lexicon-next-btn">›</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="lexicon-list" class="section">
+    <input type="text" id="lexicon-search" class="search-box" placeholder="buscador de términos">
+    <div class="list-container" id="lexicon-list-container">
+        <p>USE SEARCH BOX TO FIND TERMS</p>
+    </div>
+</section>
+
+
+
+
         <div id="loading" class="loading brutalist-border" style="display: none;">LOADING ASANA DATA...</div>
         <div id="error" class="error brutalist-border" style="display: none;"></div>
     </main>
@@ -631,12 +663,14 @@ body {
             <i class="fas fa-bars"></i>
         </button>
         <div class="menu-content brutalist-border" id="menu-content">
-            <div class="menu-nav">
-                <button class="menu-nav-btn active brutalist-btn" data-section="study">japāsana</button>
-                <button class="menu-nav-btn brutalist-btn" data-section="vinyasa">vinyāsa</button>
-                <button class="menu-nav-btn brutalist-btn" data-section="ashtanga">aṣṭāṅga</button>
-                <button class="menu-nav-btn brutalist-btn" data-section="list">saṅgraha</button>
-            </div>
+<div class="menu-nav">
+    <button class="menu-nav-btn active brutalist-btn" data-section="study">japāsana</button>
+    <button class="menu-nav-btn brutalist-btn" data-section="vinyasa">vinyāsa</button>
+    <button class="menu-nav-btn brutalist-btn" data-section="ashtanga">aṣṭāṅga</button>
+    <button class="menu-nav-btn brutalist-btn" data-section="list">saṅgraha</button>
+    <button class="menu-nav-btn brutalist-btn" data-section="lexicon">śabda</button>
+    <button class="menu-nav-btn brutalist-btn" data-section="lexicon-list">kośa</button>
+</div>
             <div class="menu-tag-filters" id="menu-tag-filters">
                 <!-- Tag buttons will be generated here -->
             </div>
@@ -651,6 +685,135 @@ body {
     let currentAsanaIndex = 0;
     let activeTags = new Set();
     let allTags = [];
+
+
+// Agregar variables globales para el léxico
+let lexiconData = [];
+let filteredLexicon = [];
+let currentLexiconIndex = 0;
+
+// Agregar elementos DOM del léxico
+const lexiconSection = document.getElementById('lexicon');
+const lexiconListSection = document.getElementById('lexicon-list');
+const lexiconTitle = document.getElementById('lexicon-title');
+const lexiconDetails = document.getElementById('lexicon-details');
+const lexiconPrevBtn = document.getElementById('lexicon-prev-btn');
+const lexiconNextBtn = document.getElementById('lexicon-next-btn');
+const lexiconSearchBox = document.getElementById('lexicon-search');
+const lexiconListContainer = document.getElementById('lexicon-list-container');
+
+// Función para cargar el léxico CSV
+async function loadLexiconData() {
+    try {
+        const response = await fetch('lexicon.csv');
+        if (!response.ok) throw new Error('Lexicon CSV file not found');
+        
+        const csvText = await response.text();
+        
+        return new Promise((resolve, reject) => {
+            Papa.parse(csvText, {
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    if (results.errors.length > 0) {
+                        reject(new Error(results.errors[0].message));
+                        return;
+                    }
+                    
+                    lexiconData = results.data.map(row => {
+                        const cleanRow = {};
+                        for (const key in row) {
+                            cleanRow[key] = row[key] ? row[key].trim() : '';
+                        }
+                        return cleanRow;
+                    });
+                    
+                    resolve(lexiconData);
+                },
+                error: function(error) {
+                    reject(new Error(`Failed to parse lexicon CSV: ${error.message}`));
+                }
+            });
+        });
+    } catch (error) {
+        throw error;
+    }
+}
+
+// Renderizar tarjeta del término actual
+function renderLexiconCard() {
+    if (filteredLexicon.length === 0) {
+        lexiconTitle.textContent = "NO TERMS MATCH FILTERS";
+        lexiconDetails.innerHTML = "<p>ADJUST FILTERS TO SEE TERMS</p>";
+        return;
+    }
+    
+    const term = filteredLexicon[currentLexiconIndex];
+    
+    lexiconTitle.textContent = term.term ? term.term.toUpperCase() : 'NO TERM';
+    
+    let detailsHTML = '';
+    
+    if (term.devanāgarī && term.devanāgarī.trim() !== '') {
+        detailsHTML += `
+            <div class="detail-row">
+                <span class="detail-label">DEVANAGARI:</span>
+                <span style="font-size: 1.5rem; font-weight: bold;">${term.devanāgarī}</span>
+            </div>`;
+    }
+    
+    if (term.meaning && term.meaning.trim() !== '') {
+        detailsHTML += `
+            <div class="detail-row">
+                <span class="detail-label">MEANING:</span>
+                <span style="font-style: italic;">${term.meaning}</span>
+            </div>`;
+    }
+    
+    lexiconDetails.innerHTML = detailsHTML || '<p>NO DETAILS AVAILABLE</p>';
+}
+
+// Renderizar lista de términos
+function renderLexiconList() {
+    lexiconListContainer.innerHTML = '';
+    
+    if (filteredLexicon.length === 0) {
+        lexiconListContainer.innerHTML = '<p>NO TERMS MATCH FILTERS</p>';
+        return;
+    }
+    
+    // Ordenar alfabéticamente por término
+    const sortedTerms = [...filteredLexicon].sort((a, b) => {
+        const termA = (a.term || '').toLowerCase();
+        const termB = (b.term || '').toLowerCase();
+        return termA.localeCompare(termB);
+    });
+    
+    sortedTerms.forEach(term => {
+        const item = document.createElement('div');
+        item.className = 'list-item';
+        item.addEventListener('click', () => {
+            switchSection('lexicon');
+            const index = filteredLexicon.findIndex(t => t.term === term.term);
+            if (index !== -1) {
+                currentLexiconIndex = index;
+                renderLexiconCard();
+            }
+        });
+        
+        let itemHTML = `<h3>${term.term.toUpperCase()}</h3>`;
+        
+        
+        if (term.meaning && term.meaning.trim() !== '') {
+            itemHTML += `<p style="font-style: italic; text-align: left; padding-top: 0px">${term.meaning}</p>`;
+        }
+        
+        item.innerHTML = itemHTML;
+        lexiconListContainer.appendChild(item);
+    });
+}
+
+
 
     // Mapeo de series
     const seriesMapping = {
@@ -1058,48 +1221,41 @@ body {
         errorElement.style.display = 'block';
     }
 
-    // Initialize the app - CORREGIDA
-    async function init() {
-        try {
-            await loadCSVData();
-            
-            // DEPURACIÓN: Verificar estructura de datos
-            console.log('Total asanas cargadas:', asanaData.length);
-            console.log('Columnas disponibles:', Object.keys(asanaData[0] || {}));
-            
-            // Mostrar algunas asanas de ejemplo
-            console.log('Primeras 3 asanas:', asanaData.slice(0, 3));
-            
-            // Verificar datos de series
-            const asanasConSeriesHot = asanaData.filter(a => a.SeriesHot && a.SeriesHot.trim());
-            const asanasConYogaSeries = asanaData.filter(a => a.YogaSeries && a.YogaSeries.trim());
-            
-            console.log('Asanas con SeriesHot:', asanasConSeriesHot.length);
-            console.log('Asanas con YogaSeries:', asanasConYogaSeries.length);
-            console.log('Valores únicos de SeriesHot:', [...new Set(asanasConSeriesHot.map(a => a.SeriesHot))]);
-            console.log('Valores únicos de YogaSeries:', [...new Set(asanasConYogaSeries.map(a => a.YogaSeries))]);
-            
-            populateTagFilters();
-            
-            // Activar Sākṣāt por defecto
-            const saksatBtn = document.querySelector('[data-tag="Sākṣāt"]');
-            if (saksatBtn) {
-                saksatBtn.classList.add('active');
-                activeTags.add('Sākṣāt');
-            }
-            
-            // NO MEZCLAR TODAS LAS ASANAS AL INICIO - solo se mezclará cuando Sākṣāt esté activo
-            applyFilters();
-            renderVinyasaSequences();
-            renderAshtangaSequences();
-            setupEventListeners();
-            
-            console.log('Aplicación inicializada correctamente');
-        } catch (error) {
-            console.error('Error en init:', error);
-            showError(`Failed to load data: ${error.message}`);
+// Actualizar función init para cargar el léxico
+async function init() {
+    try {
+        await loadCSVData();
+        await loadLexiconData(); // Cargar léxico
+        
+        // DEPURACIÓN: Verificar estructura de datos
+        console.log('Total asanas cargadas:', asanaData.length);
+        console.log('Total términos cargados:', lexiconData.length);
+        
+        // Inicializar léxico
+        filteredLexicon = shuffleArray([...lexiconData]);
+        renderLexiconCard();
+        renderLexiconList();
+        
+        populateTagFilters();
+        
+        // Activar Sākṣāt por defecto
+        const saksatBtn = document.querySelector('[data-tag="Sākṣāt"]');
+        if (saksatBtn) {
+            saksatBtn.classList.add('active');
+            activeTags.add('Sākṣāt');
         }
+        
+        applyFilters();
+        renderVinyasaSequences();
+        renderAshtangaSequences();
+        setupEventListeners();
+        
+        console.log('Aplicación inicializada correctamente');
+    } catch (error) {
+        console.error('Error en init:', error);
+        showError(`Failed to load data: ${error.message}`);
     }
+}
 
     // Load CSV data
     async function loadCSVData() {
@@ -1642,6 +1798,46 @@ body {
             }
         });
         
+
+    // Lexicon controls
+    lexiconPrevBtn.addEventListener('click', () => {
+        if (filteredLexicon.length === 0) return;
+        currentLexiconIndex = (currentLexiconIndex - 1 + filteredLexicon.length) % filteredLexicon.length;
+        renderLexiconCard();
+    });
+    
+    lexiconNextBtn.addEventListener('click', () => {
+        if (filteredLexicon.length === 0) return;
+        currentLexiconIndex = (currentLexiconIndex + 1) % filteredLexicon.length;
+        renderLexiconCard();
+    });
+    
+    // Lexicon search
+    lexiconSearchBox.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        
+        if (searchTerm.trim() === '') {
+            filteredLexicon = [...lexiconData];
+        } else {
+            filteredLexicon = lexiconData.filter(term => {
+                return (
+                    (term.term && term.term.toLowerCase().includes(searchTerm)) ||
+                    (term.devanāgarī && term.devanāgarī.includes(searchTerm)) ||
+                    (term.meaning && term.meaning.toLowerCase().includes(searchTerm))
+                );
+            });
+        }
+        
+        // Mezclar resultados de búsqueda
+        filteredLexicon = shuffleArray(filteredLexicon);
+        currentLexiconIndex = 0;
+        renderLexiconList();
+        if (document.getElementById('lexicon').classList.contains('active')) {
+            renderLexiconCard();
+        }
+    });
+
+
         // Close menu when clicking outside
         document.addEventListener('click', (e) => {
             if (!menuContent.contains(e.target) && !burgerBtn.contains(e.target)) {
