@@ -749,6 +749,11 @@ body {
     </div>
 </section>
 
+<section id="niskriya" class="section">
+    <div id="niskriya-container" class="unified-list-container">
+        <p>LOADING NIṢKRIYA ĀSANAS...</p>
+    </div>
+</section>
 
 
 
@@ -766,6 +771,7 @@ body {
     <button class="menu-nav-btn active brutalist-btn" data-section="study">japāsana</button>
     <button class="menu-nav-btn brutalist-btn" data-section="vinyasa">vinyāsa</button>
     <button class="menu-nav-btn brutalist-btn" data-section="ashtanga">aṣṭāṅga</button>
+    <button class="menu-nav-btn brutalist-btn" data-section="niskriya">niṣkriya</button>
     <button class="menu-nav-btn brutalist-btn" data-section="list">saṅgraha</button>
     <button class="menu-nav-btn brutalist-btn" data-section="lexicon">śabda</button>
     <button class="menu-nav-btn brutalist-btn" data-section="lexicon-list">kośa</button>
@@ -912,7 +918,64 @@ function renderLexiconList() {
     });
 }
 
-
+// Función para renderizar āsanas niṣkriya (Yin)
+function renderNiskriyaAsanas() {
+    const niskriyaAsanas = asanaData.filter(asana => {
+        return asana.Yin && asana.Yin.trim() !== '';
+    });
+    
+    console.log(`Niṣkriya asanas encontradas: ${niskriyaAsanas.length}`);
+    
+    let html = '';
+    
+    if (niskriyaAsanas.length === 0) {
+        html = '<p>NO NIṢKRIYA ĀSANAS FOUND</p>';
+    } else {
+        // Ordenar alfabéticamente
+        const sortedAsanas = [...niskriyaAsanas].sort((a, b) => {
+            const nameA = (a.Sandhi || a.Name).toLowerCase();
+            const nameB = (b.Sandhi || b.Name).toLowerCase();
+            return nameA.localeCompare(nameB);
+        });
+        
+        sortedAsanas.forEach(asana => {
+            const tags = getAsanaTags(asana);
+            const tagsHtml = tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+            
+            html += `
+                <div class="unified-list-item brutalist-border" data-asana="${asana.Name}">
+                    <div class="unified-list-header">
+                        <h3>${asana.Sandhi.toUpperCase()} - ${asana.English || 'N/A'}</h3>
+                    <div class="unified-list-tags">
+                        ${tagsHtml}
+                    </div>
+                    </div>
+                    <img src="images/${asana.Name}.png" alt="${asana.Name}" class="unified-list-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzAwMDAwMCIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQ291cmllciBOZXcsIG1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+Tk8gSU1BR0UgQVZBSUxBQkxFPC90ZXh0Pjwvc3ZnPg=='">
+                </div>
+            `;
+        });
+    }
+    
+    const niskriyaContainer = document.getElementById('niskriya-container');
+    niskriyaContainer.innerHTML = html;
+    
+    // Agregar event listeners
+    niskriyaContainer.querySelectorAll('.unified-list-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const asanaName = item.dataset.asana;
+            const asana = findAsanaByName(asanaName);
+            if (asana) {
+                switchSection('study');
+                // Buscar en filteredAsanas
+                const filteredIndex = filteredAsanas.findIndex(a => a.Name === asana.Name);
+                if (filteredIndex !== -1) {
+                    currentAsanaIndex = filteredIndex;
+                }
+                renderAsanaCard();
+            }
+        });
+    });
+}
 
     // Mapeo de series
     const seriesMapping = {
@@ -969,234 +1032,293 @@ function renderLexiconList() {
         return shuffled;
     }
 
-    // Función para construir secuencia basada en before/after
-    function buildSequence(startAsana) {
-        const sequence = [startAsana];
-        let current = startAsana;
-        
-        // Seguir la cadena de BEFORE
-        while (current.Before) {
-            const prevAsana = findAsanaByName(current.Before);
-            if (prevAsana && !sequence.find(a => a.Name === prevAsana.Name)) {
-                sequence.unshift(prevAsana);
-                current = prevAsana;
-            } else {
-                break;
-            }
-        }
-        
-        // Resetear a la asana inicial
-        current = startAsana;
-        
-        // Seguir la cadena de AFTER
-        while (current.After) {
-            const nextAsana = findAsanaByName(current.After);
-            if (nextAsana && !sequence.find(a => a.Name === nextAsana.Name)) {
-                sequence.push(nextAsana);
-                current = nextAsana;
-            } else {
-                break;
-            }
-        }
-        
-        return sequence;
-    }
 
-    // Render Aṣṭāṅga sequences - VERSIÓN UNIFICADA CON LIST ITEMS
-    function renderAshtangaSequences() {
-        // Usar YogaSeries para identificar Aṣṭāṅga
-        const ashtangaAsanas = asanaData.filter(asana => {
-            return asana.YogaSeries && asana.YogaSeries.trim() !== '';
+// REEMPLAZAR las funciones buildSequence y buildSequencesForGroup con estas nuevas variables y funciones:
+
+// Orden manual para Aṣṭāṅga YogaSeries
+const ashtangaManualOrder = {
+    'ādhāra': [
+    ],
+    'yoga cikitsā': [
+        // Agrega aquí el orden manual para yoga cikitsā
+    ],
+    'nāḍī śodhana': [
+        // Agrega aquí el orden manual para nāḍī śodhana  
+    ],
+    'tṛtīya śreṇī': [
+        // Agrega aquí el orden manual para tṛtīya śreṇī
+    ],
+    'pṛṣṭhavakrāsana': [
+        // Agrega aquí el orden manual para pṛṣṭhavakrāsana
+    ],
+    'samāpana': [
+        // Agrega aquí el orden manual para samāpana
+    ]
+};
+
+// Orden manual para Vinyāsa SeriesHot
+const vinyasaManualOrder = {
+    'Vitalidad': [
+        // Agrega aquí el orden manual para Vitalidad
+    ],
+    'Conexion': [
+        // Agrega aquí el orden manual para Conexion
+    ],
+    'Despertar': [
+        // Agrega aquí el orden manual para Despertar
+    ],
+    'Apertura': [
+        // Agrega aquí el orden manual para Apertura
+    ],
+    'Integracion': [
+        // Agrega aquí el orden manual para Integracion
+    ],
+    'Equilibrio': [
+        // Agrega aquí el orden manual para Equilibrio
+    ],
+    'Entrega': [
+        // Agrega aquí el orden manual para Entrega
+    ],
+    'Esfuerzo': [
+        // Agrega aquí el orden manual para Esfuerzo
+    ]
+};
+
+// Función para ordenar asanas según el orden manual
+function sortAsanasByManualOrder(asanas, seriesName, orderType) {
+    const manualOrder = orderType === 'ashtanga' ? ashtangaManualOrder[seriesName] : vinyasaManualOrder[seriesName];
+    
+    if (!manualOrder || manualOrder.length === 0) {
+        // Si no hay orden manual, ordenar alfabéticamente
+        return [...asanas].sort((a, b) => {
+            const nameA = (a.Sandhi || a.Name).toLowerCase();
+            const nameB = (b.Sandhi || b.Name).toLowerCase();
+            return nameA.localeCompare(nameB);
         });
-        
-        const seriesGroups = {};
-        
-        console.log(`Aṣṭāṅga asanas encontradas: ${ashtangaAsanas.length}`);
-        
-        // Agrupar por YogaSeries
-        ashtangaAsanas.forEach(asana => {
-            if (asana.YogaSeries && asana.YogaSeries.trim()) {
-                const seriesName = asana.YogaSeries.trim();
-                if (!seriesGroups[seriesName]) {
-                    seriesGroups[seriesName] = [];
-                }
-                seriesGroups[seriesName].push(asana);
+    }
+    
+    // Crear un mapa para búsqueda rápida
+    const asanaMap = new Map();
+    asanas.forEach(asana => {
+        asanaMap.set(asana.Name.toUpperCase(), asana);
+        if (asana.Sandhi) {
+            asanaMap.set(asana.Sandhi.toUpperCase(), asana);
+        }
+    });
+    
+    // Ordenar según el orden manual
+    const orderedAsanas = [];
+    const remainingAsanas = new Set(asanas);
+    
+    manualOrder.forEach(manualName => {
+        const asana = asanaMap.get(manualName.toUpperCase());
+        if (asana && remainingAsanas.has(asana)) {
+            orderedAsanas.push(asana);
+            remainingAsanas.delete(asana);
+        }
+    });
+    
+    // Agregar las asanas restantes que no están en el orden manual
+    const remainingArray = Array.from(remainingAsanas).sort((a, b) => {
+        const nameA = (a.Sandhi || a.Name).toLowerCase();
+        const nameB = (b.Sandhi || b.Name).toLowerCase();
+        return nameA.localeCompare(nameB);
+    });
+    
+    return [...orderedAsanas, ...remainingArray];
+}
+
+// MODIFICAR la función renderAshtangaSequences - reemplazar la parte de buildSequencesForGroup:
+function renderAshtangaSequences() {
+    // Usar YogaSeries para identificar Aṣṭāṅga
+    const ashtangaAsanas = asanaData.filter(asana => {
+        return asana.YogaSeries && asana.YogaSeries.trim() !== '';
+    });
+    
+    const seriesGroups = {};
+    
+    console.log(`Aṣṭāṅga asanas encontradas: ${ashtangaAsanas.length}`);
+    
+    // Agrupar por YogaSeries
+    ashtangaAsanas.forEach(asana => {
+        if (asana.YogaSeries && asana.YogaSeries.trim()) {
+            const seriesName = asana.YogaSeries.trim();
+            if (!seriesGroups[seriesName]) {
+                seriesGroups[seriesName] = [];
             }
-        });
+            seriesGroups[seriesName].push(asana);
+        }
+    });
+    
+    console.log('Grupos de Aṣṭāṅga:', Object.keys(seriesGroups));
+    
+    let html = '';
+    
+    if (Object.keys(seriesGroups).length === 0) {
+        html = '<p>NO AṢṬĀṄGA ASANAS FOUND</p>';
+    } else {
+        // ORDEN ESPECÍFICO PARA AṢṬĀṄGA
+        const ashtangaOrder = [
+            'ādhāra',
+            'yoga cikitsā', 
+            'nāḍī śodhana',
+            'tṛtīya śreṇī',
+            'pṛṣṭhavakrāsana',
+            'samāpana'
+        ];
         
-        console.log('Grupos de Aṣṭāṅga:', Object.keys(seriesGroups));
-        
-        let html = '';
-        
-        if (Object.keys(seriesGroups).length === 0) {
-            html = '<p>NO AṢṬĀṄGA ASANAS FOUND</p>';
-        } else {
-            // ORDEN ESPECÍFICO PARA AṢṬĀṄGA
-            const ashtangaOrder = [
-                'ādhāra',
-                'yoga cikitsā', 
-                'nāḍī śodhana',
-                'tṛtīya śreṇī',
-                'pṛṣṭhavakrāsana',
-                'samāpana'
-            ];
-            
-            // Renderizar en el orden especificado
-            ashtangaOrder.forEach(seriesName => {
-                if (seriesGroups[seriesName]) {
-                    const mappedSeriesName = seriesMapping[seriesName] || seriesName;
+        // Renderizar en el orden especificado
+        ashtangaOrder.forEach(seriesName => {
+            if (seriesGroups[seriesName]) {
+                const mappedSeriesName = seriesMapping[seriesName] || seriesName;
+                html += `
+                    <div class="series-section">
+                        <div class="series-title">${mappedSeriesName}</div>
+                `;
+                
+                // USAR ORDEN MANUAL para Aṣṭāṅga
+                const orderedAsanas = sortAsanasByManualOrder(seriesGroups[seriesName], seriesName, 'ashtanga');
+                
+                orderedAsanas.forEach(asana => {
+                    const tags = getAsanaTags(asana);
+                    const tagsHtml = tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+                    
                     html += `
-                        <div class="series-section">
-                            <div class="series-title">${mappedSeriesName}</div>
-                    `;
-                    
-                    // Para Aṣṭāṅga, intentar ordenar por secuencia si hay datos de Before/After
-                    const sequencedAsanas = buildSequencesForGroup(seriesGroups[seriesName]);
-                    
-                    sequencedAsanas.forEach(asana => {
-                        const tags = getAsanaTags(asana);
-                        const tagsHtml = tags.map(tag => `<span class="tag">${tag}</span>`).join('');
-                        
-                        html += `
-                            <div class="unified-list-item brutalist-border" data-asana="${asana.Name}">
-                                <div class="unified-list-header">
-                                    <h3>${asana.Sandhi.toUpperCase()} - ${asana.English || 'N/A'}</h3>
-                                <div class="unified-list-tags">
-                                    ${tagsHtml}
-                                </div>
-                                </div>
-                                <img src="images/${asana.Name}.png" alt="${asana.Name}" class="unified-list-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzAwMDAwMCIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQ291cmllciBOZXcsIG1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+Tk8gSU1BR0UgQVZBSUxBQkxFPC90ZXh0Pjwvc3ZnPg=='">
+                        <div class="unified-list-item brutalist-border" data-asana="${asana.Name}">
+                            <div class="unified-list-header">
+                                <h3>${asana.Sandhi.toUpperCase()} - ${asana.English || 'N/A'}</h3>
+                            <div class="unified-list-tags">
+                                ${tagsHtml}
                             </div>
-                        `;
-                    });
-                    
-                    html += `
+                            </div>
+                            <img src="images/${asana.Name}.png" alt="${asana.Name}" class="unified-list-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzAwMDAwMCIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQ291cmllciBOZXcsIG1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+Tk8gSU1BR0UgQVZBSUxBQkxFPC90ZXh0Pjwvc3ZnPg=='">
                         </div>
                     `;
-                }
-            });
-        }
-        
-        ashtangaContainer.innerHTML = html;
-        
-        // Agregar event listeners
-        ashtangaContainer.querySelectorAll('.unified-list-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const asanaName = item.dataset.asana;
-                const asana = findAsanaByName(asanaName);
-                if (asana) {
-                    switchSection('study');
-                    // Buscar en filteredAsanas
-                    const filteredIndex = filteredAsanas.findIndex(a => a.Name === asana.Name);
-                    if (filteredIndex !== -1) {
-                        currentAsanaIndex = filteredIndex;
-                    }
-                    renderAsanaCard();
-                }
-            });
-        });
-    }
-
-    // Render Vinyāsa sequences - VERSIÓN UNIFICADA CON LIST ITEMS
-    function renderVinyasaSequences() {
-        // Usar SeriesHot para identificar Vinyāsa
-        const vinyasaAsanas = asanaData.filter(asana => {
-            return asana.SeriesHot && asana.SeriesHot.trim() !== '';
-        });
-        
-        const seriesGroups = {};
-        
-        console.log(`Vinyāsa asanas encontradas: ${vinyasaAsanas.length}`);
-        
-        // Agrupar por SeriesHot
-        vinyasaAsanas.forEach(asana => {
-            if (asana.SeriesHot && asana.SeriesHot.trim()) {
-                const seriesName = asana.SeriesHot.trim();
-                if (!seriesGroups[seriesName]) {
-                    seriesGroups[seriesName] = [];
-                }
-                seriesGroups[seriesName].push(asana);
+                });
+                
+                html += `
+                    </div>
+                `;
             }
         });
+    }
+    
+    ashtangaContainer.innerHTML = html;
+    
+    // Agregar event listeners
+    ashtangaContainer.querySelectorAll('.unified-list-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const asanaName = item.dataset.asana;
+            const asana = findAsanaByName(asanaName);
+            if (asana) {
+                switchSection('study');
+                // Buscar en filteredAsanas
+                const filteredIndex = filteredAsanas.findIndex(a => a.Name === asana.Name);
+                if (filteredIndex !== -1) {
+                    currentAsanaIndex = filteredIndex;
+                }
+                renderAsanaCard();
+            }
+        });
+    });
+}
+
+// MODIFICAR la función renderVinyasaSequences - reemplazar la parte de sortedAsanas:
+function renderVinyasaSequences() {
+    // Usar SeriesHot para identificar Vinyāsa
+    const vinyasaAsanas = asanaData.filter(asana => {
+        return asana.SeriesHot && asana.SeriesHot.trim() !== '';
+    });
+    
+    const seriesGroups = {};
+    
+    console.log(`Vinyāsa asanas encontradas: ${vinyasaAsanas.length}`);
+    
+    // Agrupar por SeriesHot
+    vinyasaAsanas.forEach(asana => {
+        if (asana.SeriesHot && asana.SeriesHot.trim()) {
+            const seriesName = asana.SeriesHot.trim();
+            if (!seriesGroups[seriesName]) {
+                seriesGroups[seriesName] = [];
+            }
+            seriesGroups[seriesName].push(asana);
+        }
+    });
+    
+    console.log('Grupos de Vinyāsa:', Object.keys(seriesGroups));
+    
+    let html = '';
+    
+    if (Object.keys(seriesGroups).length === 0) {
+        html = '<p>NO VINYĀSA ASANAS FOUND</p>';
+    } else {
+        // ORDEN ESPECÍFICO PARA VINYĀSA
+        const vinyasaOrder = [
+            'Despertar',
+            'Apertura',
+            'Vitalidad',
+            'Integracion',
+            'Equilibrio',
+            'Entrega',
+            'Esfuerzo',
+            'Conexion'
+        ];
         
-        console.log('Grupos de Vinyāsa:', Object.keys(seriesGroups));
-        
-        let html = '';
-        
-        if (Object.keys(seriesGroups).length === 0) {
-            html = '<p>NO VINYĀSA ASANAS FOUND</p>';
-        } else {
-            // ORDEN ESPECÍFICO PARA VINYĀSA
-            const vinyasaOrder = [
-                'Despertar',
-                'Apertura',
-                'Vitalidad',
-                'Integracion',
-                'Equilibrio',
-                'Entrega',
-                'Esfuerzo',
-                'Conexion'
-            ];
-            
-            // Renderizar en el orden especificado
-            vinyasaOrder.forEach(seriesName => {
-                if (seriesGroups[seriesName]) {
-                    const mappedSeriesName = seriesHotMapping[seriesName] || seriesName;
+        // Renderizar en el orden especificado
+        vinyasaOrder.forEach(seriesName => {
+            if (seriesGroups[seriesName]) {
+                const mappedSeriesName = seriesHotMapping[seriesName] || seriesName;
+                html += `
+                    <div class="series-section">
+                        <div class="series-title">${mappedSeriesName}</div>
+                `;
+                
+                // USAR ORDEN MANUAL para Vinyāsa
+                const orderedAsanas = sortAsanasByManualOrder(seriesGroups[seriesName], seriesName, 'vinyasa');
+                
+                orderedAsanas.forEach(asana => {
+                    const tags = getAsanaTags(asana);
+                    const tagsHtml = tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+                    
                     html += `
-                        <div class="series-section">
-                            <div class="series-title">${mappedSeriesName}</div>
-                    `;
-                    
-                    // Para Vinyāsa, ordenar alfabéticamente por Sandhi o Name
-                    const sortedAsanas = [...seriesGroups[seriesName]].sort((a, b) => {
-                        const nameA = (a.Sandhi || a.Name).toLowerCase();
-                        const nameB = (b.Sandhi || b.Name).toLowerCase();
-                        return nameA.localeCompare(nameB);
-                    });
-                    
-                    sortedAsanas.forEach(asana => {
-                        const tags = getAsanaTags(asana);
-                        const tagsHtml = tags.map(tag => `<span class="tag">${tag}</span>`).join('');
-                        
-                        html += `
-                            <div class="unified-list-item brutalist-border" data-asana="${asana.Name}">
-                                <div class="unified-list-header">
-                                    <h3>${asana.Sandhi.toUpperCase()} - ${asana.English || 'N/A'}</h3>
-                                <div class="unified-list-tags">
-                                    ${tagsHtml}
-                                </div>
-                                </div>
-                                <img src="images/${asana.Name}.png" alt="${asana.Name}" class="unified-list-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzAwMDAwMCIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQ291cmllciBOZXcsIG1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+Tk8gSU1BR0UgQVZBSUxBQkxFPC90ZXh0Pjwvc3ZnPg=='">
+                        <div class="unified-list-item brutalist-border" data-asana="${asana.Name}">
+                            <div class="unified-list-header">
+                                <h3>${asana.Sandhi.toUpperCase()} - ${asana.English || 'N/A'}</h3>
+                            <div class="unified-list-tags">
+                                ${tagsHtml}
                             </div>
-                        `;
-                    });
-                    
-                    html += `
+                            </div>
+                            <img src="images/${asana.Name}.png" alt="${asana.Name}" class="unified-list-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzAwMDAwMCIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQ291cmllciBOZXcsIG1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+Tk8gSU1BR0UgQVZBSUxBQkxFPC90ZXh0Pjwvc3ZnPg=='">
                         </div>
                     `;
-                }
-            });
-        }
-        
-        vinyasaContainer.innerHTML = html;
-        
-        // Agregar event listeners
-        vinyasaContainer.querySelectorAll('.unified-list-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const asanaName = item.dataset.asana;
-                const asana = findAsanaByName(asanaName);
-                if (asana) {
-                    switchSection('study');
-                    // Buscar en filteredAsanas
-                    const filteredIndex = filteredAsanas.findIndex(a => a.Name === asana.Name);
-                    if (filteredIndex !== -1) {
-                        currentAsanaIndex = filteredIndex;
-                    }
-                    renderAsanaCard();
-                }
-            });
+                });
+                
+                html += `
+                    </div>
+                `;
+            }
         });
     }
+    
+    vinyasaContainer.innerHTML = html;
+    
+    // Agregar event listeners
+    vinyasaContainer.querySelectorAll('.unified-list-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const asanaName = item.dataset.asana;
+            const asana = findAsanaByName(asanaName);
+            if (asana) {
+                switchSection('study');
+                // Buscar en filteredAsanas
+                const filteredIndex = filteredAsanas.findIndex(a => a.Name === asana.Name);
+                if (filteredIndex !== -1) {
+                    currentAsanaIndex = filteredIndex;
+                }
+                renderAsanaCard();
+            }
+        });
+    });
+}
 
     // Render asana list - VERSIÓN ORDENADA ALFABÉTICAMENTE
     function renderAsanaList() {
@@ -1241,49 +1363,6 @@ function renderLexiconList() {
         });
     }
 
-    // Función auxiliar para construir secuencias para un grupo de asanas - MEJORADA
-    function buildSequencesForGroup(asanas) {
-        // Si hay suficientes datos de Before/After, intentar construir secuencias
-        const asanasWithSequence = asanas.filter(asana => asana.Before || asana.After);
-        
-        if (asanasWithSequence.length === 0) {
-            // Si no hay secuencia, ordenar alfabéticamente
-            return [...asanas].sort((a, b) => {
-                const nameA = (a.Sandhi || a.Name).toLowerCase();
-                const nameB = (b.Sandhi || b.Name).toLowerCase();
-                return nameA.localeCompare(nameB);
-            });
-        }
-        
-        // Encontrar asanas de inicio (sin BEFORE o cuyo BEFORE no está en el grupo)
-        const startAsanas = asanas.filter(asana => {
-            if (!asana.Before) return true;
-            return !asanas.find(a => a.Name === asana.Before || a.Sandhi === asana.Before);
-        });
-        
-        if (startAsanas.length === 0) {
-            // Si no se puede determinar inicio, ordenar alfabéticamente
-            return [...asanas].sort((a, b) => {
-                const nameA = (a.Sandhi || a.Name).toLowerCase();
-                const nameB = (b.Sandhi || b.Name).toLowerCase();
-                return nameA.localeCompare(nameB);
-            });
-        }
-        
-        // Construir secuencia desde la primera asana de inicio
-        const sequence = buildSequence(startAsanas[0]);
-        
-        // Agregar las asanas que no están en la secuencia al final, ordenadas alfabéticamente
-        const remainingAsanas = asanas.filter(asana => 
-            !sequence.find(seqAsana => seqAsana.Name === asana.Name)
-        ).sort((a, b) => {
-            const nameA = (a.Sandhi || a.Name).toLowerCase();
-            const nameB = (b.Sandhi || b.Name).toLowerCase();
-            return nameA.localeCompare(nameB);
-        });
-        
-        return [...sequence, ...remainingAsanas];
-    }
 
     // Función para encontrar asana por nombre - MEJORADA
     function findAsanaByName(name) {
@@ -1320,7 +1399,7 @@ function renderLexiconList() {
         errorElement.style.display = 'block';
     }
 
-// Actualizar función init para cargar el léxico
+
 async function init() {
     try {
         await loadCSVData();
@@ -1347,6 +1426,7 @@ async function init() {
         applyFilters();
         renderVinyasaSequences();
         renderAshtangaSequences();
+        renderNiskriyaAsanas(); // ← AGREGAR ESTA LÍNEA
         setupEventListeners();
         
         console.log('Aplicación inicializada correctamente');
