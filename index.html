@@ -677,6 +677,47 @@ body {
     }
 }
 
+/* Estilos para el toggle de detalles */
+.details-toggle {
+    background: var(--accent-color);
+    color: var(--primary-color);
+    border: 2px solid #333;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    margin: 10px 0;
+    transition: all 0.3s;
+    width: 100%;
+    text-align: center;
+}
+
+.details-toggle:hover {
+    background: #f8dc3dff;
+    color: #333;
+}
+
+.details-content {
+    display: none;
+    width: 100%;
+    animation: fadeIn 0.3s ease-in;
+}
+
+.details-content.expanded {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Ajustes para el layout básico */
+.basic-details {
+    width: 100%;
+}
+
     </style>
 </head>
 
@@ -1701,41 +1742,43 @@ async function init() {
         renderAsanaList();
     }
     
-    // Render current asana card
-    function renderAsanaCard() {
-        if (filteredAsanas.length === 0) {
-            cardTitle.textContent = "NO ASANAS MATCH FILTERS";
-            cardImage.src = "";
-            cardDetails.innerHTML = "<p>ADJUST FILTERS TO SEE ASANAS</p>";
-            return;
-        }
-        
-        const asana = filteredAsanas[currentAsanaIndex];
-        // MOSTRAR EL SANDHI EN EL TÍTULO
-        cardTitle.textContent = asana.Sandhi ? asana.Sandhi.toUpperCase() : asana.Name.toUpperCase();
-        
-        // Set image - using the local image path
-        cardImage.src = `images/${asana.Name}.png`;
-        cardImage.alt = asana.Name;
-        cardImage.style.display = 'block';
-        
-        // Handle missing images
-        cardImage.onerror = function() {
-            this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzAwMDAwMCIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQ291cmllciBOZXcsIG1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+Tk8gSU1BR0UgQVZBSUxBQkxFPC90ZXh0Pjwvc3ZnPg==';
-            this.alt = 'IMAGE NOT AVAILABLE';
-            this.style.filter = 'grayscale(100%)';
-        };
-        
-        // Función para convertir [[AsanaName]] en enlaces
-        function createAsanaLinks(text) {
-            if (!text) return 'N/A';
-            return text.replace(/\[\[(.*?)\]\]/g, function(match, asanaName) {
-                return `<a href="#" class="asana-link" data-asana="${asanaName}">${asanaName}</a>`;
-            });
-        }
 
-        // Construir el HTML de detalles dinámicamente
-        let detailsHTML = `
+// Render current asana card
+function renderAsanaCard() {
+    if (filteredAsanas.length === 0) {
+        cardTitle.textContent = "NO ASANAS MATCH FILTERS";
+        cardImage.src = "";
+        cardDetails.innerHTML = "<p>ADJUST FILTERS TO SEE ASANAS</p>";
+        return;
+    }
+    
+    const asana = filteredAsanas[currentAsanaIndex];
+    // MOSTRAR EL SANDHI EN EL TÍTULO
+    cardTitle.textContent = asana.Sandhi ? asana.Sandhi.toUpperCase() : asana.Name.toUpperCase();
+    
+    // Set image - using the local image path
+    cardImage.src = `images/${asana.Name}.png`;
+    cardImage.alt = asana.Name;
+    cardImage.style.display = 'block';
+    
+    // Handle missing images
+    cardImage.onerror = function() {
+        this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzAwMDAwMCIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQ291cmllciBOZXcsIG1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+Tk8gSU1BR0UgQVZBSUxBQkxFPC90ZXh0Pjwvc3ZnPg==';
+        this.alt = 'IMAGE NOT AVAILABLE';
+        this.style.filter = 'grayscale(100%)';
+    };
+    
+    // Función para convertir [[AsanaName]] en enlaces
+    function createAsanaLinks(text) {
+        if (!text) return 'N/A';
+        return text.replace(/\[\[(.*?)\]\]/g, function(match, asanaName) {
+            return `<a href="#" class="asana-link" data-asana="${asanaName}">${asanaName}</a>`;
+        });
+    }
+
+    // HTML básico (siempre visible)
+    let basicHTML = `
+        <div class="basic-details">
             <div class="detail-row">
                 <span class="detail-label">DEVANAGARI:</span>
                 <span>${asana.Devanagari || 'N/A'}</span>
@@ -1747,150 +1790,171 @@ async function init() {
             <div class="detail-row">
                 <span class="detail-label">ETYMOLOGY:</span>
                 <span>${asana.Etymology || 'N/A'}</span>
-            </div>`;
-        // AGREGAR HOT SERIES SI EXISTE (MAPEADO)
-        if (asana.SeriesHot) {
-            const mappedHotSeries = seriesHotMapping[asana.SeriesHot] || asana.SeriesHot;
-            detailsHTML += `
-            <div class="detail-row">
-                <span class="detail-label">VINYĀSA Series:</span>
-                <span style="font-weight: bold; font-style: italic; color: #f6442fff">${mappedHotSeries}</span>
-            </div>`;
-        }
-
-        // AGREGAR YOGA SERIES SI EXISTE (MAPEADO)
-        if (asana.YogaSeries) {
-            const mappedYogaSeries = seriesMapping[asana.YogaSeries] || asana.YogaSeries;
-            detailsHTML += `
-            <div class="detail-row">
-                <span class="detail-label">aṣṭāṅga Series:</span>
-                <span style="font-weight: bold; font-style: italic; color: #f6442fff">${mappedYogaSeries}</span>
-            </div>`;
-        }
-
-        // AGREGAR BEFORE SOLO SI EXISTE
-        if (asana.Before) {
-            const beforeAsana = findAsanaByName(asana.Before);
-            const beforeDisplayName = beforeAsana ? (beforeAsana.Sandhi || beforeAsana.Name) : asana.Before;
-            
-            detailsHTML += `
-            <div class="detail-row">
-                <span class="detail-label">BEFORE:</span>
-                <span><a href="#" class="asana-link" data-asana="${asana.Before}">${beforeDisplayName}</a></span>
-            </div>`;
-        }
-
-        // AGREGAR AFTER SOLO SI EXISTE
-        if (asana.After) {
-            const afterAsana = findAsanaByName(asana.After);
-            const afterDisplayName = afterAsana ? (afterAsana.Sandhi || afterAsana.Name) : asana.After;
-            
-            detailsHTML += `
-            <div class="detail-row">
-                <span class="detail-label">AFTER:</span>
-                <span><a href="#" class="asana-link" data-asana="${asana.After}">${afterDisplayName}</a></span>
-            </div>`;
-        }
-        
-
-            
-
-        // AGREGAR NUEVAS COLUMNAS SI NO ESTÁN VACÍAS
-        if (asana.Open && asana.Open.trim() !== '') {
-            detailsHTML += `
-            <div class="detail-row">
-                <span class="detail-label">OPEN:</span>
-                <span>${asana.Open}</span>
-            </div>`;
-        }
-
-        if (asana.OpenAsana && asana.OpenAsana.trim() !== '') {
-            detailsHTML += `
-            <div class="detail-row">
-                <span class="detail-label">OPEN ĀSANA:</span>
-                <span>${createAsanaLinks(asana.OpenAsana)}</span>
-            </div>`;
-        }
-
-        if (asana.Stable && asana.Stable.trim() !== '') {
-            detailsHTML += `
-            <div class="detail-row">
-                <span class="detail-label">STABLE:</span>
-                <span>${asana.Stable}</span>
-            </div>`;
-        }
-
-        if (asana.StableAsana && asana.StableAsana.trim() !== '') {
-            detailsHTML += `
-            <div class="detail-row">
-                <span class="detail-label">STABLE ĀSANA:</span>
-                <span>${createAsanaLinks(asana.StableAsana)}</span>
-            </div>`;
-        }
-
-        if (asana.Preparation && asana.Preparation.trim() !== '') {
-            detailsHTML += `
-            <div class="detail-row">
-                <span class="detail-label">PREPARATION FOR:</span>
-                <span>${createAsanaLinks(asana.Preparation)}</span>
-            </div>`;
-        }
-
-        if (asana.Counterposes && asana.Counterposes.trim() !== '') {
-            detailsHTML += `
-            <div class="detail-row">
-                <span class="detail-label">COUNTER ĀSANA:</span>
-                <span>${createAsanaLinks(asana.Counterposes)}</span>
-            </div>`;
-        }
-        
-                // Siempre mostrar TAGS
-        detailsHTML += `
-            <div class="detail-row">
-                <span class="detail-label">TAGS:</span>
-                <span style="font-style: italic; color: #f6442fff">${getAsanaTags(asana).join(', ') || 'N/A'}</span>
             </div>
-        `;
-
+        </div>
         
-        cardDetails.innerHTML = detailsHTML;
+        <button class="details-toggle brutalist-btn" id="details-toggle">
+            DETAILS ›
+        </button>
+        
+        <div class="details-content" id="details-content">
+    `;
 
-        // Agregar event listeners para los enlaces de asanas
-        cardDetails.querySelectorAll('.asana-link').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const asanaName = this.dataset.asana;
-                const asana = findAsanaByName(asanaName);
-                if (asana) {
-                    // Buscar en filteredAsanas
-                    const filteredIndex = filteredAsanas.findIndex(a => a.Name === asana.Name);
-                    if (filteredIndex !== -1) {
-                        currentAsanaIndex = filteredIndex;
-                        renderAsanaCard();
-                    } else {
-                        // Si no está en los filtros actuales, cambiar a Sākṣāt y buscar
-                        activeTags.clear();
-                        document.querySelectorAll('.menu-tag-btn').forEach(btn => {
-                            btn.classList.remove('active');
-                        });
-                        const saksatBtn = document.querySelector('[data-tag="Sākṣāt"]');
-                        if (saksatBtn) {
-                            saksatBtn.classList.add('active');
-                            activeTags.add('Sākṣāt');
-                        }
-                        applyFilters();
-                        
-                        // Buscar la asana en los nuevos filteredAsanas
-                        const newIndex = filteredAsanas.findIndex(a => a.Name === asana.Name);
-                        if (newIndex !== -1) {
-                            currentAsanaIndex = newIndex;
-                            renderAsanaCard();
-                        }
-                    }
-                }
-            });
+    // HTML de detalles expandidos (inicialmente oculto)
+    let detailsHTML = '';
+
+    // AGREGAR HOT SERIES SI EXISTE (MAPEADO)
+    if (asana.SeriesHot) {
+        const mappedHotSeries = seriesHotMapping[asana.SeriesHot] || asana.SeriesHot;
+        detailsHTML += `
+        <div class="detail-row">
+            <span class="detail-label">VINYĀSA Series:</span>
+            <span style="font-weight: bold; font-style: italic; color: #f6442fff">${mappedHotSeries}</span>
+        </div>`;
+    }
+
+    // AGREGAR YOGA SERIES SI EXISTE (MAPEADO)
+    if (asana.YogaSeries) {
+        const mappedYogaSeries = seriesMapping[asana.YogaSeries] || asana.YogaSeries;
+        detailsHTML += `
+        <div class="detail-row">
+            <span class="detail-label">aṣṭāṅga Series:</span>
+            <span style="font-weight: bold; font-style: italic; color: #f6442fff">${mappedYogaSeries}</span>
+        </div>`;
+    }
+
+    // AGREGAR BEFORE SOLO SI EXISTE
+    if (asana.Before) {
+        const beforeAsana = findAsanaByName(asana.Before);
+        const beforeDisplayName = beforeAsana ? (beforeAsana.Sandhi || beforeAsana.Name) : asana.Before;
+        
+        detailsHTML += `
+        <div class="detail-row">
+            <span class="detail-label">BEFORE:</span>
+            <span><a href="#" class="asana-link" data-asana="${asana.Before}">${beforeDisplayName}</a></span>
+        </div>`;
+    }
+
+    // AGREGAR AFTER SOLO SI EXISTE
+    if (asana.After) {
+        const afterAsana = findAsanaByName(asana.After);
+        const afterDisplayName = afterAsana ? (afterAsana.Sandhi || afterAsana.Name) : asana.After;
+        
+        detailsHTML += `
+        <div class="detail-row">
+            <span class="detail-label">AFTER:</span>
+            <span><a href="#" class="asana-link" data-asana="${asana.After}">${afterDisplayName}</a></span>
+        </div>`;
+    }
+
+    // AGREGAR NUEVAS COLUMNAS SI NO ESTÁN VACÍAS
+    if (asana.Open && asana.Open.trim() !== '') {
+        detailsHTML += `
+        <div class="detail-row">
+            <span class="detail-label">OPEN:</span>
+            <span>${asana.Open}</span>
+        </div>`;
+    }
+
+    if (asana.OpenAsana && asana.OpenAsana.trim() !== '') {
+        detailsHTML += `
+        <div class="detail-row">
+            <span class="detail-label">OPEN ĀSANA:</span>
+            <span>${createAsanaLinks(asana.OpenAsana)}</span>
+        </div>`;
+    }
+
+    if (asana.Stable && asana.Stable.trim() !== '') {
+        detailsHTML += `
+        <div class="detail-row">
+            <span class="detail-label">STABLE:</span>
+            <span>${asana.Stable}</span>
+        </div>`;
+    }
+
+    if (asana.StableAsana && asana.StableAsana.trim() !== '') {
+        detailsHTML += `
+        <div class="detail-row">
+            <span class="detail-label">STABLE ĀSANA:</span>
+            <span>${createAsanaLinks(asana.StableAsana)}</span>
+        </div>`;
+    }
+
+    if (asana.Preparation && asana.Preparation.trim() !== '') {
+        detailsHTML += `
+        <div class="detail-row">
+            <span class="detail-label">PREPARATION FOR:</span>
+            <span>${createAsanaLinks(asana.Preparation)}</span>
+        </div>`;
+    }
+
+    if (asana.Counterposes && asana.Counterposes.trim() !== '') {
+        detailsHTML += `
+        <div class="detail-row">
+            <span class="detail-label">COUNTER ĀSANA:</span>
+            <span>${createAsanaLinks(asana.Counterposes)}</span>
+        </div>`;
+    }
+    
+    // Siempre mostrar TAGS
+    detailsHTML += `
+        <div class="detail-row">
+            <span class="detail-label">TAGS:</span>
+            <span style="font-style: italic; color: #f6442fff">${getAsanaTags(asana).join(', ') || 'N/A'}</span>
+        </div>
+    `;
+
+    // Combinar todo el HTML
+    const fullHTML = basicHTML + detailsHTML + '</div>';
+    cardDetails.innerHTML = fullHTML;
+
+    // Configurar el evento del toggle
+    const toggleBtn = document.getElementById('details-toggle');
+    const detailsContent = document.getElementById('details-content');
+    
+    if (toggleBtn && detailsContent) {
+        toggleBtn.addEventListener('click', function() {
+            const isExpanded = detailsContent.classList.toggle('expanded');
+            this.innerHTML = isExpanded ? 'DETAILS ▽' : 'DETAILS ›';
         });
     }
+
+    // Agregar event listeners para los enlaces de asanas
+    cardDetails.querySelectorAll('.asana-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const asanaName = this.dataset.asana;
+            const asana = findAsanaByName(asanaName);
+            if (asana) {
+                // Buscar en filteredAsanas
+                const filteredIndex = filteredAsanas.findIndex(a => a.Name === asana.Name);
+                if (filteredIndex !== -1) {
+                    currentAsanaIndex = filteredIndex;
+                    renderAsanaCard();
+                } else {
+                    // Si no está en los filtros actuales, cambiar a Sākṣāt y buscar
+                    activeTags.clear();
+                    document.querySelectorAll('.menu-tag-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    const saksatBtn = document.querySelector('[data-tag="Sākṣāt"]');
+                    if (saksatBtn) {
+                        saksatBtn.classList.add('active');
+                        activeTags.add('Sākṣāt');
+                    }
+                    applyFilters();
+                    
+                    // Buscar la asana en los nuevos filteredAsanas
+                    const newIndex = filteredAsanas.findIndex(a => a.Name === asana.Name);
+                    if (newIndex !== -1) {
+                        currentAsanaIndex = newIndex;
+                        renderAsanaCard();
+                    }
+                }
+            }
+        });
+    });
+}
 
     // Get tags for an asana display
     function getAsanaTags(asana) {
