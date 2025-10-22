@@ -93,7 +93,10 @@ body {
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center; /* ← AGREGAR ESTA LÍNEA */
             gap: 20px;
+            width: 100%; /* ← AGREGAR ESTA LÍNEA */
+            margin: 0 auto; /* ← AGREGAR ESTA LÍNEA */
         }
 
         .card {
@@ -101,6 +104,7 @@ body {
             width: 100%;
             max-width: 500px;
             background: var(--primary-color);
+            margin: 0 auto; /* ← AGREGAR ESTA LÍNEA PARA CENTRAR EL CARD */
         }
 
         .card-header {
@@ -1743,6 +1747,7 @@ async function init() {
     }
     
 
+
 // Render current asana card
 function renderAsanaCard() {
     if (filteredAsanas.length === 0) {
@@ -1776,8 +1781,67 @@ function renderAsanaCard() {
         });
     }
 
-    // HTML básico (siempre visible)
-    let basicHTML = `
+    // HTML básico (siempre visible) - SERIES Y BEFORE/AFTER
+    let basicHTML = '';
+    
+    // AGREGAR HOT SERIES SI EXISTE (MAPEADO) - FUERA DE DETAILS
+    if (asana.SeriesHot) {
+        const mappedHotSeries = seriesHotMapping[asana.SeriesHot] || asana.SeriesHot;
+        basicHTML += `
+        <div class="detail-row">
+            <span class="detail-label">VINYĀSA Series:</span>
+            <span style="font-weight: bold; font-style: italic; color: #f6442fff">${mappedHotSeries}</span>
+        </div>`;
+    }
+
+    // AGREGAR YOGA SERIES SI EXISTE (MAPEADO) - FUERA DE DETAILS
+    if (asana.YogaSeries) {
+        const mappedYogaSeries = seriesMapping[asana.YogaSeries] || asana.YogaSeries;
+        basicHTML += `
+        <div class="detail-row">
+            <span class="detail-label">aṣṭāṅga Series:</span>
+            <span style="font-weight: bold; font-style: italic; color: #f6442fff">${mappedYogaSeries}</span>
+        </div>`;
+    }
+
+    // AGREGAR BEFORE SOLO SI EXISTE - FUERA DE DETAILS
+    if (asana.Before) {
+        const beforeAsana = findAsanaByName(asana.Before);
+        const beforeDisplayName = beforeAsana ? (beforeAsana.Sandhi || beforeAsana.Name) : asana.Before;
+        
+        basicHTML += `
+        <div class="detail-row">
+            <span class="detail-label">BEFORE:</span>
+            <span><a href="#" class="asana-link" data-asana="${asana.Before}">${beforeDisplayName}</a></span>
+        </div>`;
+    }
+
+    // AGREGAR AFTER SOLO SI EXISTE - FUERA DE DETAILS
+    if (asana.After) {
+        const afterAsana = findAsanaByName(asana.After);
+        const afterDisplayName = afterAsana ? (afterAsana.Sandhi || afterAsana.Name) : asana.After;
+        
+        basicHTML += `
+        <div class="detail-row">
+            <span class="detail-label">AFTER:</span>
+            <span><a href="#" class="asana-link" data-asana="${asana.After}">${afterDisplayName}</a></span>
+        </div>`;
+    }
+
+    // Botón de toggle
+    basicHTML += `
+        <button class="details-toggle brutalist-btn" id="details-toggle">
+            DETAILS ›
+        </button>
+        
+        <div class="details-content" id="details-content">
+    `;
+
+    // HTML de detalles expandidos (inicialmente oculto)
+    let detailsHTML = '';
+
+    // INFORMACIÓN BÁSICA MOVIDA A DETALLES
+    detailsHTML += `
         <div class="basic-details">
             <div class="detail-row">
                 <span class="detail-label">DEVANAGARI:</span>
@@ -1792,60 +1856,7 @@ function renderAsanaCard() {
                 <span>${asana.Etymology || 'N/A'}</span>
             </div>
         </div>
-        
-        <button class="details-toggle brutalist-btn" id="details-toggle">
-            DETAILS ›
-        </button>
-        
-        <div class="details-content" id="details-content">
     `;
-
-    // HTML de detalles expandidos (inicialmente oculto)
-    let detailsHTML = '';
-
-    // AGREGAR HOT SERIES SI EXISTE (MAPEADO)
-    if (asana.SeriesHot) {
-        const mappedHotSeries = seriesHotMapping[asana.SeriesHot] || asana.SeriesHot;
-        detailsHTML += `
-        <div class="detail-row">
-            <span class="detail-label">VINYĀSA Series:</span>
-            <span style="font-weight: bold; font-style: italic; color: #f6442fff">${mappedHotSeries}</span>
-        </div>`;
-    }
-
-    // AGREGAR YOGA SERIES SI EXISTE (MAPEADO)
-    if (asana.YogaSeries) {
-        const mappedYogaSeries = seriesMapping[asana.YogaSeries] || asana.YogaSeries;
-        detailsHTML += `
-        <div class="detail-row">
-            <span class="detail-label">aṣṭāṅga Series:</span>
-            <span style="font-weight: bold; font-style: italic; color: #f6442fff">${mappedYogaSeries}</span>
-        </div>`;
-    }
-
-    // AGREGAR BEFORE SOLO SI EXISTE
-    if (asana.Before) {
-        const beforeAsana = findAsanaByName(asana.Before);
-        const beforeDisplayName = beforeAsana ? (beforeAsana.Sandhi || beforeAsana.Name) : asana.Before;
-        
-        detailsHTML += `
-        <div class="detail-row">
-            <span class="detail-label">BEFORE:</span>
-            <span><a href="#" class="asana-link" data-asana="${asana.Before}">${beforeDisplayName}</a></span>
-        </div>`;
-    }
-
-    // AGREGAR AFTER SOLO SI EXISTE
-    if (asana.After) {
-        const afterAsana = findAsanaByName(asana.After);
-        const afterDisplayName = afterAsana ? (afterAsana.Sandhi || afterAsana.Name) : asana.After;
-        
-        detailsHTML += `
-        <div class="detail-row">
-            <span class="detail-label">AFTER:</span>
-            <span><a href="#" class="asana-link" data-asana="${asana.After}">${afterDisplayName}</a></span>
-        </div>`;
-    }
 
     // AGREGAR NUEVAS COLUMNAS SI NO ESTÁN VACÍAS
     if (asana.Open && asana.Open.trim() !== '') {
@@ -1955,7 +1966,7 @@ function renderAsanaCard() {
         });
     });
 }
-
+    
     // Get tags for an asana display
     function getAsanaTags(asana) {
         const tags = [];
