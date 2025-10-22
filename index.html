@@ -1840,13 +1840,8 @@ function renderAsanaCard() {
     // HTML de detalles expandidos (inicialmente oculto)
     let detailsHTML = '';
 
-
     // INFORMACIÓN BÁSICA MOVIDA A DETALLES
     detailsHTML += `
-            <div class="detail-row">
-            <span class="detail-label">TAGS:</span>
-            <span style="font-style: italic; color: #f6442fff">${getAsanaTags(asana).join(', ') || 'N/A'}</span>
-        </div>
         <div class="basic-details">
             <div class="detail-row">
                 <span class="detail-label">DEVANAGARI:</span>
@@ -1862,7 +1857,6 @@ function renderAsanaCard() {
             </div>
         </div>
     `;
-
 
     // AGREGAR NUEVAS COLUMNAS SI NO ESTÁN VACÍAS
     if (asana.Open && asana.Open.trim() !== '') {
@@ -1913,6 +1907,13 @@ function renderAsanaCard() {
         </div>`;
     }
     
+    // Siempre mostrar TAGS
+    detailsHTML += `
+        <div class="detail-row">
+            <span class="detail-label">TAGS:</span>
+            <span style="font-style: italic; color: #f6442fff">${getAsanaTags(asana).join(', ') || 'N/A'}</span>
+        </div>
+    `;
 
     // Combinar todo el HTML
     const fullHTML = basicHTML + detailsHTML + '</div>';
