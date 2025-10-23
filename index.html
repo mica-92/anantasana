@@ -722,31 +722,78 @@ body {
     width: 100%;
 }
 
+/* AGREGAR estos estilos al final del CSS existente */
+
+/* Estilos para los controles de secuencia Aṣṭāṅga */
+#ashtanga-sequence-controls {
+    margin-top: 10px;
+    gap: 15px;
+    align-items: center;
+}
+
+#ashtanga-sequence-controls span {
+    font-family: "Inconsolata", monospace;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+#ashtanga-prev-btn, #ashtanga-next-btn {
+    background: #f6442fff;
+    border: 2px solid #333;
+    color: var(--primary-color);
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+#ashtanga-prev-btn:hover, #ashtanga-next-btn:hover {
+    background: #f8dc3dff;
+    color: #333;
+    transform: scale(1.1);
+}
+
+/* Ajuste responsive para móviles */
+@media (max-width: 768px) {
+    #ashtanga-sequence-controls {
+        gap: 10px;
+    }
+    
+    #ashtanga-sequence-controls span {
+        font-size: 0.7rem;
+    }
+}
+
     </style>
 </head>
 
 <body>
     <div class="content">
     <main>
-        <section id="study" class="section active">
-            <div class="study-container">
-                <div class="card brutalist-border">
-                    <div class="card-header">
-                        <h2 id="card-title" class="brutalist-text">SELECT ASANA</h2>
-                    </div>
-                    <div class="card-body">
-                        <img id="card-image" src="" alt="Asana" class="card-image" style="display: none;">
-                        <div class="card-details" id="card-details">
-                            <p>USE FILTERS AND NAVIGATION TO EXPLORE ASANAS</p>
-                        </div>
-                        <div class="circular-controls">
-                            <button class="circular-btn brutalist-btn" id="prev-btn">‹</button>
-                            <button class="circular-btn brutalist-btn" id="next-btn">›</button>
-                        </div>
-                    </div>
+<section id="study" class="section active">
+    <div class="study-container">
+        <div class="card brutalist-border">
+            <div class="card-header">
+                <h2 id="card-title" class="brutalist-text">SELECT ASANA</h2>
+            </div>
+            <div class="card-body">
+                <img id="card-image" src="" alt="Asana" class="card-image" style="display: none;">
+                <div class="card-details" id="card-details">
+                    <p>USE FILTERS AND NAVIGATION TO EXPLORE ASANAS</p>
+                </div>
+                <div class="circular-controls">
+                    <button class="circular-btn brutalist-btn" id="prev-btn">‹</button>
+                    <button class="circular-btn brutalist-btn" id="next-btn">›</button>
+                </div>
+                <!-- MOVER AQUÍ los controles Aṣṭāṅga -->
+                <div class="circular-controls" id="ashtanga-sequence-controls" style="display: none;">
+                    <button class="circular-btn brutalist-btn" id="ashtanga-prev-btn">«</button>
+                    <span style="color: #333; font-weight: bold; font-size: 0.8rem;">AṢṬĀṄGA</span>
+                    <button class="circular-btn brutalist-btn" id="ashtanga-next-btn">»</button>
                 </div>
             </div>
-        </section>
+        </div>
+    </div>
+</section>
         
         <section id="vinyasa" class="section">
             <div id="vinyasa-container" class="unified-list-container">
@@ -782,6 +829,7 @@ body {
                     <button class="circular-btn brutalist-btn" id="lexicon-prev-btn">‹</button>
                     <button class="circular-btn brutalist-btn" id="lexicon-next-btn">›</button>
                 </div>
+                <!-- QUITAR los controles Aṣṭāṅga de aquí -->
             </div>
         </div>
     </div>
@@ -836,191 +884,202 @@ body {
     let activeTags = new Set();
     let allTags = [];
 
+    // Variables globales para secuencia Aṣṭāṅga
+    let currentAshtangaSequence = [];
+    let currentAshtangaIndex = 0;
+    let currentAshtangaSeries = '';
 
-// Agregar variables globales para el léxico
-let lexiconData = [];
-let filteredLexicon = [];
-let currentLexiconIndex = 0;
+    // Agregar variables globales para el léxico
+    let lexiconData = [];
+    let filteredLexicon = [];
+    let currentLexiconIndex = 0;
 
-// Agregar elementos DOM del léxico
-const lexiconSection = document.getElementById('lexicon');
-const lexiconListSection = document.getElementById('lexicon-list');
-const lexiconTitle = document.getElementById('lexicon-title');
-const lexiconDetails = document.getElementById('lexicon-details');
-const lexiconPrevBtn = document.getElementById('lexicon-prev-btn');
-const lexiconNextBtn = document.getElementById('lexicon-next-btn');
-const lexiconSearchBox = document.getElementById('lexicon-search');
-const lexiconListContainer = document.getElementById('lexicon-list-container');
+    // AGREGAR elementos DOM para controles Aṣṭāṅga (asegúrate de que estén en el scope global)
 
-// Función para cargar el léxico CSV
-async function loadLexiconData() {
-    try {
-        const response = await fetch('lexicon.csv');
-        if (!response.ok) throw new Error('Lexicon CSV file not found');
-        
-        const csvText = await response.text();
-        
-        return new Promise((resolve, reject) => {
-            Papa.parse(csvText, {
-                header: true,
-                skipEmptyLines: true,
-                complete: function(results) {
-                    if (results.errors.length > 0) {
-                        reject(new Error(results.errors[0].message));
-                        return;
-                    }
-                    
-                    lexiconData = results.data.map(row => {
-                        const cleanRow = {};
-                        for (const key in row) {
-                            cleanRow[key] = row[key] ? row[key].trim() : '';
+    // Agregar elementos DOM del léxico
+    const lexiconSection = document.getElementById('lexicon');
+    const lexiconListSection = document.getElementById('lexicon-list');
+    const lexiconTitle = document.getElementById('lexicon-title');
+    const lexiconDetails = document.getElementById('lexicon-details');
+    const lexiconPrevBtn = document.getElementById('lexicon-prev-btn');
+    const lexiconNextBtn = document.getElementById('lexicon-next-btn');
+    const lexiconSearchBox = document.getElementById('lexicon-search');
+    const lexiconListContainer = document.getElementById('lexicon-list-container');
+
+    // Agregar elementos DOM para controles Aṣṭāṅga
+    const ashtangaSequenceControls = document.getElementById('ashtanga-sequence-controls');
+    const ashtangaPrevBtn = document.getElementById('ashtanga-prev-btn');
+    const ashtangaNextBtn = document.getElementById('ashtanga-next-btn');
+
+    // Función para cargar el léxico CSV
+    async function loadLexiconData() {
+        try {
+            const response = await fetch('lexicon.csv');
+            if (!response.ok) throw new Error('Lexicon CSV file not found');
+            
+            const csvText = await response.text();
+            
+            return new Promise((resolve, reject) => {
+                Papa.parse(csvText, {
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: function(results) {
+                        if (results.errors.length > 0) {
+                            reject(new Error(results.errors[0].message));
+                            return;
                         }
-                        return cleanRow;
-                    });
-                    
-                    resolve(lexiconData);
-                },
-                error: function(error) {
-                    reject(new Error(`Failed to parse lexicon CSV: ${error.message}`));
+                        
+                        lexiconData = results.data.map(row => {
+                            const cleanRow = {};
+                            for (const key in row) {
+                                cleanRow[key] = row[key] ? row[key].trim() : '';
+                            }
+                            return cleanRow;
+                        });
+                        
+                        resolve(lexiconData);
+                    },
+                    error: function(error) {
+                        reject(new Error(`Failed to parse lexicon CSV: ${error.message}`));
+                    }
+                });
+            });
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // Renderizar tarjeta del término actual
+    function renderLexiconCard() {
+        if (filteredLexicon.length === 0) {
+            lexiconTitle.textContent = "NO TERMS MATCH FILTERS";
+            lexiconDetails.innerHTML = "<p>ADJUST FILTERS TO SEE TERMS</p>";
+            return;
+        }
+        
+        const term = filteredLexicon[currentLexiconIndex];
+        
+        lexiconTitle.textContent = term.term ? term.term.toUpperCase() : 'NO TERM';
+        
+        let detailsHTML = '';
+        
+        if (term.devanāgarī && term.devanāgarī.trim() !== '') {
+            detailsHTML += `
+                <div class="detail-row">
+                    <span class="detail-label">DEVANAGARI:</span>
+                    <span style="font-size: 1.5rem; font-weight: bold;">${term.devanāgarī}</span>
+                </div>`;
+        }
+        
+        if (term.meaning && term.meaning.trim() !== '') {
+            detailsHTML += `
+                <div class="detail-row">
+                    <span class="detail-label">MEANING:</span>
+                    <span style="font-style: italic;">${term.meaning}</span>
+                </div>`;
+        }
+        
+        lexiconDetails.innerHTML = detailsHTML || '<p>NO DETAILS AVAILABLE</p>';
+    }
+
+    // Renderizar lista de términos
+    function renderLexiconList() {
+        lexiconListContainer.innerHTML = '';
+        
+        if (filteredLexicon.length === 0) {
+            lexiconListContainer.innerHTML = '<p>NO TERMS MATCH FILTERS</p>';
+            return;
+        }
+        
+        // Ordenar alfabéticamente por término
+        const sortedTerms = [...filteredLexicon].sort((a, b) => {
+            const termA = (a.term || '').toLowerCase();
+            const termB = (b.term || '').toLowerCase();
+            return termA.localeCompare(termB);
+        });
+        
+        sortedTerms.forEach(term => {
+            const item = document.createElement('div');
+            item.className = 'list-item';
+            item.addEventListener('click', () => {
+                switchSection('lexicon');
+                const index = filteredLexicon.findIndex(t => t.term === term.term);
+                if (index !== -1) {
+                    currentLexiconIndex = index;
+                    renderLexiconCard();
+                }
+            });
+            
+            let itemHTML = `<h3>${term.term.toUpperCase()}</h3>`;
+            
+            
+            if (term.meaning && term.meaning.trim() !== '') {
+                itemHTML += `<p style="font-style: italic; text-align: left; padding-top: 0px">${term.meaning}</p>`;
+            }
+            
+            item.innerHTML = itemHTML;
+            lexiconListContainer.appendChild(item);
+        });
+    }
+
+    // Función para renderizar āsanas niṣkriya (Yin)
+    function renderNiskriyaAsanas() {
+        const niskriyaAsanas = asanaData.filter(asana => {
+            return asana.Yin && asana.Yin.trim() !== '';
+        });
+        
+        console.log(`Niṣkriya asanas encontradas: ${niskriyaAsanas.length}`);
+        
+        let html = '';
+        
+        if (niskriyaAsanas.length === 0) {
+            html = '<p>NO NIṢKRIYA ĀSANAS FOUND</p>';
+        } else {
+            // Ordenar alfabéticamente
+            const sortedAsanas = [...niskriyaAsanas].sort((a, b) => {
+                const nameA = (a.Sandhi || a.Name).toLowerCase();
+                const nameB = (b.Sandhi || b.Name).toLowerCase();
+                return nameA.localeCompare(nameB);
+            });
+            
+            sortedAsanas.forEach(asana => {
+                const tags = getAsanaTags(asana);
+                const tagsHtml = tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+                
+                html += `
+                    <div class="unified-list-item brutalist-border" data-asana="${asana.Name}">
+                        <div class="unified-list-header">
+                            <h3>${asana.Sandhi.toUpperCase()} - ${asana.English || 'N/A'}</h3>
+                        <div class="unified-list-tags">
+                            ${tagsHtml}
+                        </div>
+                        </div>
+                        <img src="images/${asana.Name}.png" alt="${asana.Name}" class="unified-list-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzAwMDAwMCIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQ291cmllciBOZXcsIG1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+Tk8gSU1BR0UgQVZBSUxBQkxFPC90ZXh0Pjwvc3ZnPg=='">
+                    </div>
+                `;
+            });
+        }
+        
+        const niskriyaContainer = document.getElementById('niskriya-container');
+        niskriyaContainer.innerHTML = html;
+        
+        // Agregar event listeners
+        niskriyaContainer.querySelectorAll('.unified-list-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const asanaName = item.dataset.asana;
+                const asana = findAsanaByName(asanaName);
+                if (asana) {
+                    switchSection('study');
+                    // Buscar en filteredAsanas
+                    const filteredIndex = filteredAsanas.findIndex(a => a.Name === asana.Name);
+                    if (filteredIndex !== -1) {
+                        currentAsanaIndex = filteredIndex;
+                    }
+                    renderAsanaCard();
                 }
             });
         });
-    } catch (error) {
-        throw error;
     }
-}
-
-// Renderizar tarjeta del término actual
-function renderLexiconCard() {
-    if (filteredLexicon.length === 0) {
-        lexiconTitle.textContent = "NO TERMS MATCH FILTERS";
-        lexiconDetails.innerHTML = "<p>ADJUST FILTERS TO SEE TERMS</p>";
-        return;
-    }
-    
-    const term = filteredLexicon[currentLexiconIndex];
-    
-    lexiconTitle.textContent = term.term ? term.term.toUpperCase() : 'NO TERM';
-    
-    let detailsHTML = '';
-    
-    if (term.devanāgarī && term.devanāgarī.trim() !== '') {
-        detailsHTML += `
-            <div class="detail-row">
-                <span class="detail-label">DEVANAGARI:</span>
-                <span style="font-size: 1.5rem; font-weight: bold;">${term.devanāgarī}</span>
-            </div>`;
-    }
-    
-    if (term.meaning && term.meaning.trim() !== '') {
-        detailsHTML += `
-            <div class="detail-row">
-                <span class="detail-label">MEANING:</span>
-                <span style="font-style: italic;">${term.meaning}</span>
-            </div>`;
-    }
-    
-    lexiconDetails.innerHTML = detailsHTML || '<p>NO DETAILS AVAILABLE</p>';
-}
-
-// Renderizar lista de términos
-function renderLexiconList() {
-    lexiconListContainer.innerHTML = '';
-    
-    if (filteredLexicon.length === 0) {
-        lexiconListContainer.innerHTML = '<p>NO TERMS MATCH FILTERS</p>';
-        return;
-    }
-    
-    // Ordenar alfabéticamente por término
-    const sortedTerms = [...filteredLexicon].sort((a, b) => {
-        const termA = (a.term || '').toLowerCase();
-        const termB = (b.term || '').toLowerCase();
-        return termA.localeCompare(termB);
-    });
-    
-    sortedTerms.forEach(term => {
-        const item = document.createElement('div');
-        item.className = 'list-item';
-        item.addEventListener('click', () => {
-            switchSection('lexicon');
-            const index = filteredLexicon.findIndex(t => t.term === term.term);
-            if (index !== -1) {
-                currentLexiconIndex = index;
-                renderLexiconCard();
-            }
-        });
-        
-        let itemHTML = `<h3>${term.term.toUpperCase()}</h3>`;
-        
-        
-        if (term.meaning && term.meaning.trim() !== '') {
-            itemHTML += `<p style="font-style: italic; text-align: left; padding-top: 0px">${term.meaning}</p>`;
-        }
-        
-        item.innerHTML = itemHTML;
-        lexiconListContainer.appendChild(item);
-    });
-}
-
-// Función para renderizar āsanas niṣkriya (Yin)
-function renderNiskriyaAsanas() {
-    const niskriyaAsanas = asanaData.filter(asana => {
-        return asana.Yin && asana.Yin.trim() !== '';
-    });
-    
-    console.log(`Niṣkriya asanas encontradas: ${niskriyaAsanas.length}`);
-    
-    let html = '';
-    
-    if (niskriyaAsanas.length === 0) {
-        html = '<p>NO NIṢKRIYA ĀSANAS FOUND</p>';
-    } else {
-        // Ordenar alfabéticamente
-        const sortedAsanas = [...niskriyaAsanas].sort((a, b) => {
-            const nameA = (a.Sandhi || a.Name).toLowerCase();
-            const nameB = (b.Sandhi || b.Name).toLowerCase();
-            return nameA.localeCompare(nameB);
-        });
-        
-        sortedAsanas.forEach(asana => {
-            const tags = getAsanaTags(asana);
-            const tagsHtml = tags.map(tag => `<span class="tag">${tag}</span>`).join('');
-            
-            html += `
-                <div class="unified-list-item brutalist-border" data-asana="${asana.Name}">
-                    <div class="unified-list-header">
-                        <h3>${asana.Sandhi.toUpperCase()} - ${asana.English || 'N/A'}</h3>
-                    <div class="unified-list-tags">
-                        ${tagsHtml}
-                    </div>
-                    </div>
-                    <img src="images/${asana.Name}.png" alt="${asana.Name}" class="unified-list-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzAwMDAwMCIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQ291cmllciBOZXcsIG1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+Tk8gSU1BR0UgQVZBSUxBQkxFPC90ZXh0Pjwvc3ZnPg=='">
-                </div>
-            `;
-        });
-    }
-    
-    const niskriyaContainer = document.getElementById('niskriya-container');
-    niskriyaContainer.innerHTML = html;
-    
-    // Agregar event listeners
-    niskriyaContainer.querySelectorAll('.unified-list-item').forEach(item => {
-        item.addEventListener('click', () => {
-            const asanaName = item.dataset.asana;
-            const asana = findAsanaByName(asanaName);
-            if (asana) {
-                switchSection('study');
-                // Buscar en filteredAsanas
-                const filteredIndex = filteredAsanas.findIndex(a => a.Name === asana.Name);
-                if (filteredIndex !== -1) {
-                    currentAsanaIndex = filteredIndex;
-                }
-                renderAsanaCard();
-            }
-        });
-    });
-}
 
     // Mapeo de series
     const seriesMapping = {
@@ -1077,293 +1136,306 @@ function renderNiskriyaAsanas() {
         return shuffled;
     }
 
-
-// REEMPLAZAR las funciones buildSequence y buildSequencesForGroup con estas nuevas variables y funciones:
-
-// Orden manual para Aṣṭāṅga YogaSeries
-const ashtangaManualOrder = {
-    'ādhāra': [
-    ],
-    'yoga cikitsā': [
-        // Agrega aquí el orden manual para yoga cikitsā
-    ],
-    'nāḍī śodhana': [
-        // Agrega aquí el orden manual para nāḍī śodhana  
-    ],
-    'tṛtīya śreṇī': [
-        // Agrega aquí el orden manual para tṛtīya śreṇī
-    ],
-    'pṛṣṭhavakrāsana': [
-        // Agrega aquí el orden manual para pṛṣṭhavakrāsana
-    ],
-    'samāpana': [
-        // Agrega aquí el orden manual para samāpana
-    ]
-};
-
-// Orden manual para Vinyāsa SeriesHot
-const vinyasaManualOrder = {
-    'Vitalidad': [
-        // Agrega aquí el orden manual para Vitalidad
-    ],
-    'Conexion': [
-        // Agrega aquí el orden manual para Conexion
-    ],
-    'Despertar': [
-        // Agrega aquí el orden manual para Despertar
-    ],
-    'Apertura': [
-        // Agrega aquí el orden manual para Apertura
-    ],
-    'Integracion': [
-        // Agrega aquí el orden manual para Integracion
-    ],
-    'Equilibrio': [
-        // Agrega aquí el orden manual para Equilibrio
-    ],
-    'Entrega': [
-        // Agrega aquí el orden manual para Entrega
-    ],
-    'Esfuerzo': [
-        // Agrega aquí el orden manual para Esfuerzo
-    ]
-};
-
-// Función para ordenar asanas según el orden manual
-function sortAsanasByManualOrder(asanas, seriesName, orderType) {
-    const manualOrder = orderType === 'ashtanga' ? ashtangaManualOrder[seriesName] : vinyasaManualOrder[seriesName];
-    
-    if (!manualOrder || manualOrder.length === 0) {
-        // Si no hay orden manual, ordenar alfabéticamente
-        return [...asanas].sort((a, b) => {
-            const nameA = (a.Sandhi || a.Name).toLowerCase();
-            const nameB = (b.Sandhi || b.Name).toLowerCase();
-            return nameA.localeCompare(nameB);
-        });
-    }
-    
-    // Crear un mapa para búsqueda rápida
-    const asanaMap = new Map();
-    asanas.forEach(asana => {
-        asanaMap.set(asana.Name.toUpperCase(), asana);
-        if (asana.Sandhi) {
-            asanaMap.set(asana.Sandhi.toUpperCase(), asana);
-        }
-    });
-    
-    // Ordenar según el orden manual
-    const orderedAsanas = [];
-    const remainingAsanas = new Set(asanas);
-    
-    manualOrder.forEach(manualName => {
-        const asana = asanaMap.get(manualName.toUpperCase());
-        if (asana && remainingAsanas.has(asana)) {
-            orderedAsanas.push(asana);
-            remainingAsanas.delete(asana);
-        }
-    });
-    
-    // Agregar las asanas restantes que no están en el orden manual
-    const remainingArray = Array.from(remainingAsanas).sort((a, b) => {
-        const nameA = (a.Sandhi || a.Name).toLowerCase();
-        const nameB = (b.Sandhi || b.Name).toLowerCase();
-        return nameA.localeCompare(nameB);
-    });
-    
-    return [...orderedAsanas, ...remainingArray];
-}
-
-// MODIFICAR la función renderAshtangaSequences - reemplazar la parte de buildSequencesForGroup:
-function renderAshtangaSequences() {
-    // Usar YogaSeries para identificar Aṣṭāṅga
-    const ashtangaAsanas = asanaData.filter(asana => {
-        return asana.YogaSeries && asana.YogaSeries.trim() !== '';
-    });
-    
-    const seriesGroups = {};
-    
-    console.log(`Aṣṭāṅga asanas encontradas: ${ashtangaAsanas.length}`);
-    
-    // Agrupar por YogaSeries
-    ashtangaAsanas.forEach(asana => {
-        if (asana.YogaSeries && asana.YogaSeries.trim()) {
-            const seriesName = asana.YogaSeries.trim();
-            if (!seriesGroups[seriesName]) {
-                seriesGroups[seriesName] = [];
-            }
-            seriesGroups[seriesName].push(asana);
-        }
-    });
-    
-    console.log('Grupos de Aṣṭāṅga:', Object.keys(seriesGroups));
-    
-    let html = '';
-    
-    if (Object.keys(seriesGroups).length === 0) {
-        html = '<p>NO AṢṬĀṄGA ASANAS FOUND</p>';
-    } else {
-        // ORDEN ESPECÍFICO PARA AṢṬĀṄGA
-        const ashtangaOrder = [
-            'ādhāra',
-            'yoga cikitsā', 
-            'nāḍī śodhana',
-            'tṛtīya śreṇī',
-            'pṛṣṭhavakrāsana',
-            'samāpana'
-        ];
+    // Función para construir secuencias basadas en relaciones Before/After
+    function buildSequenceFromRelations(asanas, seriesName) {
+        console.log(`Construyendo secuencia para: ${seriesName}`);
         
-        // Renderizar en el orden especificado
-        ashtangaOrder.forEach(seriesName => {
-            if (seriesGroups[seriesName]) {
-                const mappedSeriesName = seriesMapping[seriesName] || seriesName;
-                html += `
-                    <div class="series-section">
-                        <div class="series-title">${mappedSeriesName}</div>
-                `;
+        // Crear un mapa para búsqueda rápida por nombre
+        const asanaMap = new Map();
+        asanas.forEach(asana => {
+            asanaMap.set(asana.Name.toUpperCase(), asana);
+            if (asana.Sandhi) {
+                asanaMap.set(asana.Sandhi.toUpperCase(), asana);
+            }
+        });
+        
+        // Encontrar la primera āsana (sin referencia "Before")
+        let firstAsana = null;
+        for (const asana of asanas) {
+            // Si no tiene "Before" o su "Before" no está en esta serie
+            if (!asana.Before || asana.Before.trim() === '') {
+                firstAsana = asana;
+                break;
+            }
+            
+            const beforeAsana = asanaMap.get(asana.Before.toUpperCase());
+            if (!beforeAsana || !asanas.includes(beforeAsana)) {
+                firstAsana = asana;
+                break;
+            }
+        }
+        
+        // Si no encontramos una primera āsana clara, usar la primera del array
+        if (!firstAsana && asanas.length > 0) {
+            firstAsana = asanas[0];
+        }
+        
+        if (!firstAsana) {
+            console.log(`No se pudo determinar la primera āsana para ${seriesName}`);
+            return [...asanas].sort((a, b) => {
+                const nameA = (a.Sandhi || a.Name).toLowerCase();
+                const nameB = (b.Sandhi || b.Name).toLowerCase();
+                return nameA.localeCompare(nameB);
+            });
+        }
+        
+        // Construir la secuencia
+        const sequence = [firstAsana];
+        const usedAsanas = new Set([firstAsana.Name]);
+        
+        let currentAsana = firstAsana;
+        let iterations = 0;
+        const maxIterations = asanas.length * 2; // Prevenir bucles infinitos
+        
+        while (sequence.length < asanas.length && iterations < maxIterations) {
+            iterations++;
+            
+            // Buscar la siguiente āsana usando la relación "After"
+            if (currentAsana.After && currentAsana.After.trim() !== '') {
+                const nextAsana = asanaMap.get(currentAsana.After.toUpperCase());
                 
-                // USAR ORDEN MANUAL para Aṣṭāṅga
-                const orderedAsanas = sortAsanasByManualOrder(seriesGroups[seriesName], seriesName, 'ashtanga');
-                
-                orderedAsanas.forEach(asana => {
-                    const tags = getAsanaTags(asana);
-                    const tagsHtml = tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+                if (nextAsana && 
+                    asanas.includes(nextAsana) && 
+                    !usedAsanas.has(nextAsana.Name)) {
+                    
+                    sequence.push(nextAsana);
+                    usedAsanas.add(nextAsana.Name);
+                    currentAsana = nextAsana;
+                    continue;
+                }
+            }
+            
+            // Si no hay relación "After" o ya usamos esa āsana,
+            // buscar cualquier āsana no usada que tenga "Before" apuntando a la actual
+            let foundNext = false;
+            for (const asana of asanas) {
+                if (!usedAsanas.has(asana.Name) && 
+                    asana.Before && 
+                    asana.Before.trim() !== '') {
+                    
+                    const beforeAsana = asanaMap.get(asana.Before.toUpperCase());
+                    if (beforeAsana === currentAsana) {
+                        sequence.push(asana);
+                        usedAsanas.add(asana.Name);
+                        currentAsana = asana;
+                        foundNext = true;
+                        break;
+                    }
+                }
+            }
+            
+            if (foundNext) continue;
+            
+            // Si no encontramos por relaciones, agregar cualquier āsana no usada
+            for (const asana of asanas) {
+                if (!usedAsanas.has(asana.Name)) {
+                    sequence.push(asana);
+                    usedAsanas.add(asana.Name);
+                    currentAsana = asana;
+                    break;
+                }
+            }
+        }
+        
+        console.log(`Secuencia construida para ${seriesName}: ${sequence.length} āsanas`);
+        return sequence;
+    }
+
+    // MODIFICAR la función renderAshtangaSequences - reemplazar la parte de buildSequencesForGroup:
+    function renderAshtangaSequences() {
+        // Usar YogaSeries para identificar Aṣṭāṅga
+        const ashtangaAsanas = asanaData.filter(asana => {
+            return asana.YogaSeries && asana.YogaSeries.trim() !== '';
+        });
+        
+        const seriesGroups = {};
+        
+        console.log(`Aṣṭāṅga asanas encontradas: ${ashtangaAsanas.length}`);
+        
+        // Agrupar por YogaSeries
+        ashtangaAsanas.forEach(asana => {
+            if (asana.YogaSeries && asana.YogaSeries.trim()) {
+                const seriesName = asana.YogaSeries.trim();
+                if (!seriesGroups[seriesName]) {
+                    seriesGroups[seriesName] = [];
+                }
+                seriesGroups[seriesName].push(asana);
+            }
+        });
+        
+        console.log('Grupos de Aṣṭāṅga:', Object.keys(seriesGroups));
+        
+        let html = '';
+        
+        if (Object.keys(seriesGroups).length === 0) {
+            html = '<p>NO AṢṬĀṄGA ASANAS FOUND</p>';
+        } else {
+            // ORDEN ESPECÍFICO PARA AṢṬĀṄGA
+            const ashtangaOrder = [
+                'ādhāra',
+                'yoga cikitsā', 
+                'nāḍī śodhana',
+                'tṛtīya śreṇī',
+                'pṛṣṭhavakrāsana',
+                'samāpana'
+            ];
+            
+            // Renderizar en el orden especificado
+            ashtangaOrder.forEach(seriesName => {
+                if (seriesGroups[seriesName]) {
+                    const mappedSeriesName = seriesMapping[seriesName] || seriesName;
+                    html += `
+                        <div class="series-section">
+                            <div class="series-title">${mappedSeriesName}</div>
+                    `;
+                    
+                    // USAR ORDEN POR RELACIONES Before/After para Aṣṭāṅga
+                    const orderedAsanas = buildSequenceFromRelations(seriesGroups[seriesName], seriesName);
+                    
+                    orderedAsanas.forEach(asana => {
+                        const tags = getAsanaTags(asana);
+                        const tagsHtml = tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+                        
+                        html += `
+                            <div class="unified-list-item brutalist-border" data-asana="${asana.Name}">
+                                <div class="unified-list-header">
+                                    <h3>${asana.Sandhi.toUpperCase()} - ${asana.English || 'N/A'}</h3>
+                                <div class="unified-list-tags">
+                                    ${tagsHtml}
+                                </div>
+                                </div>
+                                <img src="images/${asana.Name}.png" alt="${asana.Name}" class="unified-list-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzAwMDAwMCIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQ291cmllciBOZXcsIG1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+Tk8gSU1BR0UgQVZBSUxBQkxFPC90ZXh0Pjwvc3ZnPg=='">
+                            </div>
+                        `;
+                    });
                     
                     html += `
-                        <div class="unified-list-item brutalist-border" data-asana="${asana.Name}">
-                            <div class="unified-list-header">
-                                <h3>${asana.Sandhi.toUpperCase()} - ${asana.English || 'N/A'}</h3>
-                            <div class="unified-list-tags">
-                                ${tagsHtml}
-                            </div>
-                            </div>
-                            <img src="images/${asana.Name}.png" alt="${asana.Name}" class="unified-list-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzAwMDAwMCIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQ291cmllciBOZXcsIG1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+Tk8gSU1BR0UgQVZBSUxBQkxFPC90ZXh0Pjwvc3ZnPg=='">
                         </div>
                     `;
-                });
-                
-                html += `
-                    </div>
-                `;
-            }
+                }
+            });
+        }
+        
+        ashtangaContainer.innerHTML = html;
+        
+        // Agregar event listeners
+        ashtangaContainer.querySelectorAll('.unified-list-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const asanaName = item.dataset.asana;
+                const asana = findAsanaByName(asanaName);
+                if (asana) {
+                    switchSection('study');
+                    // Buscar en filteredAsanas
+                    const filteredIndex = filteredAsanas.findIndex(a => a.Name === asana.Name);
+                    if (filteredIndex !== -1) {
+                        currentAsanaIndex = filteredIndex;
+                    }
+                    renderAsanaCard();
+                }
+            });
         });
     }
-    
-    ashtangaContainer.innerHTML = html;
-    
-    // Agregar event listeners
-    ashtangaContainer.querySelectorAll('.unified-list-item').forEach(item => {
-        item.addEventListener('click', () => {
-            const asanaName = item.dataset.asana;
-            const asana = findAsanaByName(asanaName);
-            if (asana) {
-                switchSection('study');
-                // Buscar en filteredAsanas
-                const filteredIndex = filteredAsanas.findIndex(a => a.Name === asana.Name);
-                if (filteredIndex !== -1) {
-                    currentAsanaIndex = filteredIndex;
+
+    // MODIFICAR la función renderVinyasaSequences - reemplazar la parte de sortedAsanas:
+    function renderVinyasaSequences() {
+        // Usar SeriesHot para identificar Vinyāsa
+        const vinyasaAsanas = asanaData.filter(asana => {
+            return asana.SeriesHot && asana.SeriesHot.trim() !== '';
+        });
+        
+        const seriesGroups = {};
+        
+        console.log(`Vinyāsa asanas encontradas: ${vinyasaAsanas.length}`);
+        
+        // Agrupar por SeriesHot
+        vinyasaAsanas.forEach(asana => {
+            if (asana.SeriesHot && asana.SeriesHot.trim()) {
+                const seriesName = asana.SeriesHot.trim();
+                if (!seriesGroups[seriesName]) {
+                    seriesGroups[seriesName] = [];
                 }
-                renderAsanaCard();
+                seriesGroups[seriesName].push(asana);
             }
         });
-    });
-}
-
-// MODIFICAR la función renderVinyasaSequences - reemplazar la parte de sortedAsanas:
-function renderVinyasaSequences() {
-    // Usar SeriesHot para identificar Vinyāsa
-    const vinyasaAsanas = asanaData.filter(asana => {
-        return asana.SeriesHot && asana.SeriesHot.trim() !== '';
-    });
-    
-    const seriesGroups = {};
-    
-    console.log(`Vinyāsa asanas encontradas: ${vinyasaAsanas.length}`);
-    
-    // Agrupar por SeriesHot
-    vinyasaAsanas.forEach(asana => {
-        if (asana.SeriesHot && asana.SeriesHot.trim()) {
-            const seriesName = asana.SeriesHot.trim();
-            if (!seriesGroups[seriesName]) {
-                seriesGroups[seriesName] = [];
-            }
-            seriesGroups[seriesName].push(asana);
-        }
-    });
-    
-    console.log('Grupos de Vinyāsa:', Object.keys(seriesGroups));
-    
-    let html = '';
-    
-    if (Object.keys(seriesGroups).length === 0) {
-        html = '<p>NO VINYĀSA ASANAS FOUND</p>';
-    } else {
-        // ORDEN ESPECÍFICO PARA VINYĀSA
-        const vinyasaOrder = [
-            'Despertar',
-            'Apertura',
-            'Vitalidad',
-            'Integracion',
-            'Equilibrio',
-            'Entrega',
-            'Esfuerzo',
-            'Conexion'
-        ];
         
-        // Renderizar en el orden especificado
-        vinyasaOrder.forEach(seriesName => {
-            if (seriesGroups[seriesName]) {
-                const mappedSeriesName = seriesHotMapping[seriesName] || seriesName;
-                html += `
-                    <div class="series-section">
-                        <div class="series-title">${mappedSeriesName}</div>
-                `;
-                
-                // USAR ORDEN MANUAL para Vinyāsa
-                const orderedAsanas = sortAsanasByManualOrder(seriesGroups[seriesName], seriesName, 'vinyasa');
-                
-                orderedAsanas.forEach(asana => {
-                    const tags = getAsanaTags(asana);
-                    const tagsHtml = tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+        console.log('Grupos de Vinyāsa:', Object.keys(seriesGroups));
+        
+        let html = '';
+        
+        if (Object.keys(seriesGroups).length === 0) {
+            html = '<p>NO VINYĀSA ASANAS FOUND</p>';
+        } else {
+            // ORDEN ESPECÍFICO PARA VINYĀSA
+            const vinyasaOrder = [
+                'Despertar',
+                'Apertura',
+                'Vitalidad',
+                'Integracion',
+                'Equilibrio',
+                'Entrega',
+                'Esfuerzo',
+                'Conexion'
+            ];
+            
+            // Renderizar en el orden especificado
+            vinyasaOrder.forEach(seriesName => {
+                if (seriesGroups[seriesName]) {
+                    const mappedSeriesName = seriesHotMapping[seriesName] || seriesName;
+                    html += `
+                        <div class="series-section">
+                            <div class="series-title">${mappedSeriesName}</div>
+                    `;
+                    
+                    // Para Vinyāsa mantener orden alfabético (o implementar lógica similar si es necesario)
+                    const orderedAsanas = [...seriesGroups[seriesName]].sort((a, b) => {
+                        const nameA = (a.Sandhi || a.Name).toLowerCase();
+                        const nameB = (b.Sandhi || b.Name).toLowerCase();
+                        return nameA.localeCompare(nameB);
+                    });
+                    
+                    orderedAsanas.forEach(asana => {
+                        const tags = getAsanaTags(asana);
+                        const tagsHtml = tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+                        
+                        html += `
+                            <div class="unified-list-item brutalist-border" data-asana="${asana.Name}">
+                                <div class="unified-list-header">
+                                    <h3>${asana.Sandhi.toUpperCase()} - ${asana.English || 'N/A'}</h3>
+                                <div class="unified-list-tags">
+                                    ${tagsHtml}
+                                </div>
+                                </div>
+                                <img src="images/${asana.Name}.png" alt="${asana.Name}" class="unified-list-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzAwMDAwMCIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQ291cmllciBOZXcsIG1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+Tk8gSU1BR0UgQVZBSUxBQkxFPC90ZXh0Pjwvc3ZnPg=='">
+                            </div>
+                        `;
+                    });
                     
                     html += `
-                        <div class="unified-list-item brutalist-border" data-asana="${asana.Name}">
-                            <div class="unified-list-header">
-                                <h3>${asana.Sandhi.toUpperCase()} - ${asana.English || 'N/A'}</h3>
-                            <div class="unified-list-tags">
-                                ${tagsHtml}
-                            </div>
-                            </div>
-                            <img src="images/${asana.Name}.png" alt="${asana.Name}" class="unified-list-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzAwMDAwMCIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQ291cmllciBOZXcsIG1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+Tk8gSU1BR0UgQVZBSUxBQkxFPC90ZXh0Pjwvc3ZnPg=='">
                         </div>
                     `;
-                });
-                
-                html += `
-                    </div>
-                `;
-            }
+                }
+            });
+        }
+        
+        vinyasaContainer.innerHTML = html;
+        
+        // Agregar event listeners
+        vinyasaContainer.querySelectorAll('.unified-list-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const asanaName = item.dataset.asana;
+                const asana = findAsanaByName(asanaName);
+                if (asana) {
+                    switchSection('study');
+                    // Buscar en filteredAsanas
+                    const filteredIndex = filteredAsanas.findIndex(a => a.Name === asana.Name);
+                    if (filteredIndex !== -1) {
+                        currentAsanaIndex = filteredIndex;
+                    }
+                    renderAsanaCard();
+                }
+            });
         });
     }
-    
-    vinyasaContainer.innerHTML = html;
-    
-    // Agregar event listeners
-    vinyasaContainer.querySelectorAll('.unified-list-item').forEach(item => {
-        item.addEventListener('click', () => {
-            const asanaName = item.dataset.asana;
-            const asana = findAsanaByName(asanaName);
-            if (asana) {
-                switchSection('study');
-                // Buscar en filteredAsanas
-                const filteredIndex = filteredAsanas.findIndex(a => a.Name === asana.Name);
-                if (filteredIndex !== -1) {
-                    currentAsanaIndex = filteredIndex;
-                }
-                renderAsanaCard();
-            }
-        });
-    });
-}
 
     // Render asana list - VERSIÓN ORDENADA ALFABÉTICAMENTE
     function renderAsanaList() {
@@ -1408,7 +1480,6 @@ function renderVinyasaSequences() {
         });
     }
 
-
     // Función para encontrar asana por nombre - MEJORADA
     function findAsanaByName(name) {
         if (!name) return null;
@@ -1444,6 +1515,63 @@ function renderVinyasaSequences() {
         errorElement.style.display = 'block';
     }
 
+    // NUEVA FUNCIÓN: Cargar secuencia Aṣṭāṅga para la āsana actual
+    function loadAshtangaSequenceForAsana(asana) {
+        const seriesName = asana.YogaSeries.trim();
+        
+        // Obtener todas las āsanas de la misma serie
+        const seriesAsanas = asanaData.filter(a => 
+            a.YogaSeries && a.YogaSeries.trim() === seriesName
+        );
+        
+        // Construir la secuencia ordenada
+        currentAshtangaSequence = buildSequenceFromRelations(seriesAsanas, seriesName);
+        currentAshtangaSeries = seriesName;
+        
+        // Encontrar la posición actual en la secuencia
+        currentAshtangaIndex = currentAshtangaSequence.findIndex(a => a.Name === asana.Name);
+        
+        console.log(`Secuencia Aṣṭāṅga cargada: ${seriesName}, posición: ${currentAshtangaIndex + 1}/${currentAshtangaSequence.length}`);
+    }
+
+    // NUEVA FUNCIÓN: Navegar a la siguiente āsana en la secuencia Aṣṭāṅga
+    function navigateAshtangaSequence(direction) {
+        if (currentAshtangaSequence.length === 0) return;
+        
+        if (direction === 'next') {
+            currentAshtangaIndex = (currentAshtangaIndex + 1) % currentAshtangaSequence.length;
+        } else {
+            currentAshtangaIndex = (currentAshtangaIndex - 1 + currentAshtangaSequence.length) % currentAshtangaSequence.length;
+        }
+        
+        const nextAsana = currentAshtangaSequence[currentAshtangaIndex];
+        
+        // Buscar la āsana en filteredAsanas
+        const filteredIndex = filteredAsanas.findIndex(a => a.Name === nextAsana.Name);
+        if (filteredIndex !== -1) {
+            currentAsanaIndex = filteredIndex;
+            renderAsanaCard();
+        } else {
+            // Si no está en los filtros actuales, cambiar a Sākṣāt
+            activeTags.clear();
+            document.querySelectorAll('.menu-tag-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            const saksatBtn = document.querySelector('[data-tag="Sākṣāt"]');
+            if (saksatBtn) {
+                saksatBtn.classList.add('active');
+                activeTags.add('Sākṣāt');
+            }
+            applyFilters();
+            
+            // Buscar la āsana en los nuevos filteredAsanas
+            const newIndex = filteredAsanas.findIndex(a => a.Name === nextAsana.Name);
+            if (newIndex !== -1) {
+                currentAsanaIndex = newIndex;
+                renderAsanaCard();
+            }
+        }
+    }
 
 async function init() {
     try {
@@ -1747,13 +1875,15 @@ async function init() {
     }
     
 
-
 // Render current asana card
 function renderAsanaCard() {
     if (filteredAsanas.length === 0) {
         cardTitle.textContent = "NO ASANAS MATCH FILTERS";
         cardImage.src = "";
         cardDetails.innerHTML = "<p>ADJUST FILTERS TO SEE ASANAS</p>";
+        
+        // Ocultar controles de Aṣṭāṅga
+        ashtangaSequenceControls.style.display = 'none';
         return;
     }
     
@@ -1772,6 +1902,14 @@ function renderAsanaCard() {
         this.alt = 'IMAGE NOT AVAILABLE';
         this.style.filter = 'grayscale(100%)';
     };
+    
+    // VERIFICAR SI LA ĀSANA ACTUAL PERTENECE A AṢṬĀṄGA Y CARGAR SU SECUENCIA
+    if (asana.YogaSeries && asana.YogaSeries.trim() !== '') {
+        loadAshtangaSequenceForAsana(asana);
+        ashtangaSequenceControls.style.display = 'flex';
+    } else {
+        ashtangaSequenceControls.style.display = 'none';
+    }
     
     // Función para convertir [[AsanaName]] en enlaces
     function createAsanaLinks(text) {
@@ -2035,6 +2173,15 @@ function renderAsanaCard() {
             renderAsanaCard();
         });
         
+        // Controles de secuencia Aṣṭāṅga
+        ashtangaPrevBtn.addEventListener('click', () => {
+            navigateAshtangaSequence('prev');
+        });
+        
+        ashtangaNextBtn.addEventListener('click', () => {
+            navigateAshtangaSequence('next');
+        });
+        
         // Search
         searchBox.addEventListener('input', (e) => {
             const searchTerm = e.target.value.toLowerCase();
@@ -2090,7 +2237,6 @@ function renderAsanaCard() {
             renderLexiconCard();
         }
     });
-
 
         // Close menu when clicking outside
         document.addEventListener('click', (e) => {
