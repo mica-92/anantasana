@@ -32,22 +32,6 @@
             --study-border: #fff7ccff;
             --study-header: #f8dc3dff;
             
-            --vinyasa-primary: #e8f4f8;
-            --vinyasa-accent: #2a9d8f;
-            --vinyasa-border: #264653;
-            --vinyasa-header: #c46964;
-            
-            --ashtanga-primary: #feece0;
-            --ashtanga-accent: #e76f51;
-            --ashtanga-border: #333333;
-            --ashtanga-header: #a4f4c9;
-            --ashtanga-color: #2f49f6ff;
-            
-            --niskriya-primary: #f8edeb;
-            --niskriya-accent: #a8dadc;
-            --niskriya-border: #457b9d;
-            --niskriya-header: #8D5A97;
-            
             --lexicon-primary: #F5CECC;
             --lexicon-accent: #4a7c59;
             --lexicon-border: #2d4a3a;
@@ -58,16 +42,13 @@
             --lexicon-list-border: #1e3528;
             --lexicon-list-header: #3a6b4a;
             
-            --about-primary: #feeed5ff;
-            --about-accent: #f6442fff;
-            --about-border: #f6442fff;
-            --about-header: #f8dc3dff;
+            --about-primary: #ccffd290;
+            --about-accent: #632facff;
+            --about-border: #333;
+            --about-header: var(--accent-color);
             
             /* Filtros de imagen por sección */
             --study-hue: 170deg;
-            --vinyasa-hue: 220deg;
-            --ashtanga-hue: 300deg;
-            --niskriya-hue: 30deg;
             --lexicon-hue: 120deg;
             --lexicon-list-hue: 120deg;
         }
@@ -80,9 +61,9 @@
         }
 
         body {
-            background-color: var(--primary-color);
+            background-color: #f6732f40;
             border: 10px solid var(--accent-color);
-            box-shadow: inset 0 0 0 2px var(--text-dark);
+            box-shadow: inset 0 0 0 2px #333;
             color: var(--accent-color);
             line-height: 1.4;
             min-height: 100dvh;
@@ -120,25 +101,6 @@
             background-color: var(--study-primary);
             border: 10px solid var(--study-accent);
             box-shadow: inset 0 0 0 2px var(--study-border);
-        }
-
-        body.vinyasa-section {
-            background-color: var(--vinyasa-primary);
-            border: 10px solid var(--vinyasa-accent);
-            box-shadow: inset 0 0 0 2px var(--vinyasa-border);
-            color: var(--red-accent);
-        }
-
-        body.ashtanga-section {
-            background-color: var(--ashtanga-primary);
-            border: 10px solid var(--ashtanga-accent);
-            box-shadow: inset 0 0 0 2px var(--ashtanga-border);
-        }
-
-        body.niskriya-section {
-            background-color: var(--niskriya-primary);
-            border: 10px solid var(--niskriya-accent);
-            box-shadow: inset 0 0 0 2px var(--niskriya-border);
         }
 
         body.lexicon-section {
@@ -190,18 +152,6 @@
             background: var(--study-header);
         }
 
-        .vinyasa-section .card-header {
-            background: var(--vinyasa-header);
-        }
-
-        .ashtanga-section .card-header {
-            background: var(--ashtanga-header);
-        }
-
-        .niskriya-section .card-header {
-            background: var(--niskriya-header);
-        }
-
         .lexicon-section .card-header,
         .lexicon-list-section .card-header {
             background: var(--lexicon-header);
@@ -229,18 +179,6 @@
 
         .study-section .card-image {
             filter: hue-rotate(var(--study-hue));
-        }
-
-        .vinyasa-section .card-image {
-            filter: hue-rotate(var(--vinyasa-hue));
-        }
-
-        .ashtanga-section .card-image {
-            filter: hue-rotate(var(--ashtanga-hue));
-        }
-
-        .niskriya-section .card-image {
-            filter: hue-rotate(var(--niskriya-hue));
         }
 
         .lexicon-section .card-image,
@@ -355,21 +293,6 @@
         }
 
         /* Botones específicos por sección */
-        .vinyasa-section .circular-btn {
-            background: var(--vinyasa-accent);
-            border: 1px solid var(--vinyasa-border);
-        }
-
-        .ashtanga-section .circular-btn {
-            background: var(--ashtanga-accent);
-            border: 1px solid var(--ashtanga-border);
-        }
-
-        .niskriya-section .circular-btn {
-            background: var(--niskriya-accent);
-            border: 1px solid var(--niskriya-border);
-        }
-
         .lexicon-section .circular-btn,
         .lexicon-list-section .circular-btn {
             background: var(--lexicon-accent);
@@ -396,6 +319,7 @@
             box-shadow: 6px 6px 5px rgba(246, 115, 47, 0.3);
             background-color: var(--primary-color);
             width: 80dvw;
+            max-width: 500px
         }
 
         .list-item:last-child {
@@ -479,16 +403,17 @@
             z-index: 1000;
         }
 
-        .floating-filters {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-        }
+.floating-filters {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: block !important;
+}
 
-        body:not(.study-section) .floating-filters {
-            display: none;
-        }
+body:not(.study-section) .floating-filters {
+    display: block !important;
+}
 
         .burger-btn, .filter-btn {
             width: 60px;
@@ -504,6 +429,11 @@
             justify-content: center;
             transition: all 0.3s;
             box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.2);
+        }
+
+        .filter-btn {
+            background: var(--red-accent);
+
         }
 
         .burger-btn:hover, .filter-btn:hover {
@@ -552,7 +482,7 @@
             font-weight: bold;
             text-transform: uppercase;
             transition: all 0.3s ease;
-            text-align: left;
+            text-align: center;
         }
 
         .menu-tag-btn {
@@ -584,7 +514,7 @@
         }
 
         .filter-title {
-            background: var(--accent-color);
+            background: var(--red-accent);
             color: var(--primary-color);
             padding: 10px;
             text-align: center;
@@ -727,9 +657,6 @@
             }
             
             .study-container .card,
-            #vinyasa .card,
-            #ashtanga .card,
-            #niskriya .card,
             #lexicon .card,
             #lexicon-list .card,
             #about .card {
@@ -765,69 +692,6 @@
     </div>
 </section>
         
-<section id="vinyasa" class="section">
-    <div class="study-container">
-        <div class="card brutalist-border">
-            <div class="card-header">
-                <h2 id="vinyasa-title" class="brutalist-text">SELECT VINYĀSA ASANA</h2>
-            </div>
-            <div class="card-body">
-                <img id="vinyasa-image" src="" alt="Vinyāsa Asana" class="card-image" style="display: none;">
-                <div class="card-details" id="vinyasa-details">
-                    <p>USE NAVIGATION TO EXPLORE VINYĀSA ASANAS</p>
-                </div>
-                <div class="circular-controls">
-                    <button class="circular-btn brutalist-btn" id="vinyasa-prev-btn">‹</button>
-                    <span style="color: #333; font-weight: bold; font-size: 0.8rem;">VINYĀSA</span>
-                    <button class="circular-btn brutalist-btn" id="vinyasa-next-btn">›</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section id="ashtanga" class="section">
-    <div class="study-container">
-        <div class="card brutalist-border">
-            <div class="card-header">
-                <h2 id="ashtanga-title" class="brutalist-text">SELECT AṢṬĀṄGA ASANA</h2>
-            </div>
-            <div class="card-body">
-                <img id="ashtanga-image" src="" alt="Aṣṭāṅga Asana" class="card-image" style="display: none;">
-                <div class="card-details" id="ashtanga-details">
-                    <p>USE NAVIGATION TO EXPLORE AṢṬĀṄGA ASANAS</p>
-                </div>
-                <div class="circular-controls">
-                    <button class="circular-btn brutalist-btn" id="ashtanga-prev-btn">‹</button>
-                    <span style="color: #333; font-weight: bold; font-size: 0.8rem;">AṢṬĀṄGA</span>
-                    <button class="circular-btn brutalist-btn" id="ashtanga-next-btn">›</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section id="niskriya" class="section">
-    <div class="study-container">
-        <div class="card brutalist-border">
-            <div class="card-header">
-                <h2 id="niskriya-title" class="brutalist-text">SELECT NIṢKRIYA ASANA</h2>
-            </div>
-            <div class="card-body">
-                <img id="niskriya-image" src="" alt="Niṣkriya Asana" class="card-image" style="display: none;">
-                <div class="card-details" id="niskriya-details">
-                    <p>USE NAVIGATION TO EXPLORE NIṢKRIYA ASANAS</p>
-                </div>
-                <div class="circular-controls">
-                    <button class="circular-btn brutalist-btn" id="niskriya-prev-btn">‹</button>
-                    <span style="color: #333; font-weight: bold; font-size: 0.8rem;">NIṢKRIYA</span>
-                    <button class="circular-btn brutalist-btn" id="niskriya-next-btn">›</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-        
         <section id="list" class="section">
             <input type="text" id="search" class="search-box" placeholder="buscador de āsanas">
             <div class="list-container" id="list-container">
@@ -850,7 +714,6 @@
                     <button class="circular-btn brutalist-btn" id="lexicon-prev-btn">‹</button>
                     <button class="circular-btn brutalist-btn" id="lexicon-next-btn">›</button>
                 </div>
-                <!-- QUITAR los controles Aṣṭāṅga de aquí -->
             </div>
         </div>
     </div>
@@ -868,24 +731,20 @@
     <div class="study-container">
         <div class="card brutalist-border">
             <div class="card-header">
-                <h2 id="about-title" class="brutalist-text">MICA</h2>
+                <h2 id="about-title" class="brutalist-text">ABOUT</h2>
             </div>
             <div class="card-body">
                 <img src="photo.png" alt="Mica" class="card-image">
                 <div class="card-details" id="about-details">
                     <div class="detail-row">
-                        <span class="detail-label">Location:</span>
-                        <span>Buenos Aires, Argentina</span>
+                        <span class="detail-label">ABOUT:</span>
+                        <span style="color:#f6442fff; font-weight: bold;">Hola! Yo soy Mica. Amante del yoga y del codeo since 2018.</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">P.S.:</span>
+                        <span> Made with <i class="fa-solid fa-heart"></i> Buenos Aires, Argentina</span>
                     </div>
 
-                    <div class="detail-row">
-                        <span class="detail-label">Yoga:</span>
-                        <span><a href="https://github.com/tuusuario" class="asana-link" target="_blank">github.com/tuusuario</a></span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">ABOUT:</span>
-                        <span style="color:#f6442fff; font-weight: bold;">Amante del yoga y del codeo since 2018.</span>
-                    </div>
                 </div>
                 <div class="circular-controls">
                     <!-- Puedes agregar controles aquí si lo deseas -->
@@ -910,16 +769,12 @@
         <div class="menu-content brutalist-border" id="menu-content">
             <div class="menu-nav">
                 <button class="menu-nav-btn brutalist-btn" data-section="about">about</button>
-                <button class="menu-nav-btn brutalist-btn" data-section="ashtanga">aṣṭāṅga</button>
-                <button class="menu-nav-btn brutalist-btn" data-section="niskriya">niṣkriya</button>
-                <button class="menu-nav-btn brutalist-btn" data-section="vinyasa">vinyāsa</button>
                 <button class="menu-nav-btn active brutalist-btn" data-section="study">japāsana</button>
                 <button class="menu-nav-btn brutalist-btn" data-section="lexicon">śabda</button>
                 <button class="menu-nav-btn brutalist-btn" data-section="list">saṅgraha</button>
                 <button class="menu-nav-btn brutalist-btn" data-section="lexicon-list">kośa</button>
 
             </div>
-            <!-- QUITAR los filtros de aquí -->
         </div>
     </div>
 
@@ -951,44 +806,54 @@
     let filteredLexicon = [];
     let currentLexiconIndex = 0;
 
-    // AGREGAR elementos DOM para controles Aṣṭāṅga (asegúrate de que estén en el scope global)
+    // Mapeo de series
+    const seriesMapping = {
+        'ādhāra': 'ādhāra - <i>foundation</i>',
+        'yoga cikitsā': 'yoga cikitsā - <i>primera</i>',
+        'nāḍī śodhana': 'nāḍī śodhana - <i>segunda</i>',
+        'tṛtīya śreṇī': 'tṛtīya śreṇī - <i>tercera</i>',
+        'pṛṣṭhavakrāsana': 'pṛṣṭhavakrāsana - <i>backbends</i>',
+        'samāpana': 'samāpana - <i>cierre</i>'
+    };
 
-    // Variables globales para las nuevas secciones
-    let vinyasaAsanas = [];
-    let currentVinyasaIndex = 0;
-    let ashtangaAsanas = [];
-    let currentAshtangaIndex = 0;
-    let niskriyaAsanas = [];
-    let currentNiskriyaIndex = 0;
+    // Mapeo de SeriesHot
+    const seriesHotMapping = {
+        'Despertar': 'bodha - <i>awakening</i>',
+        'Apertura': 'vikāsa - <i>opening</i>',
+        'Vitalidad': 'jīvanaśakti - <i>vitality</i>',
+        'Integracion': 'saṃyoga - <i>integration</i>',
+        'Equilibrio': 'tulā - <i>balance</i>',
+        'Entrega': 'samarpaṇa - <i>surrender</i>',
+        'Esfuerzo': 'vīrya - <i>effort</i>',
+        'Conexion': 'sambandha - <i>connection</i>'
+    };
 
-    // Elementos DOM para las nuevas secciones
-    const vinyasaTitle = document.getElementById('vinyasa-title');
-    const vinyasaImage = document.getElementById('vinyasa-image');
-    const vinyasaDetails = document.getElementById('vinyasa-details');
-    const vinyasaPrevBtn = document.getElementById('vinyasa-prev-btn');
-    const vinyasaNextBtn = document.getElementById('vinyasa-next-btn');
-
-    const ashtangaTitle = document.getElementById('ashtanga-title');
-    const ashtangaImage = document.getElementById('ashtanga-image');
-    const ashtangaDetails = document.getElementById('ashtanga-details');
-    const ashtangaPrevBtn = document.getElementById('ashtanga-prev-btn');
-    const ashtangaNextBtn = document.getElementById('ashtanga-next-btn');
-
-    const niskriyaTitle = document.getElementById('niskriya-title');
-    const niskriyaImage = document.getElementById('niskriya-image');
-    const niskriyaDetails = document.getElementById('niskriya-details');
-    const niskriyaPrevBtn = document.getElementById('niskriya-prev-btn');
-    const niskriyaNextBtn = document.getElementById('niskriya-next-btn');
-
+    // DOM elements
+    const studySection = document.getElementById('study');
+    const listSection = document.getElementById('list');
+    const cardTitle = document.getElementById('card-title');
+    const cardImage = document.getElementById('card-image');
+    const cardDetails = document.getElementById('card-details');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const searchBox = document.getElementById('search');
+    const listContainer = document.getElementById('list-container');
+    const loadingElement = document.getElementById('loading');
+    const errorElement = document.getElementById('error');
     // Agregar elementos DOM del léxico
-    const lexiconSection = document.getElementById('lexicon');
-    const lexiconListSection = document.getElementById('lexicon-list');
-    const lexiconTitle = document.getElementById('lexicon-title');
-    const lexiconDetails = document.getElementById('lexicon-details');
-    const lexiconPrevBtn = document.getElementById('lexicon-prev-btn');
-    const lexiconNextBtn = document.getElementById('lexicon-next-btn');
-    const lexiconSearchBox = document.getElementById('lexicon-search');
-    const lexiconListContainer = document.getElementById('lexicon-list-container');
+const lexiconSection = document.getElementById('lexicon');
+const lexiconListSection = document.getElementById('lexicon-list');
+const lexiconTitle = document.getElementById('lexicon-title');
+const lexiconDetails = document.getElementById('lexicon-details');
+const lexiconPrevBtn = document.getElementById('lexicon-prev-btn');
+const lexiconNextBtn = document.getElementById('lexicon-next-btn');
+const lexiconSearchBox = document.getElementById('lexicon-search');
+const lexiconListContainer = document.getElementById('lexicon-list-container');
+    // Menu elements
+    const burgerBtn = document.getElementById('burger-btn');
+    const menuContent = document.getElementById('menu-content');
+    const menuNavButtons = document.querySelectorAll('.menu-nav-btn');
+    const menuTagFilters = document.getElementById('menu-tag-filters');
 
 // Filter elements
 const filterBtn = document.getElementById('filter-btn');
@@ -1105,51 +970,6 @@ const filterContent = document.getElementById('filter-content');
         });
     }
 
-    // Mapeo de series
-    const seriesMapping = {
-        'ādhāra': 'ādhāra - <i>foundation</i>',
-        'yoga cikitsā': 'yoga cikitsā - <i>primera</i>',
-        'nāḍī śodhana': 'nāḍī śodhana - <i>segunda</i>',
-        'tṛtīya śreṇī': 'tṛtīya śreṇī - <i>tercera</i>',
-        'pṛṣṭhavakrāsana': 'pṛṣṭhavakrāsana - <i>backbends</i>',
-        'samāpana': 'samāpana - <i>cierre</i>'
-    };
-
-    // Mapeo de SeriesHot
-    const seriesHotMapping = {
-        'Despertar': 'bodha - <i>awakening</i>',
-        'Apertura': 'vikāsa - <i>opening</i>',
-        'Vitalidad': 'jīvanaśakti - <i>vitality</i>',
-        'Integracion': 'saṃyoga - <i>integration</i>',
-        'Equilibrio': 'tulā - <i>balance</i>',
-        'Entrega': 'samarpaṇa - <i>surrender</i>',
-        'Esfuerzo': 'vīrya - <i>effort</i>',
-        'Conexion': 'sambandha - <i>connection</i>'
-    };
-
-    // DOM elements
-    const studySection = document.getElementById('study');
-    const listSection = document.getElementById('list');
-    const vinyasaSection = document.getElementById('vinyasa');
-    const ashtangaSection = document.getElementById('ashtanga');
-    const cardTitle = document.getElementById('card-title');
-    const cardImage = document.getElementById('card-image');
-    const cardDetails = document.getElementById('card-details');
-    const prevBtn = document.getElementById('prev-btn');
-    const nextBtn = document.getElementById('next-btn');
-    const searchBox = document.getElementById('search');
-    const listContainer = document.getElementById('list-container');
-    const vinyasaContainer = document.getElementById('vinyasa-container');
-    const ashtangaContainer = document.getElementById('ashtanga-container');
-    const loadingElement = document.getElementById('loading');
-    const errorElement = document.getElementById('error');
-    
-    // Menu elements
-    const burgerBtn = document.getElementById('burger-btn');
-    const menuContent = document.getElementById('menu-content');
-    const menuNavButtons = document.querySelectorAll('.menu-nav-btn');
-    const menuTagFilters = document.getElementById('menu-tag-filters');
-
 // Función para mejorar la experiencia touch en móviles
 function setupTouchImprovements() {
     let touchStartX = 0;
@@ -1159,8 +979,7 @@ function setupTouchImprovements() {
     const doubleTapThreshold = 300; // Máximo tiempo entre toques para considerar double tap
     
     // Detectar swipe en las secciones de cards
-// En setupTouchImprovements, actualiza cardSections:
-const cardSections = ['study', 'vinyasa', 'ashtanga', 'niskriya', 'lexicon', 'about'];    
+    const cardSections = ['study', 'lexicon', 'about'];    
     cardSections.forEach(sectionId => {
         const section = document.getElementById(sectionId);
         if (section) {
@@ -1203,24 +1022,6 @@ const cardSections = ['study', 'vinyasa', 'ashtanga', 'niskriya', 'lexicon', 'ab
                     renderAsanaCard();
                 }
                 break;
-            case 'vinyasa':
-                if (vinyasaAsanas.length > 0) {
-                    currentVinyasaIndex = (currentVinyasaIndex + 1) % vinyasaAsanas.length;
-                    renderVinyasaCard();
-                }
-                break;
-            case 'ashtanga':
-                if (ashtangaAsanas.length > 0) {
-                    currentAshtangaIndex = (currentAshtangaIndex + 1) % ashtangaAsanas.length;
-                    renderAshtangaCard();
-                }
-                break;
-            case 'niskriya':
-                if (niskriyaAsanas.length > 0) {
-                    currentNiskriyaIndex = (currentNiskriyaIndex + 1) % niskriyaAsanas.length;
-                    renderNiskriyaCard();
-                }
-                break;
             case 'lexicon':
                 if (filteredLexicon.length > 0) {
                     currentLexiconIndex = (currentLexiconIndex + 1) % filteredLexicon.length;
@@ -1236,24 +1037,6 @@ const cardSections = ['study', 'vinyasa', 'ashtanga', 'niskriya', 'lexicon', 'ab
                 if (filteredAsanas.length > 0) {
                     currentAsanaIndex = (currentAsanaIndex - 1 + filteredAsanas.length) % filteredAsanas.length;
                     renderAsanaCard();
-                }
-                break;
-            case 'vinyasa':
-                if (vinyasaAsanas.length > 0) {
-                    currentVinyasaIndex = (currentVinyasaIndex - 1 + vinyasaAsanas.length) % vinyasaAsanas.length;
-                    renderVinyasaCard();
-                }
-                break;
-            case 'ashtanga':
-                if (ashtangaAsanas.length > 0) {
-                    currentAshtangaIndex = (currentAshtangaIndex - 1 + ashtangaAsanas.length) % ashtangaAsanas.length;
-                    renderAshtangaCard();
-                }
-                break;
-            case 'niskriya':
-                if (niskriyaAsanas.length > 0) {
-                    currentNiskriyaIndex = (currentNiskriyaIndex - 1 + niskriyaAsanas.length) % niskriyaAsanas.length;
-                    renderNiskriyaCard();
                 }
                 break;
             case 'lexicon':
@@ -1325,112 +1108,6 @@ const cardSections = ['study', 'vinyasa', 'ashtanga', 'niskriya', 'lexicon', 'ab
         }
         return shuffled;
     }
-
-    // Función para construir secuencias basadas en relaciones Before/After
-    function buildSequenceFromRelations(asanas, seriesName) {
-        console.log(`Construyendo secuencia para: ${seriesName}`);
-        
-        // Crear un mapa para búsqueda rápida por nombre
-        const asanaMap = new Map();
-        asanas.forEach(asana => {
-            asanaMap.set(asana.Name.toUpperCase(), asana);
-            if (asana.Sandhi) {
-                asanaMap.set(asana.Sandhi.toUpperCase(), asana);
-            }
-        });
-        
-        // Encontrar la primera āsana (sin referencia "Before")
-        let firstAsana = null;
-        for (const asana of asanas) {
-            // Si no tiene "Before" o su "Before" no está en esta serie
-            if (!asana.Before || asana.Before.trim() === '') {
-                firstAsana = asana;
-                break;
-            }
-            
-            const beforeAsana = asanaMap.get(asana.Before.toUpperCase());
-            if (!beforeAsana || !asanas.includes(beforeAsana)) {
-                firstAsana = asana;
-                break;
-            }
-        }
-        
-        // Si no encontramos una primera āsana clara, usar la primera del array
-        if (!firstAsana && asanas.length > 0) {
-            firstAsana = asanas[0];
-        }
-        
-        if (!firstAsana) {
-            console.log(`No se pudo determinar la primera āsana para ${seriesName}`);
-            return [...asanas].sort((a, b) => {
-                const nameA = (a.Sandhi || a.Name).toLowerCase();
-                const nameB = (b.Sandhi || b.Name).toLowerCase();
-                return nameA.localeCompare(nameB);
-            });
-        }
-        
-        // Construir la secuencia
-        const sequence = [firstAsana];
-        const usedAsanas = new Set([firstAsana.Name]);
-        
-        let currentAsana = firstAsana;
-        let iterations = 0;
-        const maxIterations = asanas.length * 2; // Prevenir bucles infinitos
-        
-        while (sequence.length < asanas.length && iterations < maxIterations) {
-            iterations++;
-            
-            // Buscar la siguiente āsana usando la relación "After"
-            if (currentAsana.After && currentAsana.After.trim() !== '') {
-                const nextAsana = asanaMap.get(currentAsana.After.toUpperCase());
-                
-                if (nextAsana && 
-                    asanas.includes(nextAsana) && 
-                    !usedAsanas.has(nextAsana.Name)) {
-                    
-                    sequence.push(nextAsana);
-                    usedAsanas.add(nextAsana.Name);
-                    currentAsana = nextAsana;
-                    continue;
-                }
-            }
-            
-            // Si no hay relación "After" o ya usamos esa āsana,
-            // buscar cualquier āsana no usada que tenga "Before" apuntando a la actual
-            let foundNext = false;
-            for (const asana of asanas) {
-                if (!usedAsanas.has(asana.Name) && 
-                    asana.Before && 
-                    asana.Before.trim() !== '') {
-                    
-                    const beforeAsana = asanaMap.get(asana.Before.toUpperCase());
-                    if (beforeAsana === currentAsana) {
-                        sequence.push(asana);
-                        usedAsanas.add(asana.Name);
-                        currentAsana = asana;
-                        foundNext = true;
-                        break;
-                    }
-                }
-            }
-            
-            if (foundNext) continue;
-            
-            // Si no encontramos por relaciones, agregar cualquier āsana no usada
-            for (const asana of asanas) {
-                if (!usedAsanas.has(asana.Name)) {
-                    sequence.push(asana);
-                    usedAsanas.add(asana.Name);
-                    currentAsana = asana;
-                    break;
-                }
-            }
-        }
-        
-        console.log(`Secuencia construida para ${seriesName}: ${sequence.length} āsanas`);
-        return sequence;
-    }
-
 
     // Render asana list - VERSIÓN ORDENADA ALFABÉTICAMENTE
     function renderAsanaList() {
@@ -1510,174 +1187,6 @@ const cardSections = ['study', 'vinyasa', 'ashtanga', 'niskriya', 'lexicon', 'ab
         errorElement.style.display = 'block';
     }
 
-
-    // Inicializar sección Vinyāsa
-function initializeVinyasaSection() {
-    vinyasaAsanas = asanaData.filter(asana => {
-        return asana.SeriesHot && asana.SeriesHot.trim() !== '';
-    });
-    
-    // Ordenar alfabéticamente
-    vinyasaAsanas.sort((a, b) => {
-        const nameA = (a.Sandhi || a.Name).toLowerCase();
-        const nameB = (b.Sandhi || b.Name).toLowerCase();
-        return nameA.localeCompare(nameB);
-    });
-    
-    currentVinyasaIndex = 0;
-    renderVinyasaCard();
-}
-
-// Inicializar sección Aṣṭāṅga
-function initializeAshtangaSection() {
-    ashtangaAsanas = asanaData.filter(asana => {
-        return asana.YogaSeries && asana.YogaSeries.trim() !== '';
-    });
-    
-    // Ordenar por relaciones Before/After
-    const seriesGroups = {};
-    ashtangaAsanas.forEach(asana => {
-        if (asana.YogaSeries && asana.YogaSeries.trim()) {
-            const seriesName = asana.YogaSeries.trim();
-            if (!seriesGroups[seriesName]) {
-                seriesGroups[seriesName] = [];
-            }
-            seriesGroups[seriesName].push(asana);
-        }
-    });
-    
-    // Construir secuencias ordenadas para cada serie
-    ashtangaAsanas = [];
-    Object.keys(seriesGroups).forEach(seriesName => {
-        const sequence = buildSequenceFromRelations(seriesGroups[seriesName], seriesName);
-        ashtangaAsanas = ashtangaAsanas.concat(sequence);
-    });
-    
-    currentAshtangaIndex = 0;
-    renderAshtangaCard();
-}
-
-// Inicializar sección Niṣkriya
-function initializeNiskriyaSection() {
-    niskriyaAsanas = asanaData.filter(asana => {
-        return asana.Yin && asana.Yin.trim() !== '';
-    });
-    
-    // Ordenar alfabéticamente
-    niskriyaAsanas.sort((a, b) => {
-        const nameA = (a.Sandhi || a.Name).toLowerCase();
-        const nameB = (b.Sandhi || b.Name).toLowerCase();
-        return nameA.localeCompare(nameB);
-    });
-    
-    currentNiskriyaIndex = 0;
-    renderNiskriyaCard();
-}
-
-// Renderizar tarjeta Vinyāsa
-function renderVinyasaCard() {
-    if (vinyasaAsanas.length === 0) {
-        vinyasaTitle.textContent = "NO VINYĀSA ASANAS";
-        vinyasaImage.style.display = 'none';
-        vinyasaDetails.innerHTML = "<p>NO VINYĀSA ASANAS AVAILABLE</p>";
-        return;
-    }
-    
-    const asana = vinyasaAsanas[currentVinyasaIndex];
-    renderGenericCard(asana, vinyasaTitle, vinyasaImage, vinyasaDetails);
-}
-
-// Renderizar tarjeta Aṣṭāṅga
-function renderAshtangaCard() {
-    if (ashtangaAsanas.length === 0) {
-        ashtangaTitle.textContent = "NO AṢṬĀṄGA ASANAS";
-        ashtangaImage.style.display = 'none';
-        ashtangaDetails.innerHTML = "<p>NO AṢṬĀṄGA ASANAS AVAILABLE</p>";
-        return;
-    }
-    
-    const asana = ashtangaAsanas[currentAshtangaIndex];
-    renderGenericCard(asana, ashtangaTitle, ashtangaImage, ashtangaDetails);
-}
-
-// Renderizar tarjeta Niṣkriya
-function renderNiskriyaCard() {
-    if (niskriyaAsanas.length === 0) {
-        niskriyaTitle.textContent = "NO NIṢKRIYA ASANAS";
-        niskriyaImage.style.display = 'none';
-        niskriyaDetails.innerHTML = "<p>NO NIṢKRIYA ASANAS AVAILABLE</p>";
-        return;
-    }
-    
-    const asana = niskriyaAsanas[currentNiskriyaIndex];
-    renderGenericCard(asana, niskriyaTitle, niskriyaImage, niskriyaDetails);
-}
-
-// Función genérica para renderizar tarjetas
-function renderGenericCard(asana, titleElement, imageElement, detailsElement) {
-    titleElement.textContent = asana.Sandhi ? asana.Sandhi.toUpperCase() : asana.Name.toUpperCase();
-    
-    // Configurar imagen
-    imageElement.src = `images/${asana.Name}.png`;
-    imageElement.alt = asana.Name;
-    imageElement.style.display = 'block';
-    imageElement.onerror = function() {
-        this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzAwMDAwMCIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQ291cmllciBOZXcsIG1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+Tk8gSU1BR0UgQVZBSUxBQkxFPC90ZXh0Pjwvc3ZnPg==';
-        this.alt = 'IMAGE NOT AVAILABLE';
-        this.style.filter = 'grayscale(100%)';
-    };
-    
-    // Renderizar detalles (usando la misma lógica que renderAsanaCard pero simplificada)
-    let detailsHTML = '';
-    
-    if (asana.English) {
-        detailsHTML += `
-            <div class="detail-row">
-                <span class="detail-label">ENGLISH:</span>
-                <span>${asana.English}</span>
-            </div>`;
-    }
-    
-    if (asana.Devanagari) {
-        detailsHTML += `
-            <div class="detail-row">
-                <span class="detail-label">DEVANAGARI:</span>
-                <span>${asana.Devanagari}</span>
-            </div>`;
-    }
-    
-    if (asana.Etymology) {
-        detailsHTML += `
-            <div class="detail-row">
-                <span class="detail-label">ETYMOLOGY:</span>
-                <span>${asana.Etymology}</span>
-            </div>`;
-    }
-    
-    // Para Aṣṭāṅga, mostrar relaciones Before/After
-    if (asana.Before) {
-        const beforeAsana = findAsanaByName(asana.Before);
-        const beforeDisplayName = beforeAsana ? (beforeAsana.Sandhi || beforeAsana.Name) : asana.Before;
-        detailsHTML += `
-            <div class="detail-row">
-                <span class="detail-label">BEFORE:</span>
-                <span style="color: var(--ashtanga-color);"><b>${beforeDisplayName}</b></span>
-            </div>`;
-    }
-    
-    if (asana.After) {
-        const afterAsana = findAsanaByName(asana.After);
-        const afterDisplayName = afterAsana ? (afterAsana.Sandhi || afterAsana.Name) : asana.After;
-        detailsHTML += `
-            <div class="detail-row">
-                <span class="detail-label">AFTER:</span>
-                <span style="color: var(--ashtanga-color);"><b>${afterDisplayName}</b></span>
-            </div>`;
-    }
-    
-    detailsElement.innerHTML = detailsHTML || '<p>NO DETAILS AVAILABLE</p>';
-}
-
 async function init() {
     try {
         await loadCSVData();
@@ -1701,11 +1210,6 @@ async function init() {
         }
         
         applyFilters();
-        
-        // INICIALIZAR LAS NUEVAS SECCIONES
-        initializeVinyasaSection();
-        initializeAshtangaSection();
-        initializeNiskriyaSection();
         
         setupEventListeners();
         
@@ -1747,7 +1251,7 @@ async function init() {
                         });
                         
                         // Calculate tags AFTER loading data
-                        allTags = ['Sākṣāt', 'aṣṭāṅga', 'vinyāsa', 'niṣkriya', 'Cālanī'];
+                        allTags = ['Sākṣāt', 'Cālanī'];
                         
                         resolve(asanaData);
                     },
@@ -1833,7 +1337,7 @@ async function init() {
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: #f6732f40;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -1841,14 +1345,14 @@ async function init() {
         `;
         
         modal.innerHTML = `
-            <div style="background: var(--primary-color); border: 4px solid var(--accent-color); padding: 20px; max-width: 500px; width: 90%;">
-                <h3 style="color: var(--accent-color); margin-bottom: 20px; text-transform: uppercase;">CĀLANĪ - FILTROS AVANZADOS</h3>
+            <div style="background: var(--primary-color); border: 4px solid #333; max-width: 500px; width: 90%; box-shadow: 8px 3px 0 #333;">
+                <h3 style="padding: 20px; color: var(--primary-color); margin-bottom: 20px; text-transform: uppercase; background: var(--red-accent); border-bottom: 2px solid #333;">CĀLANĪ - FILTROS AVANZADOS</h3>
                 
-                <div style="margin-bottom: 20px;">
-                    <h4 style="color: var(--accent-color); margin-bottom: 10px; border-bottom: 2px solid var(--accent-color);">AṢṬĀṄGA</h4>
+                <div style="margin-bottom: 20px; padding: 0px 20px;">
+                    <h4 style="color: var(--red-accent); margin-bottom: 10px; border-bottom: 2px solid var(--accent-color);">AṢṬĀṄGA</h4>
                     <div id="ashtanga-filters" style="display: flex; flex-direction: column; gap: 5px;">
                         ${Object.values(seriesMapping).map(series => `
-                            <label style="color: var(--accent-color); cursor: pointer;">
+                            <label style="color: var(--blue-accent); cursor: pointer;">
                                 <input type="checkbox" value="${Object.keys(seriesMapping).find(key => seriesMapping[key] === series)}" style="margin-right: 8px;">
                                 ${series}
                             </label>
@@ -1856,11 +1360,11 @@ async function init() {
                     </div>
                 </div>
                 
-                <div style="margin-bottom: 20px;">
-                    <h4 style="color: var(--accent-color); margin-bottom: 10px; border-bottom: 2px solid var(--accent-color);">VINYĀSA</h4>
+                <div style="margin-bottom: 20px; padding: 0px 20px;">
+                    <h4 style="color: var(--red-accent); margin-bottom: 10px; border-bottom: 2px solid var(--accent-color);">VINYĀSA</h4>
                     <div id="vinyasa-filters" style="display: flex; flex-direction: column; gap: 5px;">
                         ${Object.values(seriesHotMapping).map(series => `
-                            <label style="color: var(--accent-color); cursor: pointer;">
+                            <label style="color: var(--blue-accent); cursor: pointer;">
                                 <input type="checkbox" value="${Object.keys(seriesHotMapping).find(key => seriesHotMapping[key] === series)}" style="margin-right: 8px;">
                                 ${series}
                             </label>
@@ -1868,9 +1372,19 @@ async function init() {
                     </div>
                 </div>
                 
-                <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                    <button id="apply-advanced" style="background: var(--accent-color); color: #fff; border: 2px solid var(--accent-color); padding: 8px 16px; cursor: pointer; text-transform: uppercase;">APLICAR</button>
-                    <button id="cancel-advanced" style="background: var(--accent-color); color: #fff; border: 2px solid var(--accent-color); padding: 8px 16px; cursor: pointer; text-transform: uppercase;">CANCELAR</button>
+                <div style="margin-bottom: 20px; padding: 0px 20px;">
+                    <h4 style="color: var(--red-accent); margin-bottom: 10px; border-bottom: 2px solid var(--accent-color);">NIṢKRIYA</h4>
+                    <div id="niskriya-filters" style="display: flex; flex-direction: column; gap: 5px;">
+                        <label style="color: var(--blue-accent); cursor: pointer;">
+                            <input type="checkbox" value="niṣkriya" style="margin-right: 8px;">
+                            niṣkriya - <i>yin yoga</i>
+                        </label>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 10px; justify-content: flex-end; padding: 0px 20px 20px 20px;">
+                    <button id="apply-advanced" style="background: var(--accent-color); color: #fff; border: 2px solid #333; padding: 8px 16px; cursor: pointer; text-transform: uppercase;">APLICAR</button>
+                    <button id="cancel-advanced" style="background: var(--accent-color); color: #fff; border: 2px solid #333; padding: 8px 16px; cursor: pointer; text-transform: uppercase;">CANCELAR</button>
                 </div>
             </div>
         `;
@@ -1881,9 +1395,10 @@ async function init() {
         document.getElementById('apply-advanced').addEventListener('click', function() {
             const selectedAshtanga = Array.from(document.querySelectorAll('#ashtanga-filters input:checked')).map(input => input.value);
             const selectedVinyasa = Array.from(document.querySelectorAll('#vinyasa-filters input:checked')).map(input => input.value);
+            const selectedNiskriya = Array.from(document.querySelectorAll('#niskriya-filters input:checked')).map(input => input.value);
             
             // Apply advanced filters
-            applyAdvancedFilters(selectedAshtanga, selectedVinyasa);
+            applyAdvancedFilters(selectedAshtanga, selectedVinyasa, selectedNiskriya);
             document.body.removeChild(modal);
         });
         
@@ -1893,27 +1408,17 @@ async function init() {
     }
 
     // Apply advanced filters
-    function applyAdvancedFilters(selectedAshtanga, selectedVinyasa) {
+    function applyAdvancedFilters(selectedAshtanga, selectedVinyasa, selectedNiskriya) {
         // Clear previous filters
         activeTags.clear();
         document.querySelectorAll('.menu-tag-btn').forEach(btn => {
             btn.classList.remove('active');
         });
         
-        // Add advanced filters to active tags
-        if (selectedAshtanga.length > 0) {
-            activeTags.add('aṣṭāṅga');
-            document.querySelector('[data-tag="aṣṭāṅga"]').classList.add('active');
-        }
-        
-        if (selectedVinyasa.length > 0) {
-            activeTags.add('vinyāsa');
-            document.querySelector('[data-tag="vinyāsa"]').classList.add('active');
-        }
-        
         // Store advanced filter selections
         activeTags.advancedAshtanga = selectedAshtanga;
         activeTags.advancedVinyasa = selectedVinyasa;
+        activeTags.advancedNiskriya = selectedNiskriya;
         
         applyFilters();
     }
@@ -1928,35 +1433,28 @@ async function init() {
             
             let matchesTag = false;
             
-            // Check aṣṭāṅga filter
-            if (activeTags.has('aṣṭāṅga')) {
-                if (activeTags.advancedAshtanga && activeTags.advancedAshtanga.length > 0) {
-                    // Advanced aṣṭāṅga filter
-                    if (activeTags.advancedAshtanga.includes(asana.YogaSeries)) {
-                        matchesTag = true;
-                    }
-                } else if (asana.Ashtanga) {
-                    // Basic aṣṭāṅga filter
+            // Check advanced aṣṭāṅga filter
+            if (activeTags.advancedAshtanga && activeTags.advancedAshtanga.length > 0) {
+                // Advanced aṣṭāṅga filter
+                if (activeTags.advancedAshtanga.includes(asana.YogaSeries)) {
                     matchesTag = true;
                 }
             }
             
-            // Check vinyāsa filter
-            if (activeTags.has('vinyāsa')) {
-                if (activeTags.advancedVinyasa && activeTags.advancedVinyasa.length > 0) {
-                    // Advanced vinyāsa filter
-                    if (activeTags.advancedVinyasa.includes(asana.SeriesHot)) {
-                        matchesTag = true;
-                    }
-                } else if (asana.Baptiste) {
-                    // Basic vinyāsa filter
+            // Check advanced vinyāsa filter
+            if (activeTags.advancedVinyasa && activeTags.advancedVinyasa.length > 0) {
+                // Advanced vinyāsa filter
+                if (activeTags.advancedVinyasa.includes(asana.SeriesHot)) {
                     matchesTag = true;
                 }
             }
             
-            // Check niṣkriya filter
-            if (activeTags.has('niṣkriya') && asana.Yin) {
-                matchesTag = true;
+            // Check advanced niṣkriya filter
+            if (activeTags.advancedNiskriya && activeTags.advancedNiskriya.length > 0) {
+                // Advanced niṣkriya filter
+                if (asana.Yin && asana.Yin.trim() !== '') {
+                    matchesTag = true;
+                }
             }
             
             return matchesTag;
@@ -1980,7 +1478,6 @@ async function init() {
         renderAsanaCard();
         renderAsanaList();
     }
-    
 
 // Render current asana card
 function renderAsanaCard() {
@@ -1988,9 +1485,6 @@ function renderAsanaCard() {
         cardTitle.textContent = "NO ASANAS MATCH FILTERS";
         cardImage.src = "";
         cardDetails.innerHTML = "<p>ADJUST FILTERS TO SEE ASANAS</p>";
-        
-        // Ocultar controles de Aṣṭāṅga
-        ashtangaSequenceControls.style.display = 'none';
         return;
     }
     
@@ -2209,9 +1703,6 @@ function renderAsanaCard() {
     // Get tags for an asana display
     function getAsanaTags(asana) {
         const tags = [];
-        if (asana.Ashtanga) tags.push("aṣṭāṅga");
-        if (asana.Yin) tags.push("niṣkriya");
-        if (asana.Baptiste) tags.push("vinyāsa");
         if (asana.SeriesHot) {
             const mapped = seriesHotMapping[asana.SeriesHot];
             tags.push(mapped ? mapped.split(' - ')[0] : asana.SeriesHot);
@@ -2230,12 +1721,6 @@ function switchSection(sectionId) {
     // Agregar clase específica para cada sección
     if (sectionId === 'study') {
         document.body.classList.add('study-section');
-    } else if (sectionId === 'vinyasa') {
-        document.body.classList.add('vinyasa-section');
-    } else if (sectionId === 'ashtanga') {
-        document.body.classList.add('ashtanga-section');
-    } else if (sectionId === 'niskriya') {
-        document.body.classList.add('niskriya-section');
     } else if (sectionId === 'lexicon') {
         document.body.classList.add('lexicon-section');
     } else if (sectionId === 'lexicon-list') {
@@ -2301,45 +1786,6 @@ function setupEventListeners() {
         if (filteredAsanas.length === 0) return;
         currentAsanaIndex = (currentAsanaIndex + 1) % filteredAsanas.length;
         renderAsanaCard();
-    });
-    
-    // Controles Vinyāsa
-    vinyasaPrevBtn.addEventListener('click', () => {
-        if (vinyasaAsanas.length === 0) return;
-        currentVinyasaIndex = (currentVinyasaIndex - 1 + vinyasaAsanas.length) % vinyasaAsanas.length;
-        renderVinyasaCard();
-    });
-    
-    vinyasaNextBtn.addEventListener('click', () => {
-        if (vinyasaAsanas.length === 0) return;
-        currentVinyasaIndex = (currentVinyasaIndex + 1) % vinyasaAsanas.length;
-        renderVinyasaCard();
-    });
-    
-    // Controles Aṣṭāṅga
-    ashtangaPrevBtn.addEventListener('click', () => {
-        if (ashtangaAsanas.length === 0) return;
-        currentAshtangaIndex = (currentAshtangaIndex - 1 + ashtangaAsanas.length) % ashtangaAsanas.length;
-        renderAshtangaCard();
-    });
-    
-    ashtangaNextBtn.addEventListener('click', () => {
-        if (ashtangaAsanas.length === 0) return;
-        currentAshtangaIndex = (currentAshtangaIndex + 1) % ashtangaAsanas.length;
-        renderAshtangaCard();
-    });
-    
-    // Controles Niṣkriya
-    niskriyaPrevBtn.addEventListener('click', () => {
-        if (niskriyaAsanas.length === 0) return;
-        currentNiskriyaIndex = (currentNiskriyaIndex - 1 + niskriyaAsanas.length) % niskriyaAsanas.length;
-        renderNiskriyaCard();
-    });
-    
-    niskriyaNextBtn.addEventListener('click', () => {
-        if (niskriyaAsanas.length === 0) return;
-        currentNiskriyaIndex = (currentNiskriyaIndex + 1) % niskriyaAsanas.length;
-        renderNiskriyaCard();
     });
     
     // Search
