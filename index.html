@@ -45,7 +45,7 @@
             --about-primary: #ccffd290;
             --about-accent: #632facff;
             --about-border: #333;
-            --about-header: var(--accent-color);
+            --about-header: #1ecae1;
             
             /* Filtros de imagen por sección */
             --study-hue: 170deg;
@@ -116,7 +116,7 @@
         }
 
         body.about-section {
-            background-color: var(--about-primary);
+            background-color: #1ecae140;
             border: 10px solid var(--about-accent);
             box-shadow: inset 0 0 0 2px var(--about-border);
         }
@@ -138,6 +138,11 @@
             max-width: 500px;
             background: var(--primary-color);
             margin: 0 auto;
+        }
+
+        /* Usa esto: */
+        body.about-section .card {
+            background: var(--about-primary);
         }
 
         /* Headers de cards por sección */
@@ -666,6 +671,32 @@ body:not(.study-section) .floating-filters {
                 width: 500px;
             }
         }
+
+
+/* Agregar al final del CSS */
+#active-filters-info {
+    background: var(--yellow-accent) !important;
+    color: var(--text-dark) !important;
+    font-weight: bold;
+    text-transform: uppercase;
+    box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.2);
+}
+
+/* Ocultar filtros en secciones no deseadas */
+body:not(.study-section):not(.lexicon-section) .floating-filters {
+    display: none !important;
+}
+
+/* Agregar al CSS */
+.filter-content {
+    background: var(--yellow-accent) !important;
+}
+
+#active-filters-info {
+    background: var(--yellow-accent) !important;
+    color: var(--text-dark) !important;
+}
+
     </style>
 
 
@@ -688,7 +719,6 @@ body:not(.study-section) .floating-filters {
                 </div>
                 <div class="circular-controls">
                     <button class="circular-btn brutalist-btn" id="prev-btn"><i class="fa-solid fa-chevron-left"></i></button>
-                        <span style="color: #333; font-weight: bold; font-size: 0.8rem;">RANDOM</span>
                     <button class="circular-btn brutalist-btn" id="next-btn"><i class="fa-solid fa-chevron-right"></i></button>
                 </div>
 
@@ -734,18 +764,18 @@ body:not(.study-section) .floating-filters {
     <div class="study-container">
         <div class="card brutalist-border">
             <div class="card-header">
-                <h2 id="about-title" class="brutalist-text">ABOUT</h2>
+                <h2 id="about-title" class="brutalist-text">SOBRE ANANTĀSANA</h2>
             </div>
             <div class="card-body">
-                <img src="photo.png" alt="Mica" class="card-image">
+                <img src="photo2.png" alt="Mica" class="card-image">
                 <div class="card-details" id="about-details">
                     <div class="detail-row">
-                        <span class="detail-label">ABOUT:</span>
-                        <span style="color:#f6442fff; font-weight: bold;">Hola! Yo soy Mica. Amante del yoga y del codeo since 2018.</span>
+                        <span class="detail-label">I AM:</span>
+                        <span style="color:#f6442fff; font-weight: bold;">Mica. Amante del yoga y del codeo since 2018.</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">P.S.:</span>
-                        <span> Made with <i class="fa-solid fa-heart"></i> Buenos Aires, Argentina</span>
+                        <span class="detail-label">THIS IS:</span>
+                        <span>ANANTĀSANA es una mini app para poder estudiar āsanas y términos relacionados con la práctica.</span>
                     </div>
 
                 </div>
@@ -770,13 +800,13 @@ body:not(.study-section) .floating-filters {
             <i class="fas fa-bars"></i>
         </button>
         <div class="menu-content brutalist-border" id="menu-content">
+            <!-- En el menú hamburguesa, cambiar el orden -->
             <div class="menu-nav">
-                <button class="menu-nav-btn brutalist-btn" data-section="about">about</button>
-                <button class="menu-nav-btn active brutalist-btn" data-section="study">japāsana</button>
+                <button class="menu-nav-btn active brutalist-btn" data-section="about">about</button>
+                <button class="menu-nav-btn brutalist-btn" data-section="study">japāsana</button>
                 <button class="menu-nav-btn brutalist-btn" data-section="lexicon">śabda</button>
                 <button class="menu-nav-btn brutalist-btn" data-section="list">saṅgraha</button>
                 <button class="menu-nav-btn brutalist-btn" data-section="lexicon-list">kośa</button>
-
             </div>
         </div>
     </div>
@@ -1190,6 +1220,7 @@ function setupTouchImprovements() {
         errorElement.style.display = 'block';
     }
 
+// En la función init, cambiar el orden inicial
 async function init() {
     try {
         await loadCSVData();
@@ -1215,6 +1246,9 @@ async function init() {
         applyFilters();
         
         setupEventListeners();
+        
+        // Cambiar: Iniciar en la sección about en lugar de study
+        switchSection('about');
         
         console.log('Aplicación inicializada correctamente');
     } catch (error) {
@@ -1270,217 +1304,419 @@ async function init() {
         }
     }
 
-    // Populate tag filters
-    function populateTagFilters() {
-        // Clear existing tag buttons
-        menuTagFilters.innerHTML = '';
-        
-        allTags.forEach(tag => {
-            const button = document.createElement('button');
-            button.className = 'menu-tag-btn brutalist-btn';
-            button.innerHTML = tag;
-            button.dataset.tag = tag;
-            button.addEventListener('click', toggleTagFilter);
-            menuTagFilters.appendChild(button);
-            
-            // Activar Sākṣāt por defecto
-            if (tag === 'Sākṣāt') {
-                button.classList.add('active');
-                activeTags.add('Sākṣāt');
-            }
-        });
-    }
 
-    // Toggle tag filter
-    function toggleTagFilter(e) {
-        const tag = e.target.dataset.tag;
-        
-        if (tag === 'Sākṣāt') {
-            // Reset all filters
-            activeTags.clear();
-            document.querySelectorAll('.menu-tag-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            e.target.classList.add('active');
-            activeTags.add('Sākṣāt');
-        } else if (tag === 'Cālanī') {
-            // Show advanced filters modal
-            showAdvancedFilters();
-            return;
-        } else {
-            // Remove Sākṣāt if another tag is selected
-            if (activeTags.has('Sākṣāt')) {
-                activeTags.delete('Sākṣāt');
-                document.querySelectorAll('.menu-tag-btn').forEach(btn => {
-                    if (btn.dataset.tag === 'Sākṣāt') {
-                        btn.classList.remove('active');
-                    }
-                });
-            }
-            
-            if (activeTags.has(tag)) {
-                activeTags.delete(tag);
-                e.target.classList.remove('active');
-            } else {
-                activeTags.add(tag);
-                e.target.classList.add('active');
-            }
-        }
-        
-        applyFilters();
-    }
 
-    // Show advanced filters modal
-    function showAdvancedFilters() {
-        // Create modal for advanced filters
-        const modal = document.createElement('div');
-        modal.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #f6732f40;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        `;
-        
-        modal.innerHTML = `
-            <div style="background: var(--primary-color); border: 4px solid #333; max-width: 500px; width: 90%; box-shadow: 8px 3px 0 #333;">
-                <h3 style="padding: 20px; color: var(--primary-color); margin-bottom: 20px; text-transform: uppercase; background: var(--red-accent); border-bottom: 2px solid #333;">CĀLANĪ - FILTROS AVANZADOS</h3>
-                
-                <div style="margin-bottom: 20px; padding: 0px 20px;">
-                    <h4 style="color: var(--red-accent); margin-bottom: 10px; border-bottom: 2px solid var(--accent-color);">AṢṬĀṄGA</h4>
-                    <div id="ashtanga-filters" style="display: flex; flex-direction: column; gap: 5px;">
-                        ${Object.values(seriesMapping).map(series => `
-                            <label style="color: var(--blue-accent); cursor: pointer;">
-                                <input type="checkbox" value="${Object.keys(seriesMapping).find(key => seriesMapping[key] === series)}" style="margin-right: 8px;">
-                                ${series}
-                            </label>
-                        `).join('')}
-                    </div>
-                </div>
-                
-                <div style="margin-bottom: 20px; padding: 0px 20px;">
-                    <h4 style="color: var(--red-accent); margin-bottom: 10px; border-bottom: 2px solid var(--accent-color);">VINYĀSA</h4>
-                    <div id="vinyasa-filters" style="display: flex; flex-direction: column; gap: 5px;">
-                        ${Object.values(seriesHotMapping).map(series => `
-                            <label style="color: var(--blue-accent); cursor: pointer;">
-                                <input type="checkbox" value="${Object.keys(seriesHotMapping).find(key => seriesHotMapping[key] === series)}" style="margin-right: 8px;">
-                                ${series}
-                            </label>
-                        `).join('')}
-                    </div>
-                </div>
-                
-                <div style="margin-bottom: 20px; padding: 0px 20px;">
-                    <h4 style="color: var(--red-accent); margin-bottom: 10px; border-bottom: 2px solid var(--accent-color);">NIṢKRIYA</h4>
-                    <div id="niskriya-filters" style="display: flex; flex-direction: column; gap: 5px;">
-                        <label style="color: var(--blue-accent); cursor: pointer;">
-                            <input type="checkbox" value="niṣkriya" style="margin-right: 8px;">
-                            niṣkriya - <i>yin yoga</i>
-                        </label>
-                    </div>
-                </div>
-                
-                <div style="display: flex; gap: 10px; justify-content: flex-end; padding: 0px 20px 20px 20px;">
-                    <button id="apply-advanced" style="background: var(--accent-color); color: #fff; border: 2px solid #333; padding: 8px 16px; cursor: pointer; text-transform: uppercase;">APLICAR</button>
-                    <button id="cancel-advanced" style="background: var(--accent-color); color: #fff; border: 2px solid #333; padding: 8px 16px; cursor: pointer; text-transform: uppercase;">CANCELAR</button>
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(modal);
-        
-        // Event listeners for modal
-        document.getElementById('apply-advanced').addEventListener('click', function() {
-            const selectedAshtanga = Array.from(document.querySelectorAll('#ashtanga-filters input:checked')).map(input => input.value);
-            const selectedVinyasa = Array.from(document.querySelectorAll('#vinyasa-filters input:checked')).map(input => input.value);
-            const selectedNiskriya = Array.from(document.querySelectorAll('#niskriya-filters input:checked')).map(input => input.value);
-            
-            // Apply advanced filters
-            applyAdvancedFilters(selectedAshtanga, selectedVinyasa, selectedNiskriya);
-            document.body.removeChild(modal);
-        });
-        
-        document.getElementById('cancel-advanced').addEventListener('click', function() {
-            document.body.removeChild(modal);
-        });
-    }
-
-    // Apply advanced filters
-    function applyAdvancedFilters(selectedAshtanga, selectedVinyasa, selectedNiskriya) {
-        // Clear previous filters
-        activeTags.clear();
+// Modificar la función populateTagFilters para incluir el filtro Random
+function populateTagFilters() {
+    menuTagFilters.innerHTML = '';
+    
+    // Agregar filtro Random primero
+    const randomButton = document.createElement('button');
+    randomButton.className = 'menu-tag-btn brutalist-btn';
+    randomButton.innerHTML = 'Random';
+    randomButton.dataset.tag = 'Random';
+    randomButton.addEventListener('click', function() {
+        applyRandomOrder();
+        // Actualizar estado visual de botones
         document.querySelectorAll('.menu-tag-btn').forEach(btn => {
             btn.classList.remove('active');
         });
+        this.classList.add('active');
+    });
+    menuTagFilters.appendChild(randomButton);
+    
+    // Agregar los otros filtros
+    allTags.forEach(tag => {
+        const button = document.createElement('button');
+        button.className = 'menu-tag-btn brutalist-btn';
+        button.innerHTML = tag;
+        button.dataset.tag = tag;
+        button.addEventListener('click', toggleTagFilter);
+        menuTagFilters.appendChild(button);
         
-        // Store advanced filter selections
-        activeTags.advancedAshtanga = selectedAshtanga;
-        activeTags.advancedVinyasa = selectedVinyasa;
-        activeTags.advancedNiskriya = selectedNiskriya;
-        
-        applyFilters();
-    }
+        if (tag === 'Sākṣāt') {
+            button.classList.add('active');
+            activeTags.add('Sākṣāt');
+        }
+    });
+}    
 
-    // Apply filters to asana data - CORREGIDA
-    function applyFilters() {
-        filteredAsanas = asanaData.filter(asana => {
-            // Filter by tags
-            if (activeTags.has('Sākṣāt')) {
-                return true; // Show all asanas
+// Agregar variable global para controlar el orden
+let isRandomOrder = false;
+
+
+
+
+// Modificar completamente la función showAdvancedFilters
+function showAdvancedFilters() {
+    // Create modal for advanced filters
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #f6732f40;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    `;
+    
+    // Obtener filtros activos actuales para pre-checkear
+    const currentAshtanga = activeTags.advancedAshtanga || [];
+    const currentVinyasa = activeTags.advancedVinyasa || [];
+    const currentNiskriya = activeTags.advancedNiskriya || [];
+    
+    // Generar el texto de filtros activos
+    let filterText = '<strong>Active Filters:</strong><br>';
+    
+    if (activeTags.has('Sākṣāt')) {
+        filterText += '• Sākṣāt (todas las asanas)<br>';
+    }
+    
+    if (isRandomOrder) {
+        filterText += '• Orden: Aleatorio<br>';
+    } else {
+        filterText += '• Orden: Alfabético<br>';
+    }
+    
+    if (activeTags.advancedAshtanga && activeTags.advancedAshtanga.length > 0) {
+        filterText += `• Aṣṭāṅga: ${activeTags.advancedAshtanga.map(a => seriesMapping[a]?.split(' - ')[0] || a).join(', ')}<br>`;
+    }
+    
+    if (activeTags.advancedVinyasa && activeTags.advancedVinyasa.length > 0) {
+        filterText += `• Vinyāsa: ${activeTags.advancedVinyasa.map(v => seriesHotMapping[v]?.split(' - ')[0] || v).join(', ')}<br>`;
+    }
+    
+    if (activeTags.advancedNiskriya && activeTags.advancedNiskriya.length > 0) {
+        filterText += '• Niṣkriya<br>';
+    }
+    
+    // Verificar si hay filtros activos para mostrar
+    const hasAdvancedFilters = activeTags.advancedAshtanga?.length > 0 || 
+                              activeTags.advancedVinyasa?.length > 0 || 
+                              activeTags.advancedNiskriya?.length > 0 ||
+                              isRandomOrder;
+    
+    const hasActiveFilters = hasAdvancedFilters || !activeTags.has('Sākṣāt');
+
+    modal.innerHTML = `
+        <div style="background: var(--primary-color); border: 4px solid #333; max-width: 500px; width: 90%; box-shadow: 8px 3px 0 #333; max-height: 80vh; overflow-y: auto;">
+            <h3 style="padding: 20px; color: var(--primary-color); margin-bottom: 20px; text-transform: uppercase; background: var(--red-accent); border-bottom: 2px solid #333;">CĀLANĪ - FILTROS AVANZADOS</h3>
+            
+            <!-- AGREGAR EL TEXTO DE FILTROS ACTIVOS DENTRO DEL MODAL -->
+            ${hasActiveFilters ? `
+            <div style="margin-bottom: 20px; padding: 10px 20px; background: var(--yellow-accent); border: 2px solid var(--text-dark); margin: 0px 20px 20px 20px;">
+                <div style="font-size: 0.9rem; color: var(--text-dark);">
+                    ${filterText}
+                </div>
+            </div>
+            ` : ''}
+            
+            <div style="margin-bottom: 20px; padding: 0px 20px;">
+                <h4 style="color: var(--red-accent); margin-bottom: 10px; border-bottom: 2px solid var(--accent-color);">
+                <label style="cursor: pointer; font-weight: bold;">
+                    <input type="checkbox" id="select-all-ashtanga" style="margin-right: 8px;">
+                    AṢṬĀṄGA
+                </label></h4>
+                <div id="ashtanga-filters" style="display: flex; flex-direction: column; gap: 5px;">
+                    ${Object.entries(seriesMapping).map(([key, value]) => `
+                        <label style="color: var(--blue-accent); cursor: pointer;">
+                            <input type="checkbox" value="${key}" ${currentAshtanga.includes(key) ? 'checked' : ''} style="margin-right: 8px;">
+                            ${value}
+                        </label>
+                    `).join('')}
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 20px; padding: 0px 20px;">
+                <h4 style="color: var(--red-accent); margin-bottom: 10px; border-bottom: 2px solid var(--accent-color);">
+                <label style="cursor: pointer; font-weight: bold;">
+                    <input type="checkbox" id="select-all-vinyasa" style="margin-right: 8px;">
+                    VINYĀSA
+                </label></h4>
+                <div id="vinyasa-filters" style="display: flex; flex-direction: column; gap: 5px;">
+                    ${Object.entries(seriesHotMapping).map(([key, value]) => `
+                        <label style="color: var(--blue-accent); cursor: pointer;">
+                            <input type="checkbox" value="${key}" ${currentVinyasa.includes(key) ? 'checked' : ''} style="margin-right: 8px;">
+                            ${value}
+                        </label>
+                    `).join('')}
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 20px; padding: 0px 20px;">
+                <h4 style="color: var(--red-accent); margin-bottom: 10px; border-bottom: 2px solid var(--accent-color);">NIṢKRIYA</h4>
+                <div id="niskriya-filters" style="display: flex; flex-direction: column; gap: 5px;">
+                    <label style="color: var(--blue-accent); cursor: pointer;">
+                        <input type="checkbox" value="niṣkriya" ${currentNiskriya.includes('niṣkriya') ? 'checked' : ''} style="margin-right: 8px;">
+                        niṣkriya - <i>yin yoga</i>
+                    </label>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 10px; justify-content: flex-end; padding: 0px 20px 20px 20px;">
+                <button id="apply-advanced" style="background: var(--accent-color); color: #fff; border: 2px solid #333; padding: 8px 16px; cursor: pointer; text-transform: uppercase;">APLICAR</button>
+                <button id="cancel-advanced" style="background: var(--accent-color); color: #fff; border: 2px solid #333; padding: 8px 16px; cursor: pointer; text-transform: uppercase;">CANCELAR</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Funcionalidad para "Seleccionar todos"
+    const selectAllAshtanga = document.getElementById('select-all-ashtanga');
+    const selectAllVinyasa = document.getElementById('select-all-vinyasa');
+    
+    // Pre-checkear "Seleccionar todos" si todos los checkboxes de esa categoría están checked
+    const ashtangaCheckboxes = document.querySelectorAll('#ashtanga-filters input[type="checkbox"]');
+    const allAshtangaChecked = Array.from(ashtangaCheckboxes).every(checkbox => checkbox.checked);
+    selectAllAshtanga.checked = allAshtangaChecked;
+    
+    const vinyasaCheckboxes = document.querySelectorAll('#vinyasa-filters input[type="checkbox"]');
+    const allVinyasaChecked = Array.from(vinyasaCheckboxes).every(checkbox => checkbox.checked);
+    selectAllVinyasa.checked = allVinyasaChecked;
+    
+    selectAllAshtanga.addEventListener('change', function() {
+        ashtangaCheckboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+    });
+    
+    selectAllVinyasa.addEventListener('change', function() {
+        vinyasaCheckboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+    });
+    
+    // Event listeners for modal
+    document.getElementById('apply-advanced').addEventListener('click', function() {
+        const selectedAshtanga = Array.from(document.querySelectorAll('#ashtanga-filters input:checked')).map(input => input.value);
+        const selectedVinyasa = Array.from(document.querySelectorAll('#vinyasa-filters input:checked')).map(input => input.value);
+        const selectedNiskriya = Array.from(document.querySelectorAll('#niskriya-filters input:checked')).map(input => input.value);
+        
+        // Apply advanced filters
+        applyAdvancedFilters(selectedAshtanga, selectedVinyasa, selectedNiskriya);
+        document.body.removeChild(modal);
+    });
+    
+    document.getElementById('cancel-advanced').addEventListener('click', function() {
+        document.body.removeChild(modal);
+    });
+}
+
+// MODIFICAR la función showActiveFilters para que NO muestre el recuadro en la esquina
+function showActiveFilters() {
+    // Remover info anterior si existe (para limpiar cualquier recuadro previo)
+    const existingInfo = document.getElementById('active-filters-info');
+    if (existingInfo) {
+        existingInfo.remove();
+    }
+    // Esta función ya no crea el recuadro en la esquina
+    // Los filtros activos ahora se muestran solo dentro del modal de Cālanī
+}
+
+
+// Función auxiliar para obtener texto de filtros actuales
+function getCurrentFiltersText() {
+    let text = '';
+    
+    if (activeTags.advancedAshtanga && activeTags.advancedAshtanga.length > 0) {
+        text += `<strong>Aṣṭāṅga:</strong> ${activeTags.advancedAshtanga.map(a => seriesMapping[a] || a).join(', ')}<br>`;
+    }
+    
+    if (activeTags.advancedVinyasa && activeTags.advancedVinyasa.length > 0) {
+        text += `<strong>Vinyāsa:</strong> ${activeTags.advancedVinyasa.map(v => seriesHotMapping[v] || v).join(', ')}<br>`;
+    }
+    
+    if (activeTags.advancedNiskriya && activeTags.advancedNiskriya.length > 0) {
+        text += `<strong>Niṣkriya:</strong> Yin Yoga<br>`;
+    }
+    
+    return text || 'No hay filtros activos';
+}
+
+// MODIFICAR la función applyFilters para que sea más clara
+function applyFilters() {
+    // Primero filtrar por criterios
+    filteredAsanas = asanaData.filter(asana => {
+        // Si Sākṣāt está activo, mostrar TODAS las asanas sin otros filtros
+        if (activeTags.has('Sākṣāt')) {
+            return true;
+        }
+        
+        // Si NO hay Sākṣāt, aplicar filtros avanzados
+        let matchesFilter = false;
+        
+        // Verificar filtros de aṣṭāṅga
+        if (activeTags.advancedAshtanga && activeTags.advancedAshtanga.length > 0) {
+            if (activeTags.advancedAshtanga.includes(asana.YogaSeries)) {
+                matchesFilter = true;
             }
-            
-            let matchesTag = false;
-            
-            // Check advanced aṣṭāṅga filter
-            if (activeTags.advancedAshtanga && activeTags.advancedAshtanga.length > 0) {
-                // Advanced aṣṭāṅga filter
-                if (activeTags.advancedAshtanga.includes(asana.YogaSeries)) {
-                    matchesTag = true;
-                }
+        }
+        
+        // Verificar filtros de vinyāsa
+        if (activeTags.advancedVinyasa && activeTags.advancedVinyasa.length > 0) {
+            if (activeTags.advancedVinyasa.includes(asana.SeriesHot)) {
+                matchesFilter = true;
             }
-            
-            // Check advanced vinyāsa filter
-            if (activeTags.advancedVinyasa && activeTags.advancedVinyasa.length > 0) {
-                // Advanced vinyāsa filter
-                if (activeTags.advancedVinyasa.includes(asana.SeriesHot)) {
-                    matchesTag = true;
-                }
+        }
+        
+        // Verificar filtros de niṣkriya
+        if (activeTags.advancedNiskriya && activeTags.advancedNiskriya.length > 0) {
+            if (asana.Yin && asana.Yin.trim() !== '') {
+                matchesFilter = true;
             }
-            
-            // Check advanced niṣkriya filter
-            if (activeTags.advancedNiskriya && activeTags.advancedNiskriya.length > 0) {
-                // Advanced niṣkriya filter
-                if (asana.Yin && asana.Yin.trim() !== '') {
-                    matchesTag = true;
-                }
+        }
+        
+        // Si no hay ningún filtro avanzado seleccionado, mostrar todas
+        if (!activeTags.advancedAshtanga?.length && 
+            !activeTags.advancedVinyasa?.length && 
+            !activeTags.advancedNiskriya?.length) {
+            return true;
+        }
+        
+        return matchesFilter;
+    });
+    
+    // LUEGO aplicar orden (Random vs Alfabético)
+    if (isRandomOrder) {
+        filteredAsanas = shuffleArray([...filteredAsanas]);
+    } else {
+        // Orden alfabético por defecto
+        filteredAsanas.sort((a, b) => {
+            const nameA = (a.Sandhi || a.Name).toLowerCase();
+            const nameB = (b.Sandhi || b.Name).toLowerCase();
+            return nameA.localeCompare(nameB);
+        });
+    }
+    
+    // Reset current index
+    currentAsanaIndex = 0;
+    
+    renderAsanaCard();
+    renderAsanaList();
+    showActiveFilters();
+}
+
+// MODIFICAR toggleTagFilter para manejar mejor Sākṣāt
+function toggleTagFilter(e) {
+    const tag = e.target.dataset.tag;
+    
+    if (tag === 'Random') {
+        applyRandomOrder();
+        return;
+    }
+    
+    if (tag === 'Sākṣāt') {
+        // Cuando se selecciona Sākṣāt, limpiar TODOS los otros filtros
+        activeTags.clear();
+        isRandomOrder = false; // Resetear random también
+        activeTags.advancedAshtanga = [];
+        activeTags.advancedVinyasa = [];
+        activeTags.advancedNiskriya = [];
+        
+        // Actualizar estado visual de todos los botones
+        document.querySelectorAll('.menu-tag-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.tag === 'Random') {
+                btn.classList.remove('active'); // Asegurar que Random no esté activo
             }
-            
-            return matchesTag;
         });
         
-        // SOLO MEZCLAR ALEATORIAMENTE CUANDO EL FILTRO ACTIVO ES SĀKṢĀT
+        e.target.classList.add('active');
+        activeTags.add('Sākṣāt');
+    } else if (tag === 'Cālanī') {
+        // Show advanced filters modal
+        showAdvancedFilters();
+        return;
+    } else {
+        // Si se selecciona cualquier otro tag, remover Sākṣāt
         if (activeTags.has('Sākṣāt')) {
-            filteredAsanas = shuffleArray(filteredAsanas);
-        } else {
-            // Para otros filtros, mantener orden alfabético
-            filteredAsanas.sort((a, b) => {
-                const nameA = (a.Sandhi || a.Name).toLowerCase();
-                const nameB = (b.Sandhi || b.Name).toLowerCase();
-                return nameA.localeCompare(nameB);
+            activeTags.delete('Sākṣāt');
+            document.querySelectorAll('.menu-tag-btn').forEach(btn => {
+                if (btn.dataset.tag === 'Sākṣāt') {
+                    btn.classList.remove('active');
+                }
             });
         }
         
-        // Reset current index
-        currentAsanaIndex = 0;
-        
-        renderAsanaCard();
-        renderAsanaList();
+        // Toggle del tag actual
+        if (activeTags.has(tag)) {
+            activeTags.delete(tag);
+            e.target.classList.remove('active');
+        } else {
+            activeTags.add(tag);
+            e.target.classList.add('active');
+        }
     }
+    
+    applyFilters();
+}
+
+// MODIFICAR applyRandomOrder para que sea más claro
+function applyRandomOrder() {
+    isRandomOrder = !isRandomOrder; // Toggle del estado
+    
+    // Actualizar estado visual del botón Random
+    const randomButton = document.querySelector('[data-tag="Random"]');
+    if (randomButton) {
+        if (isRandomOrder) {
+            randomButton.classList.add('active');
+        } else {
+            randomButton.classList.remove('active');
+        }
+    }
+    
+    applyFilters();
+}
+
+// MODIFICAR applyAdvancedFilters para resetear Sākṣāt
+function applyAdvancedFilters(selectedAshtanga, selectedVinyasa, selectedNiskriya) {
+    // Clear Sākṣāt si estaba activo
+    if (activeTags.has('Sākṣāt')) {
+        activeTags.delete('Sākṣāt');
+        document.querySelectorAll('.menu-tag-btn').forEach(btn => {
+            if (btn.dataset.tag === 'Sākṣāt') {
+                btn.classList.remove('active');
+            }
+        });
+    }
+    
+    // Store advanced filter selections
+    activeTags.advancedAshtanga = selectedAshtanga;
+    activeTags.advancedVinyasa = selectedVinyasa;
+    activeTags.advancedNiskriya = selectedNiskriya;
+    
+    applyFilters();
+    showActiveFilters();
+}
+
+// AGREGAR función para limpiar todos los filtros
+function clearAllFilters() {
+    activeTags.clear();
+    isRandomOrder = false;
+    activeTags.advancedAshtanga = [];
+    activeTags.advancedVinyasa = [];
+    activeTags.advancedNiskriya = [];
+    
+    document.querySelectorAll('.menu-tag-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Activar Sākṣāt por defecto
+    const saksatBtn = document.querySelector('[data-tag="Sākṣāt"]');
+    if (saksatBtn) {
+        saksatBtn.classList.add('active');
+        activeTags.add('Sākṣāt');
+    }
+    
+    applyFilters();
+}
+
+
 
 // Render current asana card
 function renderAsanaCard() {
@@ -1504,7 +1740,7 @@ function renderAsanaCard() {
     cardImage.onerror = function() {
         this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzAwMDAwMCIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQ291cmllciBOZXcsIG1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+Tk8gSU1BR0UgQVZBSUxBQkxFPC90ZXh0Pjwvc3ZnPg==';
         this.alt = 'IMAGE NOT AVAILABLE';
-        this.style.filter = 'grayscale(100%)';
+        this.style.filter = '';
     };
     
 
@@ -1842,7 +2078,31 @@ function setupEventListeners() {
         if (document.getElementById('lexicon').classList.contains('active')) {
             renderLexiconCard();
         }
+
     });
+
+
+// En setupEventListeners, actualizar la función observerSectionChange
+const observerSectionChange = function() {
+    const currentSection = document.querySelector('.section.active').id;
+    const floatingFilters = document.querySelector('.floating-filters');
+    
+    if (currentSection === 'study' || currentSection === 'list') {
+        floatingFilters.style.display = 'block';
+    } else {
+        floatingFilters.style.display = 'none';
+    }
+};
+    
+    // Llamar inicialmente
+    observerSectionChange();
+    
+    // Modificar switchSection para incluir esta funcionalidad
+    const originalSwitchSection = switchSection;
+    switchSection = function(sectionId) {
+        originalSwitchSection(sectionId);
+        observerSectionChange();
+    };
 
     // Cerrar menús cuando se hace click fuera
     document.addEventListener('click', (e) => {
