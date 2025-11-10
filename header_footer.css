@@ -1,0 +1,115 @@
+:root {
+    /* Colores base */
+    --bg-color: #000000;
+    --primary-color: #feeed5ff;
+    --accent-color: #f6732fff;
+    --accent-light: rgb(246, 157, 109);    
+    --border-color: #fff7ccff;
+    --hover-color: #333333;
+    --text-dark: #333333;
+    --text-light: #ffffff;
+    --yellow-accent: #f8dc3dff;
+    --red-accent: #f6442fff;
+    --blue-accent: #2f49f6ff;
+    --yellow-light: #f3f62f20;
+
+
+    /* Filtros de imagen por sección */
+    --study-hue: 170deg;
+    --lexicon-hue: 120deg;
+    --lexicon-list-hue: 120deg;
+    --log-hue: 220deg;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inconsolata", monospace;
+}
+
+body {
+    background-color: var(--primary-color);
+        line-height: 1.4;
+    min-height: 100dvh;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.content {
+    padding: 20px;
+    margin-top: 60px;
+    min-height: 70dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--primary-color);
+}
+
+
+
+/* HEADER */
+header {
+    color: var(--text-dark);
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.5rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--accent-color);
+    border-bottom: 3px solid var(--text-dark);
+}
+
+header div:nth-child(1) {
+    border-top: 1px solid var(--text-dark);
+    padding: 8px 0;
+    width: 100%;
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+header div:nth-child(2) {
+    border-top: 1px solid var(--text-dark);
+    padding: 5px;
+    width: 100%;
+    font-size: 1.1rem;
+    background-color: var(--accent-light);
+    font-weight: bold;
+}
+
+
+/* FOOTER */
+.site-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--yellow-accent);
+    border-top: 3px solid var(--text-dark);
+    padding: 8px 20px;
+    z-index: 800;
+
+}
+
+.footer-content {
+    color: var(--text-dark);
+    font-size: 0.8rem;
+    font-weight: bold;
+    font-family: "Inconsolata", monospace;
+}
+
+/* Footer - MODIFICADO */
+.site-footer {
+    text-align: right; /* Justificar texto a la izquierda */
+    padding-left: 20px; /* Agregar padding izquierdo */
+}
+

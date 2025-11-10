@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dainandinī</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'><path d='M201.7 291.5C236 310.2 266.2 335.6 290.5 366C301.6 379.9 311.5 394.9 319.9 410.8C328.4 394.9 338.2 380 349.3 366C373.6 335.5 403.8 310.1 438.1 291.5C479.8 268.8 527.5 256 577.8 256L587.7 256C598.8 256 607.8 265 607.8 276.1C607.8 424.1 487.9 544 339.9 544L299.7 544C151.9 544 32 424.1 32 276.1C32 265 41 256 52.1 256L62 256C112.4 256 160.1 268.8 201.7 291.5zM335.9 102C352.8 117.9 397.3 165.4 424.9 244.3C384.8 264.5 349.1 292.5 320 326.4C290.8 292.5 255.2 264.6 215.1 244.3C242.7 165.4 287.3 117.9 304.1 102C308.4 97.9 314.1 96 320 96C325.9 96 331.6 98 335.9 102z'/></svg>">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <link rel="preconnec    t" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">    
+    <!-- Incluir Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+</head>
+
+<body>
+    <header>
+        <div style="font-size: 1.1rem;">Dainandinī</div>
+        <div style="font-size: 0.9rem;"><br>una bitácora para la práctica del yoga</div>
+    </header>
+    
+    <div class="app-container">
+        <div class="content">
+            <main>
+                <div class="detail-label" style="background: rgb(233, 196, 106);">desarrollado por una ashtangui</div>                      
+
+                <!-- Nueva sección Bitácora -->
+                <section id="log" class="section active" style="margin:10px; ">
+                    <div class="log-container" style="border: 2px solid #333">
+                        <div class="log-header" style="background: rgb(188, 71, 73)">
+                            <div class="log-date" id="current-date" style="display: none;">DD/MM/YYYY</div>
+                            <div class="log-title">NUEVO Registro</div>
+                            <div class="header-actions">
+                                <button class="header-btn" id="save-log-btn" title="Guardar">
+                                    <i class="fa-solid fa-floppy-disk"></i>
+                                </button>
+                                <button class="header-btn" id="clear-log-btn" title="Limpiar">
+                                    <i class="fa-solid fa-rotate-left"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="mood-section" style="background: #33333330;">
+                            <div class="practice-toggle">
+                                <div class="practice-button" id="practice-button">
+                                    <div class="practice-state">NO</div>
+                                </div>
+                            </div>
+                            <div class="mood-board" id="mood-board">
+                                <!-- Los elementos del mood board se generarán con JavaScript -->
+                            </div>
+                        </div>
+
+                        <!-- SECCIÓN NOTAS -->
+                        <div class="notes-section" style="background: #33333330;">
+                            <div class="date-input-container">
+                                <label class="date-input-label" for="practice-date">FECHA DE LA PRÁCTICA:</label>
+                                <input type="date" class="date-input" id="practice-date">
+                                <small style="color: #666; font-size: 0.8rem;">Si está vacío, se usará la fecha actual</small>
+                            </div>
+                            
+                            <textarea class="notes-textarea" id="practice-notes" placeholder="Escribe tus notas aquí..."></textarea>
+
+                            <div class="tags-input">
+                                <input type="text" class="tag-input" id="tag-input" placeholder="Vincular etiquetas...">
+                                <button class="add-tag-btn" id="add-tag-btn">+</button>
+                            </div>
+                            <div class="tags-list" id="tags-list">
+                                <!-- Los tags se mostrarán aquí -->
+                            </div>
+                        
+                            <div class="asanas-input">
+                                <input type="text" class="asana-input" id="asana-search-input" placeholder="Vincular āsana...">
+                                <button class="add-asana-btn" id="add-asana-btn">+</button>
+                            </div>
+                            <div class="asana-search-results" id="asana-search-results" style="display: none;">
+                                <!-- Los resultados de búsqueda aparecerán aquí -->
+                            </div>
+                            <div class="asanas-list" id="asanas-list">
+                                <!-- Los āsanas vinculados se mostrarán aquí -->
+                            </div>
+                        </div>
+                        
+                        <!-- ESTADÍSTICAS -->
+                        <div class="stats-section">
+                            <div class="stats-title">ESTADÍSTICAS la práctica</div>
+                            <div class="stats-summary" id="stats-summary">
+                                <!-- Las estadísticas se mostrarán aquí -->
+                            </div>
+                            <div class="stats-chart" id="stats-chart">
+                                <!-- El gráfico se generará aquí -->
+                            </div>
+                        </div>
+                        
+                        <!-- HISTORIAL -->
+                        <div class="log-history" id="log-history">
+                            <h3>REGISTRO de prácticas</h3>
+                            <!-- Las entradas anteriores se mostrarán aquí -->
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Otras secciones... -->
+                <section id="study" class="section">
+                    <div style="text-align: center; padding: 50px;">
+                        <h2>SECCIÓN DE ESTUDIO</h2>
+                        <p>Contenido de estudio aparecerá aquí</p>
+                    </div>
+                </section>
+                
+                <section id="list" class="section">
+                    <div style="text-align: center; padding: 50px;">
+                        <h2>SECCIÓN DE LISTA</h2>
+                        <p>Lista de ásanas aparecerá aquí</p>
+                    </div>
+                </section>
+
+                <section id="lexicon" class="section">
+                    <div style="text-align: center; padding: 50px;">
+                        <h2>SECCIÓN LEXICÓN</h2>
+                        <p>Contenido del lexicón aparecerá aquí</p>
+                    </div>
+                </section>
+
+                <section id="lexicon-list" class="section">
+                    <div style="text-align: center; padding: 50px;">
+                        <h2>SECCIÓN LISTA LEXICÓN</h2>
+                        <p>Lista de términos aparecerá aquí</p>
+                    </div>
+                </section>
+
+                <section id="about" class="section">
+                    <div style="text-align: center; padding: 50px;">
+                        <h2>ACERCA DE</h2>
+                        <p>Información sobre la aplicación</p>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Barra de navegación fija -->
+    <div class="nav-bar">
+        <div class="nav-menu">
+            <button class="nav-btn active" data-section="log">
+                <i class="fa-solid fa-book"></i>
+                <span>BITÁCORA</span>
+            </button>
+            <button class="nav-btn" data-section="study">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <span>ESTUDIO</span>
+            </button>
+            <button class="nav-btn" data-section="list">
+                <i class="fa-solid fa-list"></i>
+                <span>LISTA</span>
+            </button>
+            <button class="nav-btn" data-section="lexicon">
+                <i class="fa-solid fa-book-open"></i>
+                <span>LEXICÓN</span>
+            </button>
+            <button class="nav-btn" data-section="lexicon-list">
+                <i class="fa-solid fa-list-check"></i>
+                <span>LISTA LEXICÓN</span>
+            </button>
+            <button class="nav-btn" data-section="about">
+                <i class="fa-solid fa-circle-info"></i>
+                <span>ACERCA DE</span>
+            </button>
+        </div>
+    </div>
+
+    <script src="a.js"></script>
+</body>
+</html>

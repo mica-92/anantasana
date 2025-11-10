@@ -1,0 +1,977 @@
+/* ====================================================
+   ESTILOS PARA LA CARD DEL DAILY ASANA
+   ==================================================== */
+.daily-asana-card {
+    width: 90dvw;
+    max-width: 500px;
+    background: var(--yellow-light);
+    margin: 0 auto 20px auto;
+}
+
+.daily-asana-card .card-header {
+    color: var(--text-dark);
+    text-align: center;
+    padding: 0px;
+    border-bottom: 2px solid var(--text-dark);
+}
+
+.daily-asana-card .card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    position: relative;
+}
+
+.series-circle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid #333;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.8rem;
+    z-index: 10;
+    box-shadow: 2px 2px 0 #333;
+}
+
+/* ====================================================
+   ESTILOS PARA EL HISTORIAL - DISEÑO EXPANDIBLE
+   ==================================================== */
+.log-history {
+    width: 100%;
+    max-width: 800px;
+    border: 2px solid #333;
+    margin: 0 auto;
+    box-shadow: 6px 6px 5px rgba(246, 115, 47, 0.3);
+    background: var(--yellow-light);
+}
+
+.log-history h3 {
+    padding: 8px 12px;
+    background: var(--yellow-accent); 
+    text-align: center;
+    border-bottom: 2px solid #333;
+    color: #333;
+    text-transform: uppercase;
+    font-size: 1.2rem;
+}
+
+.log-entry {
+    border-bottom: 2px solid #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.log-entry:last-child {
+    border-bottom: none;
+}
+
+.log-entry-header {
+    padding: 15px;
+    transition: all 0.3s ease;
+}
+
+/* Fila superior con fecha y toggle */
+.log-entry-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.log-entry-date {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: var(--text-dark);
+}
+
+.log-entry-toggle {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+.log-entry-toggle::after {
+    content: "▼";
+    font-size: 0.8rem;
+    color: var(--text-dark);
+}
+
+.log-entry.expanded .log-entry-toggle::after {
+    transform: rotate(180deg);
+}
+
+/* Fila inferior con moods separada de la práctica */
+.log-entry-bottom-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.log-entry-practice {
+    width: 35px;
+    height: 35px;
+    background-color: var(--red-accent);
+    border: 2px solid var(--text-dark);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.log-entry-practice.yes {
+    background-color: var(--accent-color);
+}
+
+.log-entry-practice .practice-state {
+    color: var(--text-dark);
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.log-entry-practice.yes .practice-state {
+    color: var(--text-light);
+}
+
+.log-entry-moods {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    align-items: center;
+    flex: 1;
+}
+
+.log-entry-mood {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--text-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+/* Contenido expandible */
+.log-entry-content {
+    display: none;
+    padding: 0 15px 15px 15px;
+    border-top: 1px solid #33333350;
+    margin-top: 0;
+}
+
+.log-entry.expanded .log-entry-content {
+    display: block;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Tags y notas en el contenido expandido */
+.log-entry-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 15px 0;
+}
+
+.log-entry-tag {
+    background: rgba(47, 139, 246, 0.2);
+    border: 1px solid var(--text-dark);
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.log-entry-notes {
+    margin: 15px 0;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px solid #33333350;
+    border-radius: 4px;
+    line-height: 1.4;
+}
+
+/* Botón de eliminar */
+.delete-entry-btn {
+    background: var(--red-accent);
+    color: white;
+    border: 2px solid var(--text-dark);
+    padding: 8px 16px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.delete-entry-btn:hover {
+    background: #d63031;
+    transform: translateY(-2px);
+}
+
+/* Efectos hover */
+.log-entry:hover {
+    background: rgba(233, 196, 106, 0.1);
+}
+
+.log-entry-header:hover {
+    background: rgba(233, 196, 106, 0.2);
+}
+
+/* ====================================================
+   ESTILOS PARA EL POP-UP DE REGISTRO
+   ==================================================== */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(35, 28, 21, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup-content {
+    background-color: var(--primary-color);
+    border: 3px solid #333;
+    max-width: 90%;
+    max-height: 90%;
+    overflow-y: auto;
+    width: 600px;
+}
+
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333;
+    padding: 10px;
+    background-color: var(--accent-color);
+}
+
+.popup-header h2 {
+    margin: 0;
+    flex-grow: 1;
+}
+
+.close-popup-btn {
+    background: #333;
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+.popup-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 10px;
+}
+
+.popup-actions button {
+    padding: 10px 20px;
+    border: 1px solid #333;
+}
+
+.history-section-menu {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.new-practice-btn {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    background: #f6442f;
+    color: white;
+    border: 2px solid #333;
+}
+
+/* ====================================================
+   ESTILOS PARA LA SECCIÓN DE MOODS
+   ==================================================== */
+.mood-section {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border-bottom: 2px solid #33333380;
+    gap: 10px;
+    background: #33333330;
+}
+
+.practice-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.practice-button {
+    width: 50px;
+    height: 50px;
+    background-color: var(--red-accent);
+    border: 2px solid var(--text-dark);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.practice-state {
+    font-weight: bold;
+    color: var(--text-dark);
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.practice-button.yes {
+    background-color: var(--accent-color);
+}
+
+.practice-button.yes .practice-state {
+    color: var(--text-light);
+}
+
+.mood-board {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    flex: 1;
+}
+
+.mood-item {
+    width: 33px;
+    height: 33px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--text-dark);
+    border-radius: 50%;
+    background-color: #ccc;
+    margin: 2px;
+}
+
+.mood-item.selected {
+    transform: scale(1.1);
+    filter: hue-rotate(90deg);
+    color: #505749;
+}
+
+/* ====================================================
+   ESTILOS PARA FORMULARIOS Y ENTRADAS
+   ==================================================== */
+.notes-section {
+    padding: 12px;
+    border-bottom: 2px solid #333;
+    background: #33333330;
+}
+
+.date-input-container {
+    margin-bottom: 15px;
+}
+
+.date-input-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: var(--text-dark);
+}
+
+.date-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 2px solid var(--text-dark);
+    background: rgba(233, 165, 106, 0.4);
+    color: var(--text-dark);
+    font-family: "Inconsolata", monospace;
+}
+
+.notes-textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 10px;
+    border: 2px solid var(--text-dark);
+    background: rgb(233, 196, 106);
+    font-family: "Inconsolata", monospace;
+    resize: vertical;
+}
+
+/* Tags y Asanas */
+.tags-input,
+.asanas-input {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    margin-top: 12px;
+}
+
+.tag-input,
+.asana-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 2px solid var(--text-dark);
+    background: rgba(233, 165, 106, 0.4);
+    color: var(--text-dark);
+}
+
+.add-tag-btn,
+.add-asana-btn {
+    background: var(--accent-color);
+    color: white;
+    border: 2px solid var(--text-dark);
+    padding: 0;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.add-tag-btn:hover,
+.add-asana-btn:hover {
+    background: var(--yellow-accent);
+    color: var(--text-dark);
+}
+
+.tags-list,
+.asanas-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-bottom: 12px;
+}
+
+.tag,
+.asana-tag {
+    display: inline-block;
+    background: var(--accent-color);
+    border: 2px solid var(--text-dark);
+    padding: 5px 10px;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    color: #fff;
+}
+
+.asana-search-results {
+    max-height: 150px;
+    overflow-y: auto;
+    border: 2px solid var(--text-dark);
+    background: var(--primary-color);
+    margin-top: 8px;
+}
+
+.asana-search-result {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--text-dark);
+    cursor: pointer;
+}
+
+.asana-search-result:hover {
+    background: rgba(47, 139, 246, 0.2);
+}
+
+.asana-search-result:last-child {
+    border-bottom: none;
+}
+
+
+/* Fila inferior con práctica y moods en la MISMA línea */
+.log-entry-bottom-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.log-entry-practice {
+    width: 35px;
+    height: 35px;
+    background-color: var(--red-accent);
+    border: 2px solid var(--text-dark);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    /* Remover cualquier margin que lo separe */
+    margin: 0;
+}
+
+.log-entry-moods {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    align-items: center;
+    /* Permitir que crezca y ocupe el espacio disponible */
+    flex: 1;
+}
+
+.log-entry-mood {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--text-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+    .log-entry-header {
+        padding: 12px;
+    }
+    
+    .log-entry-top-row {
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+    
+    .log-entry-bottom-row {
+        /* Mantener práctica y moods en la MISMA línea */
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+    }
+    
+    .log-entry-moods {
+        /* Los moods pueden envolverse pero en la misma línea que la práctica */
+        justify-content: flex-start;
+        flex: 1;
+    }
+}
+
+@media (max-width: 480px) {
+    .log-entry-content {
+        padding: 0 12px 12px 12px;
+    }
+    
+    .log-entry-mood {
+        width: 28px;
+        height: 28px;
+        font-size: 0.8rem;
+    }
+    
+    .log-entry-practice {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .log-entry-practice .practice-state {
+        font-size: 0.8rem;
+    }
+    
+    .log-entry-bottom-row {
+        gap: 6px;
+    }
+}
+
+/* ====================================================
+   ESTILOS PARA ESTADÍSTICAS
+   ==================================================== */
+.stats-section {
+    background: #f3f62f20;
+    margin-top: 20px;
+    border: 2px solid #333;
+    margin-bottom: 20px;
+    box-shadow: 6px 6px 5px rgba(246, 115, 47, 0.3);
+
+}
+
+.stats-title {
+    text-align: left;
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    color: var(--text-dark);
+    background: var(--yellow-accent);
+    padding: 12px;
+    border-bottom: 2px solid #333;
+}
+
+.stats-summary {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    padding: 0 15px;
+    color: var(--text-dark);
+}
+
+.stats-chart {
+    width: 100%;
+    height: 250px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 5px;
+    padding: 10px;
+    padding-bottom: 40px;
+}
+
+.chart-bar {
+    flex: 1;
+    background: var(--accent-color);
+    border: 1px solid var(--text-dark);
+    position: relative;
+    min-height: 5px;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chart-bar:hover {
+    background: var(--yellow-accent);
+}
+
+.chart-value {
+    position: absolute;
+    top: -25px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: var(--text-dark);
+}
+
+.chart-label {
+    position: absolute;
+    bottom: -35px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 0.7rem;
+    color: var(--text-dark);
+    display: flex;
+    justify-content: center;
+}
+
+.chart-mood-circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid var(--text-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    background: white;
+}
+
+/* ====================================================
+   ESTILOS PARA EL TOGGLE DE NUEVO REGISTRO (si se usa)
+   ==================================================== */
+.log-title {
+    font-size: 1.1rem;
+    color: var(--text-dark);
+    flex: 1;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none;
+    text-transform: uppercase;
+}
+
+.log-title.active {
+    background-color: var(--accent-color);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 2px solid #333;
+}
+
+.log-title:hover {
+    background-color: #f0f0f0;
+}
+
+.log-title.active:hover {
+    background-color: var(--accent-color-dark);
+}
+
+/* ====================================================
+   ESTILOS PARA INDICADOR DE MODO EDICIÓN (si se usa)
+   ==================================================== */
+.log-header {
+    position: relative;
+}
+
+.log-header.editing::before {
+    content: "EDITANDO ENTRADA EXISTENTE";
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--yellow-accent);
+    color: var(--text-dark);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    border: 2px solid var(--text-dark);
+    z-index: 100;
+}
+
+.save-log-btn.editing {
+    background: var(--yellow-accent) !important;
+    color: var(--text-dark) !important;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* ====================================================
+   MEDIA QUERIES PARA ESTADÍSTICAS
+   ==================================================== */
+@media (max-width: 768px) {
+
+    
+    .stats-title {
+        padding: 10px;
+    }
+    
+    .stats-summary {
+        margin-bottom: 15px;
+    }
+    
+    .stats-chart {
+        height: 200px;
+        padding-bottom: 35px;
+    }
+    
+    .chart-mood-circle {
+        width: 25px;
+        height: 25px;
+        font-size: 0.8rem;
+    }
+    
+    .chart-value {
+        top: -20px;
+        font-size: 0.6rem;
+    }
+    
+    .chart-label {
+        bottom: -30px;
+        font-size: 0.6rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-title {
+        padding: 8px;
+        text-align: center;
+    }
+    
+    .stats-summary {
+        font-size: 0.9rem;
+        padding: 0 10px;
+    }
+    
+    .stats-chart {
+        height: 180px;
+        padding: 8px;
+        padding-bottom: 30px;
+        gap: 3px;
+    }
+    
+    .chart-mood-circle {
+        width: 22px;
+        height: 22px;
+        font-size: 0.7rem;
+    }
+    
+    .chart-value {
+        top: -18px;
+        font-size: 0.5rem;
+    }
+    
+    .chart-label {
+        bottom: -25px;
+        font-size: 0.5rem;
+    }
+}
+
+
+/* ====================================================
+   ESTILOS CORREGIDOS PARA HEAT MAP - COLORES VISIBLES
+   ==================================================== */
+.heatmap-section {
+    width: 100%;
+    margin-top: 20px;
+    border-top: 2px solid #333;
+    box-sizing: border-box;
+}
+
+.heatmap-title {
+    text-align: center;
+    font-weight: bold;
+    padding: 10px;
+    font-size: 1.1rem;
+    color: var(--text-dark);
+    text-transform: uppercase;
+}
+
+.heatmap-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-sizing: border-box;
+}
+
+.heatmap-month {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    box-sizing: border-box;
+}
+
+.heatmap-month-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #33333330;
+}
+
+.heatmap-month-name {
+    font-weight: bold;
+    color: var(--text-dark);
+    font-size: 1rem;
+    text-transform: capitalize;
+}
+
+.heatmap-month-stats {
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    font-weight: bold;
+}
+
+.heatmap-weeks {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-sizing: border-box;
+}
+
+.heatmap-week {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.heatmap-days {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    flex: 1;
+    justify-content: space-between;
+}
+
+/* ====================================================
+   ESTILOS CORREGIDOS PARA HEAT MAP - DÍAS FUERA DEL MES
+   ==================================================== */
+.heatmap-day {
+    flex: 1;
+    height: 24px;
+    border: 1px solid #333;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+    cursor: help;
+    min-width: 0;
+}
+
+/* DÍAS FUERA DEL MES - COLOR DE FONDO NORMAL */
+.heatmap-day.empty {
+    background-color: transparent !important;
+    border-color: #e0e0e0 !important;
+    cursor: default;
+}
+
+/* DÍAS DENTRO DEL MES SIN PRÁCTICA - ROJO */
+.heatmap-day.level-0 {
+    background-color: rgb(255, 165, 171) !important;
+    border-color: #333 !important;
+}
+
+/* DÍAS DENTRO DEL MES CON PRÁCTICA - VERDE */
+.heatmap-day.level-1 {
+    background-color: rgb(42, 157, 143) !important;
+    border-color: #333 !important;
+}
+
+/* COLORES SIMPLIFICADOS */
+.heatmap-day.empty {
+    background-color: transparent !important;
+    border-color: #e0e0e0 !important;
+    cursor: default;
+}
+
+.heatmap-day.no-practice {
+    background-color: rgb(255, 165, 171) !important; /* Rojo - sin práctica */
+    border-color: #333 !important;
+}
+
+.heatmap-day.practice {
+    background-color: rgb(42, 157, 143) !important; /* Verde - con práctica */
+    border-color: #333 !important;
+}
+
