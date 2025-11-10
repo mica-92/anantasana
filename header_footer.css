@@ -31,7 +31,6 @@
 body {
     background-color: var(--primary-color);
         line-height: 1.4;
-    min-height: 100dvh;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -39,9 +38,9 @@ body {
 
 .content {
     padding: 20px;
+    margin-bottom: 40px;
     margin-top: 60px;
     min-height: 70dvh;
-    display: flex;
     align-items: center;
     justify-content: center;
     background-color: var(--primary-color);
@@ -74,7 +73,8 @@ header div:nth-child(1) {
     padding: 8px 0;
     width: 100%;
     font-size: 0.9rem;
-    font-style: italic;
+    font-family: "Stack Sans Text", sans-serif !important;
+
 }
 
 header div:nth-child(2) {

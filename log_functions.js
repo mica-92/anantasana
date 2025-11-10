@@ -69,7 +69,7 @@ function showDailyAsana() {
     // Nombre en Sandhi
     if (dailyAsana.Sandhi) {
         detailsHTML += `
-            <div class="detail-row">${dailyAsana.Sandhi}</div>`;
+            <div class="detail-row" >${dailyAsana.Sandhi}</div>`;
     }
     
     dailyDetails.innerHTML = detailsHTML || '<p>No hay información disponible para esta āsana</p>';

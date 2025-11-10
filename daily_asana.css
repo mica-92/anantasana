@@ -47,20 +47,17 @@
 .log-history {
     width: 100%;
     max-width: 800px;
-    border: 2px solid #333;
     margin: 0 auto;
     box-shadow: 6px 6px 5px rgba(246, 115, 47, 0.3);
-    background: var(--yellow-light);
 }
 
 .log-history h3 {
     padding: 8px 12px;
-    background: var(--yellow-accent); 
     text-align: center;
-    border-bottom: 2px solid #333;
+    border-top: 2px solid #333;
     color: #333;
     text-transform: uppercase;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
 }
 
 .log-entry {
@@ -621,7 +618,7 @@
     background: #f3f62f20;
     margin-top: 20px;
     border: 2px solid #333;
-    margin-bottom: 20px;
+    margin-bottom: 50px;
     box-shadow: 6px 6px 5px rgba(246, 115, 47, 0.3);
 
 }
@@ -948,7 +945,7 @@
 
 /* DÍAS DENTRO DEL MES SIN PRÁCTICA - ROJO */
 .heatmap-day.level-0 {
-    background-color: rgb(255, 165, 171) !important;
+    background-color: rgb(218, 98, 125) !important;
     border-color: #333 !important;
 }
 
@@ -966,7 +963,7 @@
 }
 
 .heatmap-day.no-practice {
-    background-color: rgb(255, 165, 171) !important; /* Rojo - sin práctica */
+    background-color: rgb(218, 98, 125) !important; /* Rojo - sin práctica */
     border-color: #333 !important;
 }
 

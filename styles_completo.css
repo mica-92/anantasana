@@ -2,6 +2,7 @@
 
 .card-header {
     background-color: var(--yellow-accent);
+
 }
 
 main {
@@ -95,6 +96,8 @@ body.about-section .card {
     flex-wrap: nowrap;
     align-items: flex-start;
     min-height: auto;
+    color: var(--accent-color);
+    font-weight: bold;
 }
 
 .detail-label {
@@ -325,6 +328,8 @@ body:not(.study-section) .floating-filters {
     justify-content: center;
     transition: all 0.3s;
     box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1001; /* Mayor z-index que el menú */
+
 }
 
 .filter-btn {
@@ -348,8 +353,16 @@ body:not(.study-section) .floating-filters {
 }
 
 .menu-content {
-    left: 0;
+    position: absolute;
+    top: 80;
+    left: 60%; /* Cambiar a left: 100% para abrir a la derecha */
+    background: var(--primary-color);
+    padding: 15px;
     min-width: 250px;
+    display: none;
+    box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1000; /* Menor z-index que el botón */
+
 }
 
 .filter-content {
@@ -454,6 +467,8 @@ body:not(.study-section) .floating-filters {
     line-height: 1.2;
     text-align: center;
     font-size: clamp(1rem, 4vw, 1.8rem);
+            padding: 12px 8px;
+
 }
 
 /* Estados de carga y error */
