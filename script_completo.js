@@ -1000,22 +1000,13 @@ function renderAsanaCard() {
     // HTML básico (siempre visible) - SERIES Y BEFORE/AFTER
     let basicHTML = '';
     
-    // AGREGAR HOT SERIES SI EXISTE (MAPEADO) - FUERA DE DETAILS
-    if (asana.SeriesHot) {
-        const mappedHotSeries = seriesHotMapping[asana.SeriesHot] || asana.SeriesHot;
-        basicHTML += `
-        <div class="detail-row">
-            <span class="detail-label">VINYĀSA Series:</span>
-            <span style="font-weight: bold; font-style: italic; color: #f6442fff">${mappedHotSeries}</span>
-        </div>`;
-    }
 
     // AGREGAR YOGA SERIES SI EXISTE (MAPEADO) - FUERA DE DETAILS
     if (asana.YogaSeries) {
         const mappedYogaSeries = seriesMapping[asana.YogaSeries] || asana.YogaSeries;
         basicHTML += `
         <div class="detail-row">
-            <span class="detail-label">aṣṭāṅga Series:</span>
+            <span class="detail-label">aṣṭāṅga:</span>
             <span style="font-weight: bold; font-style: italic; color: #f6442fff">${mappedYogaSeries}</span>
         </div>`;
     }

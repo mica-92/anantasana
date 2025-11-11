@@ -974,3 +974,119 @@
     border-color: #333 !important;
 }
 
+
+
+/* Estilos para notas protegidas */
+.protected-notes {
+    background-color: #f8f9fa;
+    border: 2px solid #dee2e6;
+    padding: 15px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.protected-notes p {
+    margin: 0 0 10px 0;
+    color: #6c757d;
+}
+
+.unlock-notes-btn {
+    background-color: #f6442f;
+    color: white;
+    border: 2px solid #333;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.unlock-notes-btn:hover {
+    background-color: #e03e2a;
+    transform: translateY(-2px);
+}
+
+/* Estilo para cuando las notas están desbloqueadas */
+.log-entry-notes.unlocked {
+    background-color: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+/* ====================================================
+   ESTILOS PARA LA CARD DEL DAILY ASANA
+   ==================================================== */
+.daily-asana-card {
+    width: 90dvw;
+    max-width: 800px; /* Mismo ancho máximo que el historial */
+    background: var(--yellow-light);
+    margin: 0 auto 20px auto;
+}
+
+.daily-asana-card .card-header {
+    color: var(--text-dark);
+    text-align: center;
+    padding: 0px;
+    border-bottom: 2px solid var(--text-dark);
+}
+
+.daily-asana-card .card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    position: relative;
+    padding: 15px; /* Agregar padding para consistencia */
+}
+
+/* ====================================================
+   ESTILOS PARA EL HISTORIAL - DISEÑO EXPANDIBLE
+   ==================================================== */
+.log-history {
+    width: 90dvw; /* Mismo ancho que daily-asana-card */
+    max-width: 800px; /* Mismo max-width */
+    margin: 0 auto;
+}
+
+/* ====================================================
+   ESTILOS PARA ESTADÍSTICAS
+   ==================================================== */
+.stats-section {
+    width: 90dvw; /* Mismo ancho que los otros elementos */
+    max-width: 800px; /* Mismo max-width */
+    background: #f3f62f20;
+    margin: 20px auto 50px auto; /* Centrado */
+    border: 2px solid #333;
+    box-shadow: 6px 6px 5px rgba(246, 115, 47, 0.3);
+}
+
+/* ====================================================
+   ESTILOS CORREGIDOS PARA HEAT MAP - COLORES VISIBLES
+   ==================================================== */
+.heatmap-section {
+    width: 100%; /* 100% del contenedor padre (stats-section) */
+    margin-top: 20px;
+    border-top: 2px solid #333;
+    box-sizing: border-box;
+}
+
+.heatmap-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-sizing: border-box;
+}
+
+.heatmap-month {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+    padding-bottom: 20px;
+    margin-bottom: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    box-sizing: border-box;
+    border-bottom: 2px solid #333;
+}

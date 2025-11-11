@@ -1,6 +1,37 @@
 // ====================================================
 // FUNCIONALIDAD ESPECÍFICA PARA LA BITÁCORA (DAINANDINĪ)
 // ====================================================
+// Variable para controlar si las notas están desbloqueadas
+let notesUnlocked = false;
+const NOTES_PASSWORD = "4790";
+
+// Función para verificar contraseña
+function verifyNotesPassword() {
+    const password = prompt("Ingresa la contraseña para ver las notas:");
+    if (password === NOTES_PASSWORD) {
+        notesUnlocked = true;
+        alert("Notas desbloqueadas correctamente");
+        displayLogHistory(); // Re-renderizar el historial
+        return true;
+    } else {
+        alert("Contraseña incorrecta");
+        return false;
+    }
+}
+
+// Función para proteger las notas en el display
+function protectNotes(notes) {
+    if (!notes || notes.trim() === '') return '';
+    
+    if (notesUnlocked) {
+        return notes;
+    } else {
+        return '<div class="protected-notes">' +
+               '<p style="color: #666; font-style: italic;">Notas protegidas</p>' +
+               '<button class="unlock-notes-btn brutalist-btn" style="margin-top: 10px; padding: 5px 10px; font-size: 0.8rem;">Desbloquear notas</button>' +
+               '</div>';
+    }
+}
 
 function showDailyAsana() {
     // Filtrar solo asanas de aṣṭāṅga
@@ -280,14 +311,34 @@ function updatePopupAsanasDisplay() {
     });
 }
 
+// Función de debug para verificar el estado del botón
+function debugPracticeButton() {
+    const practiceButton = document.getElementById('popup-practice-button');
+    console.log('Botón de práctica:', practiceButton);
+    console.log('Clases del botón:', practiceButton.classList);
+    console.log('Estado currentLogEntry.practiced:', currentLogEntry.practiced);
+    
+    practiceButton.addEventListener('click', function() {
+        console.log('Click en botón de práctica');
+        console.log('Antes - Clases:', this.classList, 'Practiced:', currentLogEntry.practiced);
+        this.classList.toggle('yes');
+        currentLogEntry.practiced = this.classList.contains('yes');
+        console.log('Después - Clases:', this.classList, 'Practiced:', currentLogEntry.practiced);
+    });
+}
+
+// Llamar esta función temporalmente para debug
+debugPracticeButton();
 // Configurar event listeners del pop-up
 function setupPopupEventListeners() {
-    // Toggle de práctica en el pop-up
+    // Toggle de práctica en el pop-up - CORREGIDO
     document.getElementById('popup-practice-button').addEventListener('click', function() {
         this.classList.toggle('yes');
         const practiceState = this.querySelector('.practice-state');
         currentLogEntry.practiced = this.classList.contains('yes');
         practiceState.textContent = currentLogEntry.practiced ? 'SÍ' : 'NO';
+        
+        console.log('Estado de práctica cambiado:', currentLogEntry.practiced); // Para debug
     });
 
     // Añadir tag en el pop-up
@@ -329,7 +380,6 @@ function setupPopupEventListeners() {
         }
     });
 }
-
 // Abrir pop-up
 function openPracticePopup() {
     const popup = document.getElementById('practice-popup');
@@ -661,7 +711,6 @@ function debugHeatMap() {
     }
 }
 
-// Mostrar historial de entradas
 function displayLogHistory() {
     const logHistoryContainer = document.getElementById('log-history');
     
@@ -704,29 +753,31 @@ function displayLogHistory() {
             `<span class="log-entry-tag">${asana.name}</span>`
         ).join('');
         
-// En la parte donde generas el HTML del historial, cambia esto:
-historyHTML += `
-    <div class="log-entry" data-id="${entry.id}">
-        <div class="log-entry-header">
-            <div class="log-entry-top-row">
-                <div class="log-entry-date">${formattedDate}</div>
-                <div class="log-entry-toggle"></div>
-            </div>
-            <div class="log-entry-bottom-row">
-                ${practiceButtonHTML}
-                <div class="log-entry-moods">
-                    ${moodsHTML}
+        // NOTAS PROTEGIDAS - CAMBIO AQUÍ
+        const notesHTML = entry.notes ? protectNotes(entry.notes) : '';
+
+        historyHTML += `
+            <div class="log-entry" data-id="${entry.id}">
+                <div class="log-entry-header">
+                    <div class="log-entry-top-row">
+                        <div class="log-entry-date">${formattedDate}</div>
+                        <div class="log-entry-toggle"></div>
+                    </div>
+                    <div class="log-entry-bottom-row">
+                        ${practiceButtonHTML}
+                        <div class="log-entry-moods">
+                            ${moodsHTML}
+                        </div>
+                    </div>
+                </div>
+                <div class="log-entry-content" style="display: none;">
+                    ${tagsHTML ? `<div class="log-entry-tags">${tagsHTML}</div>` : ''}
+                    ${asanasHTML ? `<div class="log-entry-tags">${asanasHTML}</div>` : ''}
+                    ${notesHTML ? `<div class="log-entry-notes">${notesHTML}</div>` : ''}
+                    <button class="delete-entry-btn" data-id="${entry.id}">Eliminar</button>
                 </div>
             </div>
-        </div>
-        <div class="log-entry-content" style="display: none;">
-            ${tagsHTML ? `<div class="log-entry-tags">${tagsHTML}</div>` : ''}
-            ${asanasHTML ? `<div class="log-entry-tags">${asanasHTML}</div>` : ''}
-            ${entry.notes ? `<div class="log-entry-notes">${entry.notes}</div>` : ''}
-            <button class="delete-entry-btn" data-id="${entry.id}">Eliminar</button>
-        </div>
-    </div>
-`;
+        `;
     });
     
     logHistoryContainer.innerHTML = historyHTML;
@@ -752,14 +803,26 @@ historyHTML += `
     // Añadir event listeners para los botones de eliminar
     document.querySelectorAll('.delete-entry-btn').forEach(button => {
         button.addEventListener('click', function(e) {
-            e.stopPropagation(); // Evitar que se expanda/contraiga al hacer click en eliminar
+            e.stopPropagation();
             const entryId = this.getAttribute('data-id');
             if (confirm('¿Estás seguro de que quieres eliminar esta entrada?')) {
                 deleteEntryById(entryId);
             }
         });
     });
+    
+    // Añadir event listeners para los botones de desbloquear notas
+    document.querySelectorAll('.unlock-notes-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (verifyNotesPassword()) {
+                // Si la contraseña es correcta, re-renderizar
+                displayLogHistory();
+            }
+        });
+    });
 }
+
 
 // Eliminar entrada por ID
 async function deleteEntryById(entryId) {
@@ -787,7 +850,7 @@ async function deleteEntryById(entryId) {
     }
 }
 
-// Guardar entrada de bitácora
+// Modificar la función saveLogEntry para incluir protección de notas
 async function saveLogEntry() {
     // Obtener fecha del campo del pop-up
     const dateInput = document.getElementById('popup-practice-date').value;
@@ -813,7 +876,7 @@ async function saveLogEntry() {
             date: currentLogEntry.date.toISOString(),
             practiced: currentLogEntry.practiced,
             moods: currentLogEntry.moods,
-            notes: currentLogEntry.notes,
+            notes: currentLogEntry.notes, // Las notas se guardan normalmente
             tags: currentLogEntry.tags,
             asanas: currentLogEntry.asanas
         };
@@ -843,6 +906,54 @@ async function saveLogEntry() {
     } catch (error) {
         console.error('Error al guardar en Supabase:', error);
         alert('Error al guardar: ' + error.message);
+    }
+}
+
+
+// En script_completo.js, puedes añadir esta función opcional
+function updateNotesLockStatus() {
+    const header = document.querySelector('header');
+    const lockIndicator = document.getElementById('notes-lock-indicator') || document.createElement('div');
+    
+    if (!document.getElementById('notes-lock-indicator')) {
+        lockIndicator.id = 'notes-lock-indicator';
+        lockIndicator.style.cssText = `
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.8rem;
+            padding: 2px 8px;
+            border-radius: 3px;
+        `;
+        header.style.position = 'relative';
+        header.appendChild(lockIndicator);
+    }
+    
+    if (notesUnlocked) {
+        lockIndicator.textContent = '🔓 Notas desbloqueadas';
+        lockIndicator.style.backgroundColor = '#d4edda';
+        lockIndicator.style.color = '#155724';
+        lockIndicator.style.border = '1px solid #c3e6cb';
+    } else {
+        lockIndicator.textContent = '🔒 Notas bloqueadas';
+        lockIndicator.style.backgroundColor = '#f8d7da';
+        lockIndicator.style.color = '#721c24';
+        lockIndicator.style.border = '1px solid #f5c6cb';
+    }
+}
+
+// Llamar esta función cuando cambie el estado
+function verifyNotesPassword() {
+    const password = prompt("Ingresa la contraseña para ver las notas:");
+    if (password === NOTES_PASSWORD) {
+        notesUnlocked = true;
+        alert("Notas desbloqueadas correctamente");
+        updateNotesLockStatus();
+        displayLogHistory();
+        return true;
+    } else {
+        alert("Contraseña incorrecta");
+        return false;
     }
 }
 

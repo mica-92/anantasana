@@ -109,7 +109,7 @@ header div:nth-child(2) {
 
 /* Footer - MODIFICADO */
 .site-footer {
-    text-align: right; /* Justificar texto a la izquierda */
+    text-align: center; /* Justificar texto a la izquierda */
     padding-left: 20px; /* Agregar padding izquierdo */
 }
 
