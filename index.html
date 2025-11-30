@@ -3,281 +3,4747 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANU</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'><path d='M221.5 51.7C216.6 39.8 204.9 32 192 32s-24.6 7.8-29.5 19.7c-93.3 224-146.7 352-160 384-6.8 16.3 .9 35 17.2 41.8s35-.9 41.8-17.2l31.8-76.3 197.3 0 31.8 76.3c6.8 16.3 25.5 24 41.8 17.2s24-25.5 17.2-41.8c-13.3-32-66.7-160-160-384zM264 320l-144 0 72-172.8 72 172.8z'/></svg>">
+    <title>Navāṅga</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'><path d='M201.7 291.5C236 310.2 266.2 335.6 290.5 366C301.6 379.9 311.5 394.9 319.9 410.8C328.4 394.9 338.2 380 349.3 366C373.6 335.5 403.8 310.1 438.1 291.5C479.8 268.8 527.5 256 577.8 256L587.7 256C598.8 256 607.8 265 607.8 276.1C607.8 424.1 487.9 544 339.9 544L299.7 544C151.9 544 32 424.1 32 276.1C32 265 41 256 52.1 256L62 256C112.4 256 160.1 268.8 201.7 291.5zM335.9 102C352.8 117.9 397.3 165.4 424.9 244.3C384.8 264.5 349.1 292.5 320 326.4C290.8 292.5 255.2 264.6 215.1 244.3C242.7 165.4 287.3 117.9 304.1 102C308.4 97.9 314.1 96 320 96C325.9 96 331.6 98 335.9 102z'/></svg>">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Inconsolata&family=Roboto+Serif:ital,opsz,wght@0,8..144,100..900;1,8..144,100..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Stack+Sans+Text:wght@200..700&display=swap" rel="stylesheet">    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Incluir Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="styles_completo.css">
-    <link rel="stylesheet" href="header_footer.css">
-    <link rel="stylesheet" href="daily_asana.css">
 
 
+
+
+<style>
+:root {
+    --dark33: #333333;
+    --dark36: #666666;
+    --green: #a6b39a;
+    --green6:#515b44;
+    --light: #feeed5ff;
+    --yellow-light: #f3f62f20;
+    --yellow: #f8dc3dff;
+    --red: #f6442fff;
+    --blue: #2f49f6ff;
+    --orange: #f6732fff;
+    --shadow-orange: 6px 6px 5px rgba(246, 115, 47, 0.3);
+    --bordo: rgb(188, 71, 73);
+    --border1dark: 1px solid #333333;
+    --border2dark: 2px solid #333333;
+    --border3dark: 3px solid #333333;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inconsolata", monospace;
+}
+
+body {
+    background-color: #f6732f15;
+    line-height: 1.4;
+    display: flex;
+    flex-direction: column;
+    color: #333;
+    width: 412px;
+    height: 755px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Header fijo */
+header {
+    padding: 8px 20px;
+    color: var(--green);
+    text-align: center;
+    font-weight: bold;
+    border-bottom: var(--border2dark);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--orange);
+    flex-direction: column;
+}
+
+.header-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.anu-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.line {
+    flex: 1;
+    height: 2px;
+    background-color: #333;
+}
+
+.anu-text {
+    font-size: 3rem;
+    color: #333;
+    text-transform: uppercase;
+}
+
+.anu-image {
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.anu-image img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+/* Contenedor principal */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    padding-top: 60px;
+    padding-bottom: 40px;
+    overflow: hidden;
+    height: 100%;
+}
+
+/* Carrusel */
+.carousel-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.carousel-track {
+    display: flex;
+    width: 500%; /* 6 tracks = 600% (changed from 500%) */
+    height: 100%;
+    transition: transform 0.3s ease;
+}
+
+.carousel-slide {
+    width: 20%; /* 100% / 6 = 16.666% (changed from 20%) */
+    height: 100%;
+    overflow-y: auto;
+    padding: 10px;
+}
+/* Footer con botones de carrusel */
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background-color: var(--yellow);
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: var(--border2dark);
+    z-index: 1000;
+    padding: 0 20px;
+}
+
+.footer-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.footer-text {
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.carousel-arrow {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid var(--dark3);
+    background: var(--green6);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    border: var(--border1dark);
+
+}
+
+.carousel-arrow:hover {
+    background: var(--orange);
+    color: white;
+    border: var(--border1dark);
+}
+
+.carousel-arrow:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--primary);
+    color: var(--primary);
+    display: none;
+}
+
+.carousel-arrow:disabled:hover {
+    background: var(--primary);
+    color: var(--primary);
+}
+
+/* Estilos para el contenido del carrusel */
+.stats-container, 
+.history-container, 
+.today-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.log-container {
+    max-height: 100%;
+    overflow-y: auto;
+    padding: 15px;
+}
+
+        /* Estilos específicos para el formulario de registro */
+        .mood-section {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 2px solid #33333380;
+            gap: 10px;
+        }
+
+        .practice-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .practice-button {
+            width: 33px;
+            height: 33px;
+            background-color: var(--red-accent);
+            border: 2px solid var(--dark3);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .practice-state {
+            font-weight: bold;
+            color: var(--dark3);
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .practice-button.yes {
+            background-color: var(--green6);
+        }
+
+        .practice-button.yes .practice-state {
+            color: var(--text-light);
+        }
+
+        .mood-board {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            flex: 1;
+            margin-bottom: 10px;
+        }
+
+        .mood-item {
+            width: 33px;
+            height: 33px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: var(--border2dark);
+            border-radius: 50%;
+            background-color: #ccc;
+            margin: 2px;
+        }
+
+        .mood-item.selected {
+            transform: scale(1.1);
+            filter: hue-rotate(90deg);
+            color: #505749;
+        }
+
+        /* SECCIÓN NOTAS */
+        .notes-section {
+            padding: 12px;
+        }
+
+        .date-input-container {
+            margin-bottom: 15px;
+        }
+
+        .date-input-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--green6);
+        }
+
+        .date-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: var(--border2dark);
+            background: var(--yellow);
+            color: var(--green6);
+        }
+
+        .notes-textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 8px 12px;
+            border: var(--border2dark);
+            background: var(--yellow-light);
+            color: var(--green6);
+        }
+
+        /* TAGS SECTION */
+        .tags-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            margin-top: 12px;
+        }
+
+        .tag-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: var(--border2dark);
+            background: var(--yellow);
+            color: var(--green6);
+        }
+
+        .add-tag-btn, .add-asana-btn {
+            background: var(--green6);
+            color: white;
+            border: 2px solid var(--dark3);
+            padding: 0;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .add-tag-btn:hover, .add-asana-btn:hover {
+            background: var(--yellow);
+            color: var(--green6);
+        }
+
+        .tags-list, .asanas-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding-bottom: 5px;
+        }
+
+.asanas-list {
+    flex: 1;
+    overflow-y: auto;
+    /* Hacer el elemento un poco más ancho para compensar la barra */
+    width: calc(100% + 12px);
+    padding-right: 12px;
+    margin-right: -12px;
+}
+
+/* Personalizar la scrollbar para navegadores WebKit (Chrome, Safari, Edge) */
+.asanas-list::-webkit-scrollbar {
+    width: 4px; /* Hacerla muy fina */
+}
+
+.asanas-list::-webkit-scrollbar-track {
+    background: transparent; /* Fondo transparente */
+    margin: 5px 0;
+}
+
+.asanas-list::-webkit-scrollbar-thumb {
+    background-color: var(--bordo); /* Color bordo para coincidir con el tema */
+    border-radius: 2px;
+    border: none;
+}
+
+.asanas-list::-webkit-scrollbar-thumb:hover {
+    background-color: #8b2e2f; /* Un tono más oscuro al hover */
+}
+
+/* Para Firefox */
+.asanas-list {
+    scrollbar-width: thin; /* Hacerla fina */
+    scrollbar-color: var(--bordo) transparent; /* Color bordo con fondo transparente */
+}
+        .tag, .asana-tag {
+            display: inline-block;
+            background: var(--green6);
+            border: 2px solid var(--dark3);
+            padding: 5px 10px;
+            font-size: 0.9rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            color: #fff;
+        }
+
+        /* ASANAS SECTION */
+        .asanas-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .asana-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: var(--border2dark);
+            background: var(--yellow);
+            color: var(--dark36);
+        }
+
+        .asana-search-results {
+            max-height: 150px;
+            overflow-y: auto;
+            border: 2px solid var(--dark3);
+            background: var(--primary);
+            margin-top: 8px;
+        }
+
+        .asana-search-result {
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--dark3);
+            cursor: pointer;
+        }
+
+        .asana-search-result:hover {
+            background: rgba(47, 139, 246, 0.2);
+        }
+
+        .asana-search-result:last-child {
+            border-bottom: none;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .header-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid var(--dark3);
+            background: var(--green6);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .header-btn:hover {
+            background: var(--yellow);
+            color: var(--dark3);
+        }
+
+        /* ESTADÍSTICAS */
+        .stats-section {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stats-title {
+            text-align: left;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            color: var(--dark3);
+            background: rgb(188, 71, 73);
+            padding: 12px;
+            border-top: 2px solid #333;
+            border-bottom: 2px solid #333;
+        }
+
+        .stats-summary {
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+ 
+/* Estilos para el historial tipo practice-box */
+.history-entry {
+    display: block;
+    width: 98%;
+    margin: 10px auto;
+    padding: 5px 10px;
+    background-color: rgba(188, 71, 73, 0.1);
+    color: var(--bordo);
+    border: 2px solid var(--bordo);
+    font-size: 1rem;
+    border-radius: 8px;
+    font-family: 'Inconsolata', monospace;
+}
+
+.history-entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: var(--border1dark);
+}
+
+.history-date {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: var(--bordo);
+}
+
+.history-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.edit-entry-btn, .delete-entry-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: var(--border1dark);
+    background: var(--green6);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.edit-entry-btn:hover {
+    background: var(--yellow);
+    color: var(--dark3);
+}
+
+.delete-entry-btn:hover {
+    background: var(--red);
+    color: white;
+}
+
+.history-practice-status {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: var(--green6);
+}
+
+.history-mood-board {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.history-details {
+    text-align: left;
+    margin-top: 10px;
+}
+
+.history-detail {
+    margin: 8px 0;
+    font-size: 0.9rem;
+}
+
+.history-detail strong {
+    color: var(--bordo);
+}
+
+/* Scrollbar personalizada para el historial */
+.log-history {
+    flex: 1;
+    overflow-y: auto;
+    width: calc(100% + 12px);
+    padding-right: 12px;
+    margin-right: -12px;
+}
+
+.log-history::-webkit-scrollbar {
+    width: 4px;
+}
+
+.log-history::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 5px 0;
+}
+
+.log-history::-webkit-scrollbar-thumb {
+    background-color: var(--bordo);
+    border-radius: 2px;
+    border: none;
+}
+
+.log-history::-webkit-scrollbar-thumb:hover {
+    background-color: #8b2e2f;
+}
+
+.log-history {
+    scrollbar-width: thin;
+    scrollbar-color: var(--bordo) transparent;
+}
+
+
+        .delete-entry-btn:hover {
+            background: #d63031;
+            color: var(--dark3);
+        }
+
+        /* Track 4: Práctica de Hoy */
+        .today-header {
+            background: rgb(188, 71, 73);
+            padding: 12px;
+            border: var(--border2dark);
+            border-bottom: 4px solid #510303;
+            border-radius: 14px 14px 0 0 ;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--border-color);
+            box-shadow: 3px 0 6px 4px rgba(246, 115, 47, 0.3);
+        }
+
+        .info-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: var(--border1dark);
+            background: var(--green6);
+            color: #ffffff90;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .info-btn:hover {
+            background: var(--yellow);
+            color: var(--dark3);
+        }
+
+        .today-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .today-content {
+            padding: 10px 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border: var(--border2dark);
+            background-color: var(--yellow-light);
+            box-shadow: var(--shadow-orange);
+        }
+
+
+
+/* Estilos para fecha y hora actual */
+.current-datetime {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.current-date {
+    font-size: 0.9rem;
+    color: var(--green6);
+    border-bottom: var(--border1dark);
+    padding-bottom: 5px;
+    text-transform: uppercase;
+}
+
+/* Ajustar el espaciado del today-practice */
+.today-practice {
+    width: 100%;
+}
+
+.namaste-title {
+    font-family: 'Inconsolata';
+    font-size: 2.5rem;
+    color: var(--green6);
+    font-weight: 800;
+}
+
+.namaste-title i {
+    font-size: 2rem;
+}
+
+
+.practice-box {
+    display: block;
+    width: 98%;
+    margin: 10px auto; /* Cambiado de 20px 0 a 20px auto */
+    padding: 0px 15px;
+    background-color: rgba(188, 71, 73, 0.1);
+    color: var(--bordo);
+    border: 2px solid var(--bordo);
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    font-family: 'Inconsolata', monospace;
+    position: center;
+    overflow: hidden;
+}
+
+.go-to-history-btn {
+    margin-top: 10px;
+    background: var(--green6);
+    color: white;
+    border: 2px solid var(--dark3);
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    height: 40px;
+    margin-bottom: 10px;
+}
+
+.go-to-history-btn:hover {
+    background: var(--yellow);
+    color: var(--dark3);
+    border: 2px solid var(--bordo);
+}
+
+.practice-status.no-practice {
+    color: var(--green6);
+}
+        
+        .practice-status {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 15px 0;
+            color: var(--green6);
+            line-height: 1.2rem;
+        }
+
+
+
+        .practice-details {
+            text-align: left;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .practice-detail {
+            margin-top: 5px;
+            font-size: 0.9rem;
+        }
+
+
+                
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: #feeed5ff;
+            border: var(--border2dark); /* Agregar borde al modal */
+            border-radius: 8px;
+            width: 90%;
+            max-width: 350px;
+            max-height: 80%;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            background: rgb(188, 71, 73);
+            padding: 15px;
+            border-bottom: 2px solid var(--dark3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+                        border-bottom: var(--border3dark);
+
+        }
+
+        .modal-header h3 {
+            color: var(--dark3);
+            font-size: 1.1rem;
+        }
+
+.close-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid var(--dark3);
+    background: var(--green6);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+    background: var(--yellow);
+    color: var(--dark3);
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.moon-event {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    position: relative;
+}
+
+.moon-event-dia {
+    padding: 5px 15px;
+    padding-bottom: 5px;
+    line-height: 0.9rem;
+    display: flex;
+    align-items: left;
+    gap: 10px;
+    padding: 10px 0;
+    color: var(--blue)
+}
+
+.moon-emoji {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 15px 0;
+    color: var(--green6);
+    line-height: 1.2rem;
+    text-align: center;
+}
+
+.moon-details {
+    flex: 1;
+}
+
+.moon-date {
+    margin: 5px 0;
+    color: var(--green6);
+    line-height: 1rem;
+}
+
+.moon-type {
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--green6);
+    line-height: 1.2rem;
+}
+
+.moon-time {
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin: 5px 0;
+    color: var(--green6);
+}
+
+.moon-event:nth-child(odd)::after {
+    content: '';
+    position: absolute;
+    right: -10px;
+    top: 0;
+    height: 100%;
+    width: 1px;
+    background-color: var(--green6);
+    opacity: 0.8;
+}
+
+/* Organizar en 2 columnas */
+.modal-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 20px;
+    padding: 15px;
+}
+
+.modal-asana {
+    display: grid;
+
+    padding: 15px;
+}
+
+.modal-note {
+    font-size: 0.7rem;
+    color: #666;
+    text-align: center;
+    margin-top: 15px;
+    font-style: italic;
+    display: none;
+}
+
+        .loading {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+
+
+        /* Botones de periodo */
+.period-buttons {
+    display: flex;
+    gap: 5px;
+    margin: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.period-btn {
+    padding: 8px 12px;
+    border: var(--border1dark);
+    background: var(--green);
+    color: var(--green6);
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+    flex: 1;
+    text-align: center;
+}
+
+.period-btn:hover {
+    background: var(--yellow);
+    color: var(--dark3);
+}
+
+.period-btn.active {
+    background: var(--green6);
+    color: white;
+}
+
+/* Contenedor de gráficos */
+.charts-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 10px;
+    height: calc(100% - 150px);
+    overflow-y: auto;
+    width: 100%;
+}
+
+.chart-group {
+    border-radius: 8px;
+    padding: 0 8px;
+
+}
+
+.chart-title {
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--bordo);
+    font-size: 0.9rem;
+    background: rgba(188, 71, 73, 0.3);
+    border: 1px solid var(--bordo);
+    padding: 5px;
+    border-radius: 4px;
+}
+
+/* Gráficos más compactos */
+.stats-chart {
+    width: 100%;
+    height: 120px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 3px;
+    padding: 5px;
+    padding-bottom: 30px;
+}
+
+.chart-bar {
+    flex: 1;
+    background: var(--green6);
+    border: 1px solid var(--dark3);
+    position: relative;
+    min-height: 5px;
+    transition: all 0.3s ease;
+    max-height: 80px;
+}
+
+.chart-bar:hover {
+    background: var(--yellow);
+}
+
+.chart-label {
+    position: absolute;
+    bottom: -20px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 0.6rem;
+    color: var(--dark3);
+}
+
+.chart-value {
+    position: absolute;
+    top: -18px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 0.6rem;
+    font-weight: bold;
+    color: var(--dark3);
+}
+
+.chart-mood-circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid var(--dark3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    font-size: 0.7rem;
+}
+
+
+/* Contenedor de asanas */
+
+
+.asanas-section {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* Filtros de series */
+.series-filters {
+    display: flex;
+    gap: 5px;
+    margin: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.series-filter {
+    padding: 8px 12px;
+    border: 2px solid var(--dark3);
+    background: var(--primary);
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.series-filter:hover {
+    background: var(--yellow);
+    color: var(--dark3);
+}
+
+.series-filter.active {
+    background: var(--green6);
+    color: white;
+}
+
+/* Lista de asanas */
+.asanas-list {
+    flex: 1;
+    overflow-y: auto;
+}
+
+
+/* Modal de asana */
+.asana-modal .modal-content {
+    max-width: 400px;
+}
+
+
+
+.asana-main-name {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--dark3);
+}
+
+.asana-sanskrit-name {
+    font-style: italic;
+    color: var(--bordo);
+    font-size: 0.9rem;
+    line-height: 1.3;
+    flex: 1;
+}
+
+.asana-image {
+    width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+    border: 2px solid var(--dark3);
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+.asana-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin: 15px 0;
+}
+
+.asana-info-section {
+    background: rgba(153, 143, 118, 0.2);
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid var(--dark3);
+}
+
+.asana-info-title {
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: var(--green6);
+    margin-bottom: 5px;
+}
+
+.asana-link {
+    color: var(--blue);
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.asana-link:hover {
+    color: var(--orange);
+}
+
+.asana-detail-row {
+    margin: 8px 0;
+    font-size: 0.85rem;
+}
+
+.asana-detail-label {
+    font-weight: bold;
+    color: var(--dark3);
+}
+
+.asana-sequence {
+    background: rgba(106, 176, 222, 0.2);
+    padding: 10px;
+    border-radius: 6px;
+    margin: 10px 0;
+    border: 1px solid var(--dark3);
+}
+
+/* Subtítulos de series - MODIFICADO */
+.series-subtitle {
+    border-bottom: 2px solid var(--bordo);
+    padding: 12px;
+    margin-bottom: 10px;
+    display: block; /* Cambiado a block para que ocupe su propia línea */
+    width: 100%;
+    text-align: center;
+}
+
+.series-subtitle-text {
+    font-weight: bold;
+    font-size: 1rem;
+    color: var(--bordo); /* Color bordo */
+    text-transform: uppercase;
+}
+
+.series-count {
+    background: var(--bordo); /* Color bordo */
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+/* Bullet points para asana items - NUEVO */
+.asana-item {
+    padding: 10px 8px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    width: 100%;
+    text-align: left;
+    background: rgba(188, 71, 73, 0.05);
+    border: 1px solid var(--bordo);
+    
+}
+
+.asana-item:hover {
+    background: var(--yellow);
+    color: var(--dark3);
+}
+
+.bullet-point {
+    color: var(--bordo);
+    font-size: 0.8rem;
+    margin-top: 2px;
+    flex-shrink: 0;
+    width: 16px;
+    text-align: center;
+}
+
+.asana-sanskrit {
+    font-style: italic;
+    color: var(--bordo);
+    font-size: 0.9rem;
+    line-height: 1.3;
+    flex: 1;
+}
+
+.series-subtitle-text {
+    font-weight: bold;
+    font-size: 1rem;
+    color: var(--bordo);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.series-count {
+    background: var(--bordo);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+/* Practice Track Styles */
+.practice-container {
+    padding: 10px 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border: var(--border2dark);
+    background-color: var(--yellow-light);
+    box-shadow: var(--shadow-orange);
+    height: 570px;
+}
+
+.practice-section {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.practice-title {
+    background: rgb(188, 71, 73);
+    padding: 12px;
+    border-bottom: 2px solid #333;
+    font-weight: bold;
+    color: var(--dark3);
+    text-align: left;
+    font-size: 1.2rem;
+}
+
+.asana-practice-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.asana-image-container {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.practice-asana-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border: 2px solid var(--dark3);
+    border-radius: 8px;
+    filter: hue-rotate(180deg); /* Rotates the hue by 90 degrees */
+
+}
+
+.asana-details {
+    text-align: center;
+    width: 100%;
+    max-width: 300px;
+}
+
+.show-answer-btn {
+    background: var(--light);
+    color: var(--green);
+    border: 2px solid var(--green6);
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    width: 100%;
+}
+
+.show-answer-btn:hover {
+    background: var(--yellow);
+    color: var(--dark3);
+}
+
+.sanskrit-name {
+    background: var(--light);
+    color: var(--green);
+    border: 2px solid var(--green6);
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    width: 100%;
+    height: 40px;
+}
+
+.practice-controls {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.next-asana-btn {
+    background: var(--orange);
+    color: white;
+    border: 2px solid var(--dark3);
+    padding: 12px 24px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.next-asana-btn:hover {
+    background: var(--yellow);
+    color: var(--dark3);
+}
+
+/* Series circle for practice track */
+.series-circle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--blue);
+    border: var(--border1dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+
+
+/* Estilos para los botones de acción del historial */
+.history-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.edit-entry-btn, .delete-entry-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: var(--border1dark);
+    background: var(--green6);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.edit-entry-btn:hover {
+    background: var(--yellow);
+    color: var(--dark3);
+}
+
+.delete-entry-btn:hover {
+    background: var(--red);
+    color: white;
+}
+
+/* Estilos para el practice toggle en el historial */
+.history-practice-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.history-practice-button {
+    width: 33px;
+    height: 33px;
+    background-color: var(--red);
+    border: var(--border2dark);
+    border-radius: 50%;
+    display: flex;
+    color: white;
+    font-weight: bold;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.history-practice-button.yes {
+    background-color: var(--green6);
+}
+
+.history-practice-state {
+    font-weight: bold;
+    color: var(--dark3);
+    font-size: 0.8rem;
+}
+
+.history-practice-button.yes .history-practice-state {
+    color: white;
+}
+
+/* Mood board del historial */
+.history-mood-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+
+/* Botones de correcto/incorrecto */
+.practice-controls {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+
+
+.correct-btn, .incorrect-btn {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: var(--border2dark);
+    flex: 1;
+    max-width: 140px;
+    justify-content: center;
+    font-size: 0.9rem;
+
+}
+
+.correct-btn {
+    background: var(--green6);
+    color: white;
+}
+
+.correct-btn:hover {
+    background: #3e4a2d;
+}
+
+.incorrect-btn {
+    background: var(--red);
+    color: white;
+}
+
+.incorrect-btn:hover {
+    background: #d63031;
+}
+
+/* Estadísticas de estudio */
+.study-stats-container {
+    padding: 15px;
+}
+
+.study-stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--dark36);
+}
+
+.study-stat-label {
+    font-weight: bold;
+    color: var(--dark33);
+}
+
+.study-stat-value {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--green6);
+}
+
+.study-stat-percentage {
+    background: var(--green6);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+
+.tag-search-result:last-child {
+    border-bottom: none;
+}
+
+/* CORREGIR estos estilos en el CSS existente */
+.tag-search-results {
+    max-height: 150px;
+    overflow-y: auto;
+    border: 2px solid #333;
+    background: var(--green);
+    margin-top: 5px;
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    width: calc(400px - 70px); /* Mismo ancho que el input de tags */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.tag-search-result {
+    padding: 8px 10px;
+    border-bottom: 1px solid #333;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.tag-search-result:hover {
+    background: rgba(188, 71, 73, 0.2); /* Usar color bordo en lugar de azul */
+}
+
+.tag-search-result:last-child {
+    border-bottom: none;
+}
+
+/* Asegurar que el contenedor de tags-input tenga posición relativa */
+.tags-input {
+    position: relative;
+}
+
+/* Estilos para los filtros del historial */
+.filter-section {
+    margin-bottom: 20px;
+
+}
+
+.filter-section:last-child {
+    border-bottom: none;
+}
+
+.header-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* Estilos para el modal de filtros */
+#history-filter-modal .modal-content {
+    max-width: 400px;
+}
+
+#history-filter-modal .modal-body {
+    display: block;
+    padding: 20px;
+}
+
+/* Estados del toggle de práctica en filtros */
+#filter-practice-toggle.yes {
+    background-color: var(--green6);
+}
+
+#filter-practice-toggle.yes .practice-state {
+    color: white;
+}
+
+/* Estilos para el mood board de filtros */
+#filter-mood-board {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.filter-mood-item {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--dark33);
+    border-radius: 50%;
+    background-color: #ccc;
+    margin: 2px;
+    opacity: 0.6;
+    transform: scale(0.9);
+}
+
+.filter-mood-item.selected {
+    opacity: 1;
+    transform: scale(1.1);
+    border-color: var(--bordo);
+    box-shadow: 0 0 8px rgba(188, 71, 73, 0.5);
+}
+
+.filter-mood-item:hover {
+    transform: scale(1.05);
+    opacity: 0.8;
+}
+
+
+
+/* Indicador de filtros activos */
+.filters-active-indicator {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 12px;
+    height: 12px;
+    background-color: var(--bordo);
+    border-radius: 50%;
+    border: 2px solid var(--yellow);
+}
+
+.header-btn {
+    position: relative;
+}
+
+/* Deshabilitar selección de texto e imágenes */
+* {
+    cursor: default !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+}
+
+/* Asegurar que los elementos interactivos tengan cursor pointer */
+button, 
+.carousel-arrow, 
+.info-btn, 
+.header-btn, 
+.mood-item, 
+.asana-item, 
+.practice-box, 
+.go-to-history-btn, 
+.period-btn, 
+.series-filter, 
+.edit-entry-btn, 
+.delete-entry-btn, 
+.add-tag-btn, 
+.add-asana-btn,
+.asana-search-result,
+.tag-search-result,
+.asana-link,
+.close-btn,
+.practice-button,
+.show-answer-btn,
+.correct-btn,
+.incorrect-btn {
+    cursor: pointer !important;
+}
+
+/* Permitir selección en áreas de texto */
+.notes-textarea,
+.tag-input,
+.asana-input,
+.date-input,
+#filter-tag-input,
+#filter-date-from,
+#filter-date-to {
+    cursor: text !important;
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+}
+
+/* Deshabilitar arrastre de imágenes */
+img {
+    pointer-events: none;
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+}
+
+/* Deshabilitar menú contextual */
+body {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+</style>
 </head>
 
 <body>
     <header>
-        <div style="font-size: 2rem;">ANU</div>    </header>
-
-    <div class="content">
-        <main>
-            <!-- Sección Bitácora - SOLO HISTORIAL -->
-            <section id="log" class="section">
-                <div class="log-container">
-                    <!-- NUEVO: Card del Daily Asana -->
-                    <div class="daily-asana-card brutalist-border">
-                        <div class="card-header">
-                            <h2 class="brutalist-text" style="font-size: 1.2rem;">ĀSANA DEL DÍA</h2>
+        <div class="header-content">
+            <div class="anu-container">
+                <div class="line"></div>
+                 <!--  <div class="anu-image"> <img src="anu.png" alt="ANU"></div>  --> 
+                <div class="anu-text">Navāṅga</div>
+                <div class="line"></div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="app-container">
+        <div class="carousel-container">
+            <div class="carousel-track" id="carousel-track">
+                <!-- Track 1: HELLO READY -->
+                <section id="today" class="carousel-slide active">
+                    <div class="today-container">
+                        <div class="today-header">
+                            <div class="today-title">BITÁCORA DE PRÁCTICA DIARIA</div>
+                            <button class="info-btn" id="moon-info-btn" title="Información Lunar">
+                                <i class="fa-solid fa-moon"></i>
+                            </button>
                         </div>
-                        <div class="card-body">
-                            <img id="daily-asana-image" src="" alt="Daily Asana" class="card-image" style="display: none;">
-                            <div class="card-details" id="daily-asana-details">
-                                <p>Cargando āsana del día...</p>
-                            </div>
+                        <div class="today-content" id="today-content">
+                            <!-- Contenido dinámico se cargará aquí -->
+                        </div>
+                    </div>
+                </section>
+
+<!-- Track 2: PRACTICE STATS -->
+<section id="stats" class="carousel-slide">
+    <div class="stats-container">
+        <div class="today-container">
+            <div class="today-header">
+                <div class="today-title">ESTADÍSTICAS DE PRÁCTICA</div>
+                <button class="info-btn" id="stats-period-btn" title="Configurar Periodo">
+                    <i class="fa-solid fa-chart-bar"></i>
+                </button>
+            </div>
+            
+            <div class="today-content">
+                <div class="current-datetime">
+                    <div class="current-date">TODO SOBRE ABHYĀSA</i></div>
+                </div>
+                <div class="practice-status" style="text-transform: uppercase;">REPORTES POR PERIODO</div>
+                
+
+                <div class="stats-summary" id="stats-summary">
+                    <!-- Las estadísticas se mostrarán aquí -->
+                </div>
+                
+                <!-- Contenedor para los 3 gráficos -->
+                <div class="charts-container">
+                    <div class="chart-group">
+                        <div class="chart-title">MOODS</div>
+                        <div class="stats-chart mood-chart" id="mood-chart">
+                            <!-- Gráfico de moods -->
                         </div>
                     </div>
                     
-
-                </div>
-                
-                
-                <!-- En el pop-up o en la sección de historial, añade: -->
-                
-                
-                
-                
-                <div class="stats-section">
-                    <div class="stats-title">ESTADÍSTICAS</div>
-                    <div class="stats-summary" id="stats-summary">
-                        <!-- Las estadísticas se mostrarán aquí -->
-                    </div>
-                    <div class="stats-chart" id="stats-chart">
-                        <!-- El gráfico se generará aquí -->
-                    </div>
-                    <div id="heatmap-container">
-
-                </div>
-
-                                    <!-- HISTORIAL -->
-                    <div class="log-history" id="log-history">
-                        <h3>Bitácora de Prácticas</h3>
-                        <!-- Las entradas anteriores se mostrarán aquí -->
-                    </div>
-            </section>
-            
-            <!-- Otras secciones existentes -->
-            <section id="study" class="section active">
-                <div class="study-container">
-                    <div class="card brutalist-border">
-                        <div class="card-header">
-                            <h2 id="card-title" class="brutalist-text">SELECT ASANA</h2>
+                    <div class="chart-group">
+                        <div class="chart-title">PRÁCTICA</div>
+                        <div class="stats-chart practice-chart" id="practice-chart">
+                            <!-- Gráfico de práctica -->
                         </div>
-                        <div class="card-body">
-                            <img id="card-image" src="" alt="Asana" class="card-image" style="display: none;">
-                            <div class="card-details" id="card-details">
-                                <p>USE FILTERS AND NAVIGATION TO EXPLORE ASANAS</p>
-                            </div>
-                            <div class="circular-controls">
-                                <button class="circular-btn brutalist-btn" id="prev-btn"><i class="fa-solid fa-chevron-left"></i></button>
-                                <button class="circular-btn brutalist-btn" id="next-btn"><i class="fa-solid fa-chevron-right"></i></button>
-                            </div>
+                    </div>
+                    
+                    <div class="chart-group" style="display: none;">
+                        <div class="chart-title">OTROS</div>
+                        <div class="stats-chart other-chart" id="other-chart">
+                            <!-- Gráfico de otros -->
                         </div>
                     </div>
                 </div>
-            </section>
-            
-            <section id="list" class="section">
-                <input type="text" id="search" class="search-box" placeholder="buscador de āsanas">
-                <div class="list-container" id="list-container">
-                    <p>USE SEARCH BOX TO FIND ASANAS</p>
-                </div>
-            </section>
-
-            <section id="lexicon" class="section">
-                <div class="study-container">
-                    <div class="card brutalist-border">
-                        <div class="card-header">
-                            <h2 id="lexicon-title" class="brutalist-text">SELECT TERM</h2>
-                        </div>
-                        <div class="card-body">
-                            <div class="card-details" id="lexicon-details">
-                                <p>USE NAVIGATION TO EXPLORE TERMS</p>
-                            </div>
-                            <div class="circular-controls">
-                                <button class="circular-btn brutalist-btn" id="lexicon-prev-btn">‹</button>
-                                <button class="circular-btn brutalist-btn" id="lexicon-next-btn">›</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="lexicon-list" class="section">
-                <input type="text" id="lexicon-search" class="search-box" placeholder="buscador de términos">
-                <div class="list-container" id="lexicon-list-container">
-                    <p>USE SEARCH BOX TO FIND TERMS</p>
-                </div>
-            </section>
-
-<section id="about" class="section">
-    <div class="study-container">
-        <div class="card brutalist-border">
-            <div class="card-header">
-                <h2 id="about-title" class="brutalist-text">SOBRE ANU</h2>
-            </div>
-            <div class="card-body">
-                <img src="photo2.png" alt="Mica" class="card-image">
-                <div class="card-details" id="about-details">
-                        
-<span style="color:#f6442fff; font-weight: bold; font-size: 1rem;">
-    <br>¡Hello World! Yo soy Mica.<br>
-    Aṣṭāṅgī y programadora autodidacta desde 2018.<br><br>
-</span>
-
-<span style="color:#333; font-weight: bold; font-size: 1rem;">
-    ANU nació de mi propia necesidad de crear una bitácora para mi práctica. 
-    Quería algo simple, sin distracciones para registrar las fluctuaciones cotidianas adentro y afuera del <i>mat</i>,
-    y un lugar al que escapar de las redes, y refugiarme dentro sánscrito y las āsanā.<br><br>
-
-    Aunque la creé inspirada en la práctica del Aṣṭāṅgī, ANU puede adaptarse a diversos estilos.<br><br>
-
-    Este es un proyecto personal y como tal en constante evolución y crecimiento. 
-    Para comentarios, sugerencias o contacto escribir a <span style="color:#f6442fff;">desenrollatumat@gmail.com</span>.<br><br>
-
-    Por ahora, en ANU vas a encontrar:<br><br>
-
-    <div style="padding-left: 20px; color:#f6442fff;">
-        • <span style="display: inline-block; width: calc(100% - 20px); vertical-align: top;">Un espacio para registrar tu práctica diaria con notas y etiquetas.</span><br>
-        • <span style="display: inline-block; width: calc(100% - 20px); vertical-align: top;">Una sección para estudiar āsanas y etimología relacionada con la práctica y la filosofía del yoga.</span><br>
-        • <span style="display: inline-block; width: calc(100% - 20px); vertical-align: top;">La lista de āsana tiene además posturas de Niṣkriya y Vinyāsa.</span><br>
-        • <span style="display: inline-block; width: calc(100% - 20px); vertical-align: top;">Algunas posturas tienen información anatómica, con posturas sugeridas como calentamiento y estiramiento, esta porción esta en inglés (consecuencia de haber realizado mi YTT en el Hemisferio Norte).</span><br>
-    </div>
-    <br>
-
-    
-<span style="border-bottom: 1px solid var(--accent-color); padding-bottom: 10px;">¡Gracias por sumarte a este viaje!<br><br></span>
-<span style="color:var(--accent-color); font-weight: bold; font-size: 1rem;">
-    Anu (अनु) significa "seguir", "junto a", o "después de". 
-    En este contexto, Anuyoga (अनुयोग) significa <i>"Práctica Sucesiva"</i> reiterando la 
-    idea es que es la práctica acompaña y se transmite dentro y fuera del <i>mat</i>.
-</span>
             </div>
         </div>
     </div>
 </section>
 
-            <div id="loading" class="loading brutalist-border" style="display: none;">LOADING ASANA DATA...</div>
-            <div id="error" class="error brutalist-border" style="display: none;"></div>
-        </main>
-        
-        <!-- Menú hamburguesa flotante -->
-        <div class="floating-menu">
-            <button class="burger-btn brutalist-btn" id="burger-btn">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="menu-content brutalist-border" id="menu-content">
-                <!-- En el menú hamburguesa, cambiar el orden -->
-                <div class="menu-nav">
-                    <button class="menu-nav-btn brutalist-btn" data-section="study">estudiar: āsanā</button>
-                    <button class="menu-nav-btn brutalist-btn" data-section="list">lista: āsanā</button>
-                    <button class="menu-nav-btn brutalist-btn" data-section="lexicon">estudiar: léxico</button>
-                    <button class="menu-nav-btn brutalist-btn" data-section="lexicon-list">lista: léxico</button>
-                    <button class="menu-nav-btn brutalist-btn" data-section="about">sobre: anu</button>
-                    <button class="menu-nav-btn active brutalist-btn" data-section="log">inicio</button>
-                    <button class="new-practice-btn brutalist-btn" id="new-practice-btn">registar práctica</button>
+<!-- Track 3: STUDY Ready -->
+<section id="asana-practice" class="carousel-slide">
+    <div class="today-header">
+        <div class="today-title">āsana clinic</div>
+        <button class="info-btn" id="study-stats-btn" title="Estadísticas de Estudio">
+            <i class="fa-solid fa-chart-simple"></i>
+        </button>
+    </div>
+    <div class="practice-container">
+        <div class="practice-section">
+                <div class="current-datetime">
+                    <div class="current-date">PARA EL CRECIMIENTO <i>ON&OFF</i> THE MAT</div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Menú de filtros flotante en la parte inferior derecha -->
-        <div class="floating-filters">
-            <button class="filter-btn brutalist-btn" id="filter-btn">
-                <i class="fa-solid fa-filter"></i>
-            </button>
-            <div class="filter-content brutalist-border" id="filter-content">
-                <div class="filter-title">FILTROS</div>
-                <div class="menu-tag-filters" id="menu-tag-filters">
-                    <!-- Tag buttons will be generated here -->
-                </div>
-            </div>
-        </div>
-
-        <!-- POP-UP REGISTRAR PRÁCTICA -->
-        <div id="practice-popup" class="popup-overlay" style="display: none;">
-            <div class="popup-content brutalist-border">
-                <div class="popup-header">
-                    <h2 class="brutalist-text">REGISTRAR PRÁCTICA</h2>
-                    <button class="close-popup-btn brutalist-btn" id="close-popup-btn">&times;</button>
+                    <div class="practice-status" style="text-transform: uppercase;">NOMBRA EL āsana</div>
+                
+            <div class="asana-practice-card" id="asana-practice-card">
+                <div class="asana-image-container">
+                    <img id="practice-asana-image" class="practice-asana-image" alt="Asana">
+                    <div class="series-circle" id="practice-series-circle"></div>
                 </div>
                 
-                <div class="popup-body">
-                    <!-- Contenido del formulario de práctica -->
-                    <div class="mood-section">
-                        <div class="practice-toggle">
-                            <div class="practice-button" id="popup-practice-button">
-                                <div class="practice-state">NO</div>
-                            </div>
-                        </div>
-                        <div class="mood-board" id="popup-mood-board">
-                            <!-- Los elementos del mood board se generarán con JavaScript -->
-                        </div>
+                <div class="asana-details" id="practice-asana-details">
+                    <div class="sanskrit-hidden" id="sanskrit-hidden">
+                        <button class="show-answer-btn" id="show-answer-btn">Mostrar Nombre Sánscrito</button>
                     </div>
-
-                    <!-- SECCIÓN NOTAS -->
-                    <div class="notes-section">
-                        <div class="date-input-container">
-                            <label class="date-input-label" for="popup-practice-date">FECHA DE LA PRÁCTICA:</label>
-                            <input type="date" class="date-input" id="popup-practice-date">
-                            <small style="color: #666; font-size: 0.8rem;">Si está vacío, se usará la fecha actual</small>
-                        </div>
-                        
-                        <textarea class="notes-textarea" id="popup-practice-notes" placeholder="Escribe tus notas aquí..."></textarea>
-
-                        <div class="tags-input">
-                            <input type="text" class="tag-input" id="popup-tag-input" placeholder="Vincular etiquetas...">
-                            <button class="add-tag-btn" id="popup-add-tag-btn">+</button>
-                        </div>
-                        <div class="tags-list" id="popup-tags-list">
-                            <!-- Los tags se mostrarán aquí -->
-                        </div>
-                    
-                        <div class="asanas-input">
-                            <input type="text" class="asana-input" id="popup-asana-search-input" placeholder="Vincular āsana...">
-                            <button class="add-asana-btn" id="popup-add-asana-btn">+</button>
-                        </div>
-                        <div class="asana-search-results" id="popup-asana-search-results" style="display: none;">
-                            <!-- Los resultados de búsqueda aparecerán aquí -->
-                        </div>
-                        <div class="asanas-list" id="popup-asanas-list">
-                            <!-- Los āsanas vinculados se mostrarán aquí -->
-                        </div>
+                    <div class="sanskrit-revealed" id="sanskrit-revealed" style="display: none;">
+                        <div class="sanskrit-name" id="sanskrit-name"></div>
                     </div>
-                    
-                    <!-- BOTONES -->
-                    <div class="popup-actions">
-                        <button class="brutalist-btn save-btn" id="popup-save-log-btn">GUARDAR</button>
-                        <button class="brutalist-btn clear-btn" id="popup-clear-log-btn">REEMPEZAR</button>
-                    </div>
+                </div>
+                
+                <div class="practice-controls">
+                    <button class="incorrect-btn" id="incorrect-btn">
+                        Incorrecto <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    <button class="correct-btn" id="correct-btn">
+                        Correcto <i class="fa-solid fa-check"></i>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+</section>
 
-    <footer class="site-footer">
+<!-- Track 4: YOGA MĀLĀ LISTO -->
+<section id="asanas" class="carousel-slide">
+    <div class="today-header">
+        <div class="today-title">YOGA MĀLĀ</div>
+        <button class="info-btn" id="asanas-filter-btn" title="Filtrar Series">
+            <i class="fa-solid fa-filter"></i>
+        </button>
+    </div>
+    <div class="practice-container">
+        <div class="asanas-section">
+            <div class="current-datetime">
+                <div class="current-date" style="text-transform: uppercase;">AṣṭāṅgA yoga segun Pattabhi Jois</div>
+            </div>
+            <div class="practice-status" style="text-transform: uppercase;">āsana INFO</div>
+            
+            <div class="asanas-list" id="asanas-list">
+                <!-- Lista de asanas se cargará aquí -->
+            </div>
+        </div>
+    </div>
+</section>
+                
+<!-- Track 5: Historial -->
+<section id="history" class="carousel-slide">
+    <div class="today-header">
+        <div class="today-title">HISTORIAL DE PRÁCTICAS</div>
+        <div class="header-actions">
+            <!-- Botón para filtrar historial -->
+            <button class="info-btn" id="history-filter-btn" title="Filtrar Historial">
+                <i class="fa-solid fa-filter"></i>
+            </button>
+            <!-- Botón para nueva entrada -->
+            <button class="info-btn" id="history-new-log" title="Crear nueva entrada">
+                <i class="fa-solid fa-calendar-day"></i>
+            </button>
+        </div>
+    </div>
+    <div class="practice-container">
+        <div class="current-datetime">
+            <div class="current-date" style="text-transform: uppercase;">moods, lunas, quotes, notas & otras yerbas</div>
+        </div>
+        <div class="practice-status" style="text-transform: uppercase;">en la practica</div>
+
+        <div class="log-history" id="log-history">
+            <!-- Las entradas anteriores se mostrarán aquí -->
+        </div>
+    </div>
+</section>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Footer con botones de carrusel -->
+    <footer>
         <div class="footer-content">
-            Creado por Mica - Aṣṭāṅgī et. 2018
+            <button class="carousel-arrow prev-btn" id="prev-btn" disabled>
+                &lt;
+            </button>
+            
+            <div class="footer-text">Creado por Mica - Aṣṭāṅgī et. 2018</div>
+            
+            <button class="carousel-arrow next-btn" id="next-btn">
+                &gt;
+            </button>
         </div>
     </footer>
 
-    <script src="script_completo.js"></script>
-    <script src="log_functions.js"></script>
+    <!-- MODALES FUERA DEL CARRUSEL -->
+    <!-- Modal para información lunar -->
+    <div class="modal" id="moon-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>PRÓXIMAS LUNAS</h3>
+                <button class="close-btn" id="close-moon-modal"><i class="fa-solid fa-x"></i></button>
+            </div>
+            <div class="modal-body" id="moon-info">
+                <!-- Información lunar se cargará aquí -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para estadísticas de estudio -->
+    <div class="modal" id="study-stats-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>ESTADÍSTICAS DE ESTUDIO</h3>
+                <button class="close-btn" id="close-study-stats-modal"><i class="fa-solid fa-x"></i></button>
+            </div>
+            <div id="study-stats-info">
+                <!-- Estadísticas se cargarán aquí -->
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal para configuración de periodo -->
+    <div class="modal" id="stats-period-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>SELECCIONAR PERIODO</h3>
+                <button class="close-btn" id="close-stats-period-modal"><i class="fa-solid fa-x"></i></button>
+            </div>
+                <!-- Botones de periodo movidos aquí -->
+                <div class="period-buttons">
+                    <button class="period-btn" data-period="week">SEMANA</button>
+                    <button class="period-btn  active" data-period="month">MES</button>
+                    <button class="period-btn" data-period="year">AÑO</button>
+                    <button class="period-btn" data-period="custom">PERSONALIZADO</button>
+                </div>
+        </div>
+    </div>
+
+<!-- Modal para filtros de series -->
+<div class="modal" id="asanas-filter-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>FILTRAR POR SERIE</h3>
+            <button class="close-btn" id="close-asanas-filter-modal"><i class="fa-solid fa-x"></i></button>
+        </div>
+        <div class="period-buttons">
+            <button class="period-btn active" data-series="all">TODAS</button>
+            <button class="period-btn" data-series="ādhāra">ĀDHĀRA</button>
+            <button class="period-btn" data-series="yogacikitsā">YOGA CIKITSĀ</button>
+            <button class="period-btn" data-series="nāḍī śodhana">NĀḌĪ ŚODHANA</button>
+            <button class="period-btn" data-series="tṛtīya śreṇī">TṚTĪYA ŚREṆĪ</button>
+            <button class="period-btn" data-series="pṛṣṭhavakrāsana">PṚṢṬHAVAKRĀSANA</button>
+            <button class="period-btn" data-series="samāpana">SAMĀPANA</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para filtros del historial -->
+<div class="modal" id="history-filter-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>FILTRAR HISTORIAL</h3>
+            <button class="close-btn" id="close-history-filter-modal"><i class="fa-solid fa-x"></i></button>
+        </div>
+        <div class="modal-body">
+            <!-- Filtro por etiquetas -->
+            <div class="filter-section">
+                <div class="date-input-label">FILTRAR POR ETIQUETAS</div>
+                <div class="tags-input">
+                    <input type="text" class="tag-input" id="filter-tag-input" placeholder="Buscar etiquetas...">
+                </div>
+                <div class="tags-list" id="filter-tags-list">
+                    <!-- Tags disponibles para filtrar -->
+                </div>
+            </div>
+
+            <!-- NUEVO: Filtro por moods -->
+            <div class="filter-section">
+                <div class="date-input-label">FILTRAR POR MOODS</div>
+                <div class="mood-board" id="filter-mood-board">
+                    <!-- Los moods se generarán con JavaScript -->
+                </div>
+                <div style="text-align: center; margin-top: 10px;">
+                    <small style="color: var(--green);">Haz clic para seleccionar/deseleccionar</small>
+                </div>
+            </div>
+
+            <!-- Filtro por periodo -->
+            <div class="filter-section">
+                <div class="date-input-label">FILTRAR POR PERIODO</div>
+                <div class="period-buttons">
+                    <button class="period-btn active" data-period="all">TODOS</button>
+                    <button class="period-btn" data-period="week">SEMANA</button>
+                    <button class="period-btn" data-period="month">MES</button>
+                    <button class="period-btn" data-period="year">AÑO</button>
+                    <button class="period-btn" data-period="custom">PERSONALIZADO</button>
+                </div>
+                
+                <!-- Selector de fecha personalizada -->
+                <div id="custom-date-range" style="display: none; margin-top: 10px;">
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <div style="flex: 1;">
+                            <label class="date-input-label" style="font-size: 0.8rem;">DESDE:</label>
+                            <input type="date" class="date-input" id="filter-date-from">
+                        </div>
+                        <div style="flex: 1;">
+                            <label class="date-input-label" style="font-size: 0.8rem;">HASTA:</label>
+                            <input type="date" class="date-input" id="filter-date-to">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filtro por práctica -->
+            <div class="filter-section">
+                <div class="date-input-label">FILTRAR POR PRÁCTICA</div>
+                    <div class="practice-toggle" style="justify-content: center; margin: 10px 0;">
+                        <div class="history-practice-button" id="filter-practice-toggle">
+                            <div class="practice-state">NO</div>
+                        </div>
+                        <div class="practice-state">PRÁCTICA REALIZADA</div>
+                    </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="go-to-history-btn" id="apply-filters-btn" style="flex: 1;">APLICAR FILTROS</button>
+                <button class="go-to-history-btn" id="clear-filters-btn" style="flex: 1; background: var(--red);">LIMPIAR FILTROS</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- AGREGAR ESTE MODAL NUEVO AL FINAL DEL BODY -->
+<div class="modal" id="log-modal">
+    <div class="modal-content" style="max-width: 400px;">
+        <div class="modal-header">
+            <h3 id="log-modal-title">NUEVO REGISTRO</h3>
+            <div class="header-actions">
+                <button class="header-btn" id="save-log-btn" title="Guardar">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                </button>
+                <button class="header-btn" id="clear-log-btn" title="Limpiar">
+                    <i class="fa-solid fa-rotate-left"></i>
+                </button>
+                <button class="close-btn" id="close-log-modal">                    
+                    <i class="fa-solid fa-x"></i>
+                </button>
+
+            </div>
+        </div>
+            <div class="log-container">
+                <div class="date-input-label">
+                    MOOD BOARD</div>
+                <div class="mood-section">
+                    <div class="practice-toggle">
+                        <div class="history-practice-button" id="practice-button">
+                            <div class="practice-state">NO</div>
+                        </div>
+                    </div>
+                    <div class="mood-board" id="mood-board">
+                        <!-- Los elementos del mood board se generarán con JavaScript -->
+                    </div>
+                </div>
+
+                <!-- SECCIÓN NOTAS -->
+                <div class="date-input-label">
+                    DATOS DE PRACTICA</div>
+                <div class="notes-section">
+                    <div class="date-input-container">
+                        <label class="date-input-label" for="practice-date">FECHA DE LA PRÁCTICA:</label>
+                        <input type="date" class="date-input" id="practice-date">
+                        <small style="color: var(--green); font-size: 0.8rem;">Si está vacío, se usará la fecha actual</small>
+                    </div>
+ 
+                    <label class="date-input-label" for="practice-date">NOTAS:</label>
+                    <textarea class="notes-textarea" id="practice-notes" placeholder="Escribe tus notas aquí..."></textarea>
+
+                    <label class="date-input-label" for="practice-date">ETIQUETAS & ASANAS:</label>
+
+                    <div class="tags-input">
+                        <input type="text" class="tag-input" id="tag-input" placeholder="Vincular etiquetas...">
+                        <button class="add-tag-btn" id="add-tag-btn">+</button>
+                    </div>
+                    <div class="tags-list" id="tags-list">
+                        <!-- Los tags se mostrarán aquí -->
+                    </div>
+                
+                    <div class="asanas-input">
+                        <input type="text" class="asana-input" id="asana-search-input" placeholder="Vincular āsana...">
+                        <button class="add-asana-btn" id="add-asana-btn">+</button>
+                    </div>
+                    <div class="asana-search-results" id="asana-search-results" style="display: none;">
+                        <!-- Los resultados de búsqueda aparecerán aquí -->
+                    </div>
+                    <div class="asanas-list" id="current-asanas-list">
+                        <!-- Los āsanas vinculados se mostrarán aquí -->
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+
+
+    <script>
+        // Configuración del carrusel
+        let currentSlide = 0;
+        const totalSlides = 5;
+        const track = document.getElementById('carousel-track');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+
+function updateCarousel() {
+    track.style.transform = `translateX(-${currentSlide * 20}%)`; // 100% / 5 = 20%
+    
+    // Update button states
+    prevBtn.disabled = currentSlide === 0;
+    nextBtn.disabled = currentSlide === totalSlides - 1;
+}
+
+        // Event listeners para los botones
+        prevBtn.addEventListener('click', function() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateCarousel();
+            }
+        });
+
+        nextBtn.addEventListener('click', function() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateCarousel();
+            }
+        });
+
+        // Inicializar carrusel
+        updateCarousel();
+
+        // También permitir navegación con teclado
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft' && currentSlide > 0) {
+                currentSlide--;
+                updateCarousel();
+            } else if (e.key === 'ArrowRight' && currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateCarousel();
+            }
+        });
+
+        // Variables globales para el nuevo track
+        let todayPractice = null;
+        let moonPhases = [];
+
+        // Configurar el track de "Práctica de Hoy"
+        function setupTodayTrack() {
+
+            
+            // Event listener para el botón de información lunar
+            document.getElementById('moon-info-btn').addEventListener('click', function() {
+                showMoonModal();
+            });
+            
+            // Event listener para cerrar el modal
+            document.getElementById('close-moon-modal').addEventListener('click', function() {
+                hideMoonModal();
+            });
+            
+            // Event listener para el botón de ir al historial
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('go-to-history-btn')) {
+                    currentSlide = 5; //TRACK REGISTRO PRACTICA
+                    updateCarousel();
+                }
+            });
+        }
+
+// Actualizar la práctica de hoy - VERSIÓN CORREGIDA
+function updateTodayPractice() {
+    const todayContent = document.getElementById('today-content');
+    const today = new Date();
+    
+    // Normalizar la fecha de hoy (sin horas, minutos, segundos)
+    const todayNormalized = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    
+    // Formatear fecha y hora actual para display
+    const formattedDate = today.toLocaleDateString('es-ES', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+    
+    const formattedTime = today.toLocaleTimeString('es-ES', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    
+    // VERIFICAR que logHistory existe y es un array
+    if (!logHistory || !Array.isArray(logHistory)) {
+        todayContent.innerHTML = `
+            <div class="today-practice">
+                <div class="current-datetime">
+                    <div class="current-date">${formattedDate}</div>
+                    <div class="current-time">${formattedTime}</div>
+                </div>
+                <div class="loading">Cargando...</div>
+            </div>
+        `;
+        return;
+    }
+    
+    // BUSCAR TODAS las prácticas de hoy (no solo la primera)
+    const todayPractices = logHistory.filter(entry => {
+        if (!entry.date) return false;
+        
+        // Normalizar la fecha de la entrada (sin horas, minutos, segundos)
+        const entryDate = new Date(entry.date);
+        const entryDateNormalized = new Date(entryDate.getFullYear(), entryDate.getMonth(), entryDate.getDate());
+        
+        // Comparar fechas normalizadas
+        return entryDateNormalized.getTime() === todayNormalized.getTime();
+    });
+    
+    // Si hay múltiples prácticas, tomar la última (más reciente)
+    if (todayPractices.length > 0) {
+        // Ordenar por fecha (más reciente primero) y tomar la última
+        todayPractices.sort((a, b) => new Date(b.date) - new Date(a.date));
+        todayPractice = todayPractices[0]; // Tomar la más reciente
+        
+        console.log('Prácticas encontradas para hoy:', todayPractices.length);
+        console.log('Usando la práctica más reciente:', todayPractice);
+        
+        // Crear HTML para los moods
+        const moodsHTML = todayPractice.moods.map(mood => 
+            `<div class="mood-item" style="background-color: ${mood.color}; width: 33px; height: 33px; border: 2px solid #333333; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 2px; color: #ffffff95;">${mood.emoji}</div>`
+        ).join('');
+        
+        // Crear HTML para las etiquetas si existen
+        let tagsHTML = '';
+        if (todayPractice.tags && todayPractice.tags.length > 0) {
+            const tagsList = todayPractice.tags.map(tag => 
+                `<span class="tag" style="margin: 2px; padding: 3px 8px; background: var(--green6); color: white; border-radius: 4px; font-size: 0.8rem;">${tag}</span>`
+            ).join('');
+            
+            tagsHTML = `
+                <div class="practice-detail">
+                    <strong>Etiquetas:</strong> 
+                    <div class="tags-list" style="display: flex; flex-wrap: wrap; gap: 5px;">
+                        ${tagsList}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Crear HTML para las asanas vinculadas si existen
+        let asanasHTML = '';
+        if (todayPractice.asanas && todayPractice.asanas.length > 0) {
+            const asanasList = todayPractice.asanas.map(asana => 
+                `<span class="tag" style="margin: 2px; padding: 3px 8px; background: var(--green6); color: white; border-radius: 4px; font-size: 0.8rem;">${asana.name}</span>`
+            ).join('');
+            
+            asanasHTML = `
+                <div class="practice-detail">
+                    <strong>Asanas practicadas:</strong> 
+                    <div class="asanas-list" style="display: flex; flex-wrap: wrap; gap: 5px;">
+                        ${asanasList}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Mostrar práctica encontrada
+        todayContent.innerHTML = `
+            <div class="today-practice">
+                <div class="current-datetime">
+                    <div class="current-date">${formattedDate} - ${formattedTime}</div>
+                </div>
+                
+                <div class="namaste-title"><i class="fa fa-spa"></i> Namaste, yogi</div>
+                <div class="practice-box" style="padding-bottom: 5px;">
+                    <div class="practice-status" style="padding-bottom: 5px; border-bottom: var(--border1dark);">¡Hoy practicaste!</div>
+                    <div class="practice-details" style="margin-bottom: 10px;">
+                        <div class="practice-detail">
+                            <div class="mood-board">
+                                ${moodsHTML}
+                            </div>
+                        </div>
+                        <div class="practice-detail"><strong>Notas:</strong> ${todayPractice.notes || 'Sin notas'}</div>
+                        ${tagsHTML}
+                        ${asanasHTML}
+                    </div>
+                </div>  
+            </div>
+        `;
+
+    } else {
+        // No hay práctica hoy
+        todayContent.innerHTML = `
+            <div class="today-practice">
+                <div class="current-datetime">
+                    <div class="current-date">${formattedDate} - ${formattedTime}</div>
+                </div>
+                <div class="namaste-title"><i class="fa fa-spa"></i> Namaste, yogi</div>
+                <div class="practice-box">
+                    <div class="practice-status no-practice">Hoy no practicaste</div>
+                    <p>¿Quieres registrar tu práctica de hoy?</p>
+                    <button class="go-to-history-btn" onclick="showLogModal()">Ir a Registrar Práctica</button>
+                </div>
+            </div>
+        `;
+    }
+
+    displayNextMoon();
+}
+// Cargar fases lunares (Lunas Llenas y Nuevas)
+        function loadMoonPhases() {
+            const moonInfo = document.getElementById('moon-info');
+            moonInfo.innerHTML = '<div class="loading">Cargando información lunar...</div>';
+            
+            try {
+                // Datos de fases lunares para 2025-2026 (Lunas Llenas y Nuevas)
+                moonPhases = [
+                    // 2025
+                    { date: new Date('2025-11-05T10:19:00'), type: 'Luna Llena' },
+                    { date: new Date('2025-11-20T03:47:00'), type: 'Luna Nueva' },
+                    { date: new Date('2025-12-04T20:14:00'), type: 'Luna Llena' },
+                    { date: new Date('2025-12-19T22:43:00'), type: 'Luna Nueva' },
+                    
+                    // 2026
+                    { date: new Date('2026-01-03T07:03:00'), type: 'Luna Llena' },
+                    { date: new Date('2026-01-18T16:52:00'), type: 'Luna Nueva' },
+                    { date: new Date('2026-02-01T19:09:00'), type: 'Luna Llena' },
+                    { date: new Date('2026-02-17T09:01:00'), type: 'Luna Nueva' },
+                    { date: new Date('2026-03-03T08:38:00'), type: 'Luna Llena' },
+                    { date: new Date('2026-03-18T22:23:00'), type: 'Luna Nueva' },
+                    { date: new Date('2026-04-01T23:12:00'), type: 'Luna Llena' },
+                    { date: new Date('2026-04-17T08:52:00'), type: 'Luna Nueva' },
+                    { date: new Date('2026-05-01T14:23:00'), type: 'Luna Llena' },
+                    { date: new Date('2026-05-16T17:01:00'), type: 'Luna Nueva' },
+                    { date: new Date('2026-05-31T05:45:00'), type: 'Luna Llena' },
+                    { date: new Date('2026-06-14T23:54:00'), type: 'Luna Nueva' },
+                    { date: new Date('2026-06-29T20:57:00'), type: 'Luna Llena' },
+                    { date: new Date('2026-07-14T06:43:00'), type: 'Luna Nueva' },
+                    { date: new Date('2026-07-29T11:36:00'), type: 'Luna Llena' },
+                    { date: new Date('2026-08-12T14:37:00'), type: 'Luna Nueva' },
+                    { date: new Date('2026-08-28T01:18:00'), type: 'Luna Llena' },
+                    { date: new Date('2026-09-11T00:27:00'), type: 'Luna Nueva' },
+                    { date: new Date('2026-09-26T13:49:00'), type: 'Luna Llena' },
+                    { date: new Date('2026-10-10T12:50:00'), type: 'Luna Nueva' },
+                    { date: new Date('2026-10-26T01:12:00'), type: 'Luna Llena' },
+                    { date: new Date('2026-11-09T04:02:00'), type: 'Luna Nueva' },
+                    { date: new Date('2026-11-24T11:53:00'), type: 'Luna Llena' },
+                    { date: new Date('2026-12-08T21:52:00'), type: 'Luna Nueva' },
+                    { date: new Date('2026-12-23T22:28:00'), type: 'Luna Llena' }
+                ];
+                
+                // Filtrar solo lunas futuras (desde hoy en adelante)
+                const today = new Date();
+                moonPhases = moonPhases.filter(phase => phase.date >= today);
+                
+                // Ordenar por fecha
+                moonPhases.sort((a, b) => a.date - b.date);
+                
+                // Tomar solo las próximas 6 lunas
+                moonPhases = moonPhases.slice(0, 6);
+                
+                displayMoonPhases();
+                displayNextMoon(); // Mostrar próxima luna en el track
+                
+            } catch (error) {
+                console.error('Error al cargar fases lunares:', error);
+                moonInfo.innerHTML = '<div class="loading">Error al cargar información lunar</div>';
+            }
+        }
+
+        // Mostrar fases lunares en el modal
+        function displayMoonPhases() {
+            const moonInfo = document.getElementById('moon-info');
+            
+            if (moonPhases.length === 0) {
+                moonInfo.innerHTML = '<div class="loading">No hay información lunar disponible</div>';
+                return;
+            }
+            
+            let moonHTML = '';
+            moonPhases.forEach(phase => {
+                const formattedDate = phase.date.toLocaleDateString('es-ES', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                });
+                
+                const formattedTime = phase.date.toLocaleTimeString('es-ES', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                const moonEmoji = phase.type === 'Luna Llena' ? '<i class="fa-regular fa-circle"></i>' : '<i class="fa-solid fa-circle"></i>';
+                
+                moonHTML += `
+                    <div class="moon-event">
+                        <div class="moon-emoji">${moonEmoji}</div>
+                        <div class="moon-details">
+                            <div class="moon-date">${formattedDate}</div>
+                            <div class="moon-type">${phase.type}</div>
+                            <div class="moon-time">${formattedTime}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Agregar nota informativa
+            moonHTML += `
+                <div class="modal-note">
+                    Próximas Lunas Llenas y Nuevas
+                </div>
+            `;
+            
+            moonInfo.innerHTML = moonHTML;
+        }
+
+// Mostrar próxima luna en el track de hoy
+function displayNextMoon() {
+    const todayContent = document.getElementById('today-content');
+    if (!todayContent) return;
+
+    if (moonPhases.length > 0) {
+        const nextMoon = moonPhases[0];
+        const formattedDate = nextMoon.date.toLocaleDateString('es-ES', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+        
+        const moonEmoji = nextMoon.type === 'Luna Llena' ? '<i class="fa-regular fa-circle"></i>' : '<i class="fa-solid fa-circle"></i>';
+        
+        // Crear el HTML de la luna
+        const moonInfoHTML = `
+            
+        <div class="study-stat-label" style="color: var(--green 6); text-align: left; margin-top:40px;">Próxima Luna</div> 
+            <div class="moon-event-dia" >
+                <div class="moon-date" style="font-size: 1.2rem; font-weight: bold; color: var(--blue)">${moonEmoji}</div>
+                    <div class="moon-date" style="font-size: 1.2rem; font-weight: bold; color: var(--blue)">${nextMoon.type}</div>
+                    <div class="moon-date" style="font-size: 1.2rem; font-weight: normal; color: var(--blue)">${formattedDate}</div>
+            </div>
+        `;
+        
+        // Agregar la información lunar al contenido existente
+        todayContent.innerHTML += moonInfoHTML;
+    }
+}
+        // Mostrar modal de información lunar
+        function showMoonModal() {
+            document.getElementById('moon-modal').style.display = 'flex';
+        }
+
+        // Ocultar modal de información lunar
+        function hideMoonModal() {
+            document.getElementById('moon-modal').style.display = 'none';
+        }
+
+
+        // Variables para estadísticas
+        let currentPeriod = 'month';
+
+        // Configurar botones de periodo
+        function setupPeriodButtons() {
+            document.querySelectorAll('.period-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remover clase active de todos los botones
+                    document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+                    // Agregar clase active al botón clickeado
+                    this.classList.add('active');
+                    currentPeriod = this.dataset.period;
+                    updateStatistics();
+                });
+            });
+        }
+
+        // Categorías de moods
+        const moodCategories = {
+            moods: ['feliz', 'enojado', 'cansancio', 'relajado', 'energico'],
+            practice: ['complete', 'inconclusa', 'primera', 'segunda', 'otro estilo'],
+            other: ['moon day', 'quote']
+        };
+
+        // Actualizar estadísticas
+        function updateStatistics() {
+            const today = new Date();
+            const statsSummary = document.getElementById('stats-summary');
+            
+            // Verificar que el elemento existe
+            if (!statsSummary) {
+                console.error('Elemento stats-summary no encontrado');
+                return;
+            }
+            
+            // Filtrar entradas según el periodo seleccionado
+            let filteredEntries = filterEntriesByPeriod(logHistory, currentPeriod);
+            
+            // Calcular estadísticas básicas
+            const practiceCount = filteredEntries.filter(entry => entry.practiced).length;
+            const totalEntries = filteredEntries.length;
+            const practiceRatio = totalEntries > 0 ? (practiceCount / totalEntries) * 100 : 0;
+            
+            // Actualizar resumen
+            statsSummary.innerHTML = `
+                <div class="study-stats">
+                    <div class="study-stat-label" style="border-top: 1px solid var(--bordo); padding-top: 5px; color: var(--bordo);">
+                        ${getPeriodDisplayName(currentPeriod)}
+                    </div>
+                    
+                     <div class="study-stat-value" style="border-bottom: 1px solid var(--bordo); padding-bottom: 5px; color: var(--bordo);">
+                        ${practiceCount}/${totalEntries} días de práctica 
+                        - ${practiceRatio.toFixed(1)}%
+                    </div>
+        `;
+            
+            // Actualizar gráficos
+            updateCharts(filteredEntries);
+        }
+
+        // Filtrar entradas por periodo
+        function filterEntriesByPeriod(entries, period) {
+            const today = new Date();
+            let startDate;
+            
+            switch(period) {
+                case 'week':
+                    startDate = new Date(today);
+                    startDate.setDate(today.getDate() - 7);
+                    break;
+                case 'month':
+                    startDate = new Date(today);
+                    startDate.setMonth(today.getMonth() - 1);
+                    break;
+                case 'year':
+                    startDate = new Date(today);
+                    startDate.setFullYear(today.getFullYear() - 1);
+                    break;
+                case 'custom':
+                    // Por defecto mostrar todo el historial
+                    return entries;
+                default:
+                    return entries;
+            }
+            
+            return entries.filter(entry => entry.date >= startDate);
+        }
+
+        // Obtener nombre display del periodo
+        function getPeriodDisplayName(period) {
+            const names = {
+                'week': 'Esta última <b>semana</b>',
+                'month': 'Este último <b>mes</b>', 
+                'year': 'Este última <b>año</b>',
+                'custom': 'Todo el historial'
+            };
+            return names[period] || period;
+        }
+
+        // Actualizar gráficos
+        function updateCharts(entries) {
+            updateMoodChart(entries);
+            updatePracticeChart(entries);
+            updateOtherChart(entries);
+        }
+
+        // Actualizar gráfico de moods
+        function updateMoodChart(entries) {
+            const chart = document.getElementById('mood-chart');
+            const moodData = getCategoryFrequencyData(entries, moodCategories.moods);
+            renderChart(moodData, chart, 100); // Altura máxima reducida
+        }
+
+        // Actualizar gráfico de práctica
+        function updatePracticeChart(entries) {
+            const chart = document.getElementById('practice-chart');
+            const practiceData = getCategoryFrequencyData(entries, moodCategories.practice);
+            renderChart(practiceData, chart, 100);
+        }
+
+        // Actualizar gráfico de otros
+        function updateOtherChart(entries) {
+            const chart = document.getElementById('other-chart');
+            const otherData = getCategoryFrequencyData(entries, moodCategories.other);
+            renderChart(otherData, chart, 100);
+        }
+
+        // Obtener datos de frecuencia por categoría
+        function getCategoryFrequencyData(entries, categoryMoods) {
+            const moodCounts = {};
+            
+            // Inicializar contadores para los moods de la categoría
+            moodOptions.forEach(mood => {
+                if (categoryMoods.includes(mood.name)) {
+                    moodCounts[mood.name] = {
+                        label: mood.label,
+                        count: 0,
+                        color: mood.color,
+                        emoji: mood.emoji
+                    };
+                }
+            });
+            
+            // Contar frecuencia
+            entries.forEach(entry => {
+                if (entry.moods && Array.isArray(entry.moods)) {
+                    entry.moods.forEach(mood => {
+                        if (moodCounts[mood.name]) {
+                            moodCounts[mood.name].count++;
+                        }
+                    });
+                }
+            });
+            
+            // Convertir a array y ordenar
+            return Object.values(moodCounts)
+                .filter(mood => mood.count > 0)
+                .sort((a, b) => b.count - a.count);
+        }
+
+        // Renderizar gráfico
+        function renderChart(data, container, maxHeight = 100) {
+            container.innerHTML = '';
+            
+            if (data.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">No hay datos</div>';
+                return;
+            }
+            
+            const maxFrequency = Math.max(...data.map(d => d.count));
+            
+            data.forEach(data => {
+                const barHeight = maxFrequency > 0 ? (data.count / maxFrequency) * maxHeight : 0;
+                
+                const bar = document.createElement('div');
+                bar.className = 'chart-bar';
+                bar.style.height = `${barHeight}%`;
+                bar.style.backgroundColor = data.color;
+                
+                const value = document.createElement('div');
+                value.className = 'chart-value';
+                value.textContent = data.count;
+                
+                const label = document.createElement('div');
+                label.className = 'chart-label';
+                
+                const moodCircle = document.createElement('div');
+                moodCircle.className = 'chart-mood-circle';
+                moodCircle.innerHTML = data.emoji;
+                moodCircle.style.backgroundColor = data.color;
+                moodCircle.title = data.label;
+                
+                label.appendChild(moodCircle);
+                bar.appendChild(value);
+                bar.appendChild(label);
+                container.appendChild(bar);
+            });
+        }
+
+        // Variable global para almacenar asanas
+        let asanasData = [];
 
 
 
+        // Cargar asanas desde CSV
+        async function loadAsanasFromCSV() {
+            try {
+                const response = await fetch('asana.csv');
+                const csvText = await response.text();
+                
+                // Parsear CSV
+                const results = Papa.parse(csvText, {
+                    header: true,
+                    skipEmptyLines: true
+                });
+                
+                if (results.data && results.data.length > 0) {
+                    asanasData = results.data.map(row => {
+                        // Crear ID único basado en el nombre
+                        const id = row.Name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+                        
+                return {
+                    id: id,
+                    name: row.Name,
+                    sanskrit: row.Sandhi || row.Devanagari || '',
+                    english: row.English,
+                    devanagari: row.Devanagari,
+                    sandhi: row.Sandhi,
+                    etymology: row.Etymology,
+                    yogaSeries: row.YogaSeries,
+                    before: row.Before,
+                    after: row.After,
+                    ashtanga: row.Ashtanga,
+                    categories: row.Categories,
+                    open: row.Open,
+                    stable: row.Stable,
+                    preparation: row.Preparation,
+                    counterposes: row.Counterposes
+                };
+                    });
+                    
+                    console.log(`Cargadas ${asanasData.length} asanas desde CSV`);
+                } else {
+                    console.warn('No se encontraron datos en el CSV, usando datos de ejemplo');
+                    asanasData = getSampleAsanas();
+                }
+            } catch (error) {
+                console.error('Error al cargar asanas desde CSV:', error);
+                // Fallback a datos de ejemplo
+                asanasData = getSampleAsanas();
+            }
+        }
+
+        // En initializeAsanaSearch(), añadir indicador de carga
+        function initializeAsanaSearch() {
+            const searchInput = document.getElementById('asana-search-input');
+            const searchResults = document.getElementById('asana-search-results');
+            
+            // Mostrar estado de carga inicialmente
+            if (asanasData.length === 0) {
+                searchInput.placeholder = "Cargando asanas...";
+            }
+            
+            searchInput.addEventListener('input', function() {
+                // Si aún no se cargaron las asanas
+                if (asanasData.length === 0) {
+                    searchResults.innerHTML = '<div class="asana-search-result">Cargando asanas...</div>';
+                    searchResults.style.display = 'block';
+                    return;
+                }
+                
+                const query = this.value.toLowerCase().trim();
+                
+                if (query.length < 2) {
+                    searchResults.style.display = 'none';
+                    return;
+                }
+                
+                // Filtrar asanas
+                const filteredAsanas = asanasData.filter(asana => 
+                    asana.name.toLowerCase().includes(query) ||
+                    (asana.sandhi && asana.sandhi.toLowerCase().includes(query)) ||
+                    (asana.sanskrit && asana.sanskrit.toLowerCase().includes(query)) ||
+                    asana.english.toLowerCase().includes(query) ||
+                    (asana.devanagari && asana.devanagari.includes(query))
+                );
+                
+                displayAsanaSearchResults(filteredAsanas, searchResults);
+            });
+            
+            // Actualizar placeholder cuando se cargan las asanas
+            if (asanasData.length > 0) {
+                searchInput.placeholder = "Vincular āsana...";
+            }
+            
+            // Cerrar resultados al hacer clic fuera
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                    searchResults.style.display = 'none';
+                }
+            });
+        }
+
+// Inicializar búsqueda de tags - MODIFICADA
+function initializeTagSearch() {
+    const tagInput = document.getElementById('tag-input');
+    const tagResults = document.createElement('div');
+    tagResults.className = 'tag-search-results';
+    
+    // Insertar después del contenedor de tags-input (no después del input)
+    const tagsInputContainer = tagInput.parentNode;
+    tagsInputContainer.parentNode.insertBefore(tagResults, tagsInputContainer.nextSibling);
+    
+    tagInput.addEventListener('input', function() {
+        const query = this.value.toLowerCase().trim();
+        
+        if (query.length < 1) {
+            tagResults.style.display = 'none';
+            return;
+        }
+        
+        // Obtener tags existentes del historial (actualizado en cada búsqueda)
+        const existingTags = getAllExistingTags();
+        
+        // Filtrar tags existentes - MEJORADO para búsqueda case-insensitive y con acentos
+        const filteredTags = existingTags.filter(tag => {
+            const tagLower = tag.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const queryNormalized = query.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            return tagLower.includes(queryNormalized);
+        });
+        
+        displayTagSearchResults(filteredTags, tagResults);
+    });
+    
+    // Cerrar resultados al hacer clic fuera
+    document.addEventListener('click', function(e) {
+        if (!tagsInputContainer.contains(e.target) && !tagResults.contains(e.target)) {
+            tagResults.style.display = 'none';
+        }
+    });
+    
+    // También cerrar al presionar Escape
+    tagInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            tagResults.style.display = 'none';
+        }
+    });
+}
+
+// Obtener todos los tags existentes del historial - MEJORADO
+function getAllExistingTags() {
+    const allTags = new Set();
+    
+    if (logHistory && Array.isArray(logHistory)) {
+        logHistory.forEach(entry => {
+            if (entry.tags && Array.isArray(entry.tags)) {
+                entry.tags.forEach(tag => {
+                    if (tag && tag.trim() !== '') {
+                        allTags.add(tag.trim());
+                    }
+                });
+            }
+        });
+    }
+    
+    return Array.from(allTags).sort();
+}
+
+// Mostrar resultados de búsqueda de tags - MEJORADO
+function displayTagSearchResults(tags, container) {
+    if (tags.length === 0) {
+        container.innerHTML = '<div class="tag-search-result">No se encontraron etiquetas</div>';
+        container.style.display = 'block';
+        return;
+    }
+    
+    container.innerHTML = '';
+    
+    // Limitar a 8 resultados para mejor rendimiento
+    const limitedTags = tags.slice(0, 8);
+    
+    limitedTags.forEach(tag => {
+        const result = document.createElement('div');
+        result.className = 'tag-search-result';
+        result.textContent = tag;
+        
+        result.addEventListener('click', function() {
+            addTagToLog(tag);
+            document.getElementById('tag-input').value = '';
+            container.style.display = 'none';
+        });
+        
+        container.appendChild(result);
+    });
+    
+    container.style.display = 'block';
+}
+
+// Añadir tag al log (función auxiliar) - AGREGAR ESTA FUNCIÓN
+function addTagToLog(tagText) {
+    if (tagText && !currentTags.includes(tagText)) {
+        currentTags.push(tagText);
+        updateTagsDisplay();
+    }
+}
+
+
+// Mostrar resultados de búsqueda de asanas (mejorada)
+        function displayAsanaSearchResults(asanas, container) {
+            if (asanas.length === 0) {
+                container.innerHTML = '<div class="asana-search-result">No se encontraron āsanas</div>';
+                container.style.display = 'block';
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            // Limitar a 10 resultados para mejor rendimiento
+            const limitedAsanas = asanas.slice(0, 10);
+            
+            limitedAsanas.forEach(asana => {
+                const result = document.createElement('div');
+                result.className = 'asana-search-result';
+                
+                // Mostrar información relevante
+                let infoHTML = `<strong>${asana.sandhi}</strong>`;
+                
+                if (asana.english) {
+                    infoHTML += `<br><small>${asana.english}</small>`;
+                }
+
+                
+                result.innerHTML = infoHTML;
+                
+                result.addEventListener('click', function() {
+                    addAsanaToLog(asana);
+                    document.getElementById('asana-search-input').value = '';
+                    container.style.display = 'none';
+                });
+                
+                container.appendChild(result);
+            });
+            
+            container.style.display = 'block';
+        }
+
+// Configurar el modal de filtros de series
+function setupAsanasFilterModal() {
+    // Event listener para el botón de filtros
+    document.getElementById('asanas-filter-btn').addEventListener('click', function() {
+        showAsanasFilterModal();
+    });
+    
+    // Event listener para cerrar el modal
+    document.getElementById('close-asanas-filter-modal').addEventListener('click', function() {
+        hideAsanasFilterModal();
+    });
+    
+    // Configurar botones de series dentro del modal
+    setupSeriesButtons();
+}
+
+// Configurar botones de series
+function setupSeriesButtons() {
+    document.querySelectorAll('#asanas-filter-modal .period-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Remover clase active de todos los botones
+            document.querySelectorAll('#asanas-filter-modal .period-btn').forEach(b => b.classList.remove('active'));
+            // Agregar clase active al botón clickeado
+            this.classList.add('active');
+            currentSeriesFilter = this.dataset.series;
+            displayAsanasList();
+            hideAsanasFilterModal();
+        });
+    });
+}
+
+// Mostrar modal de filtros de series
+function showAsanasFilterModal() {
+    document.getElementById('asanas-filter-modal').style.display = 'flex';
+}
+
+// Ocultar modal de filtros de series
+function hideAsanasFilterModal() {
+    document.getElementById('asanas-filter-modal').style.display = 'none';
+}
+
+
+        // Configuración de Supabase
+        const SUPABASE_URL = 'https://edkumnfbwzpeuifbxubp.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVka3VtbmZid3pwZXVpZmJ4dWJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyMDI2NjgsImV4cCI6MjA3Nzc3ODY2OH0.EhiZN_2EVDcQ8LdE-V1T3LknzUDsiya697K3P4kbu5E';
+
+        // Inicializar cliente de Supabase
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const moodOptions = [
+            { name: 'feliz', label: 'Mood: YEaYy!!', emoji: '<i class="fa-solid fa-face-laugh-beam"></i>', color: '#2a9d8f' },
+            { name: 'enojado', label: 'Mood: Ehhh... hubo días mejores', emoji: '<i class="fa-solid fa-face-meh"></i>', color: '#e9c46a' },
+            { name: 'cansancio', label: 'Mood: siesta', emoji: '<i class="fa-solid fa-face-tired"></i>', color: '#bc4749' },
+            { name: 'relajado', label: 'Mood: ohmmm', emoji: '<i class="fa-solid fa-heart"></i>', color: '#FF9A76' },
+            { name: 'energico', label: 'Mood: estoy para doblete', emoji: '<i class="fa-solid fa-bolt-lightning"></i>', color: '#95E1D3' },
+            { name: 'complete', label: 'Práctica Completa', emoji: '<i class="fa-solid fa-check"></i>', color: '#81b29a' },
+            { name: 'inconclusa', label: 'Práctica Inconmpleta', emoji: '<i class="fa-solid fa-xmark"></i>', color: '#bc6c25' },
+            { name: 'primera', label: 'Primera Serie', emoji: '<i class="fa-solid fa-1"></i>', color: '#da627d' },
+            { name: 'segunda', label: 'Segunda Serie', emoji: '<i class="fa-solid fa-2"></i>', color: '#ffa5ab' },
+            { name: 'otro estilo', label: 'vinyasa', emoji: '<i class="fa-solid fa-fire"></i>', color: '#a26769' },
+            { name: 'moon day', label: 'Moon Day', emoji: '<i class="fa-solid fa-moon"></i>', color: '#ced4da' },
+            { name: 'quote', label: 'quote', emoji: '<i class="fa-solid fa-quote-right"></i>', color: '#6d597a' },
+        ];
+
+        // Variables globales
+        let currentLogEntry = {
+            date: new Date(),
+            practiced: false,
+            moods: [],
+            notes: "",
+            tags: [],
+            asanas: []
+        };
+
+        let logHistory = [];
+        let selectedMoods = [];
+        let currentTags = [];
+        let currentAsanas = [];
+
+        // Fecha de inicio para estadísticas (1/11/2025)
+        const startDate = new Date(2025, 10, 1); // Noviembre es 10 (0-indexed)
+
+        // Variables para asanas
+        let currentSeriesFilter = 'all';
+        let filteredAsanas = [];
+
+        // Configurar filtros de series
+        function setupSeriesFilters() {
+            document.querySelectorAll('.series-filter').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remover clase active de todos los botones
+                    document.querySelectorAll('.series-filter').forEach(b => b.classList.remove('active'));
+                    // Agregar clase active al botón clickeado
+                    this.classList.add('active');
+                    currentSeriesFilter = this.dataset.series;
+                    displayAsanasList();
+                });
+            });
+        }
+
+
+// Mostrar lista de asanas - MODIFICADA Y CORREGIDA
+function displayAsanasList() {
+    const asanasList = document.getElementById('asanas-list');
+    
+    // Filtrar asanas por serie
+    if (currentSeriesFilter === 'all') {
+        filteredAsanas = asanasData.filter(asana => asana.yogaSeries);
+    } else {
+        filteredAsanas = asanasData.filter(asana => 
+            asana.yogaSeries && asana.yogaSeries === currentSeriesFilter
+        );
+    }
+    
+    // Ordenar asanas según la secuencia de la serie
+    filteredAsanas = sortAsanasBySeriesSequence(filteredAsanas, currentSeriesFilter);
+    
+    if (filteredAsanas.length === 0) {
+        asanasList.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--bordo);">No hay asanas en esta serie</div>';
+        return;
+    }
+    
+    let asanasHTML = '';
+    
+    if (currentSeriesFilter === 'all') {
+        // Para "TODAS", agrupar por serie con subtítulos
+        const seriesGroups = groupAsanasBySeries(filteredAsanas);
+        
+        seriesGroups.forEach(group => {
+            // Agregar subtítulo de la serie
+            asanasHTML += `
+                <div class="series-subtitle">
+                    <span class="series-subtitle-text">${getSeriesDisplayName(group.series)}</span>
+                    <span class="series-count">${group.asanas.length} asanas</span>
+                </div>
+            `;
+            
+            // Agregar asanas de esta serie
+            group.asanas.forEach(asana => {
+                asanasHTML += `
+                    <div class="asana-item" data-id="${asana.id}">
+                        <div class="asana-sanskrit"><b>${asana.sandhi || asana.sanskrit || ''}</b><br>${asana.english}</div>
+                    </div>
+                `;
+            });
+        });
+    } else {
+        // Para una serie específica, AGREGAR SUBTÍTULO también
+        asanasHTML += `
+            <div class="series-subtitle">
+                <span class="series-subtitle-text">${getSeriesDisplayName(currentSeriesFilter)}</span>
+                <span class="series-count">${filteredAsanas.length} asanas</span>
+            </div>
+        `;
+        
+        // Agregar asanas de esta serie
+        filteredAsanas.forEach(asana => {
+            asanasHTML += `
+                <div class="asana-item" data-id="${asana.id}">
+                    <div class="asana-sanskrit"><b>${asana.sandhi || asana.sanskrit || ''}</b><br>${asana.english}</div>
+                </div>
+            `;
+        });
+    }
+    
+    asanasList.innerHTML = asanasHTML;
+    
+    // Agregar event listeners para los items de asanas
+    document.querySelectorAll('.asana-item').forEach(item => {
+        item.addEventListener('click', function() {
+            const asanaId = this.getAttribute('data-id');
+            const asana = asanasData.find(a => a.id === asanaId);
+            if (asana) {
+                showAsanaModal(asana);
+            }
+        });
+    });
+}
+
+        // Agrupar asanas por serie
+        function groupAsanasBySeries(asanas) {
+            const seriesOrder = ['ādhāra', 'yogacikitsā', 'nāḍī śodhana', 'tṛtīya śreṇī', 'pṛṣṭhavakrāsana', 'samāpana'];
+            const groups = [];
+            
+            seriesOrder.forEach(series => {
+                const seriesAsanas = asanas.filter(asana => asana.yogaSeries === series);
+                if (seriesAsanas.length > 0) {
+                    groups.push({
+                        series: series,
+                        asanas: seriesAsanas
+                    });
+                }
+            });
+            
+            return groups;
+        }
+
+// Ordenar asanas según la secuencia de la serie usando Before/After - CORREGIDA
+function sortAsanasBySeriesSequence(asanas, series) {
+    if (series === 'all') {
+        // Para "TODAS", ordenar por serie y luego por secuencia dentro de cada serie
+        const seriesOrder = ['ādhāra', 'yogacikitsā', 'nāḍī śodhana', 'tṛtīya śreṇī', 'pṛṣṭhavakrāsana', 'samāpana'];
+        const sortedAsanas = [];
+        
+        seriesOrder.forEach(seriesName => {
+            const seriesAsanas = asanas.filter(asana => asana.yogaSeries === seriesName);
+            if (seriesAsanas.length > 0) {
+                // Ordenar asanas dentro de cada serie
+                const sortedSeriesAsanas = sortAsanasWithinSeries(seriesAsanas, seriesName);
+                sortedAsanas.push(...sortedSeriesAsanas);
+            }
+        });
+        
+        return sortedAsanas;
+    } else {
+        // Para una serie específica, ordenar por secuencia
+        return sortAsanasWithinSeries(asanas, series);
+    }
+}
+        // Ordenar asanas dentro de una serie específica usando Before/After
+        function sortAsanasWithinSeries(asanas, series) {
+            // Crear un mapa de asanas por nombre para búsqueda rápida
+            const asanaMap = {};
+            asanas.forEach(asana => {
+                asanaMap[asana.name] = asana;
+            });
+            
+            // Encontrar la primera asana de la serie (la que no tiene "before" o cuyo "before" no está en la lista)
+            let firstAsana = null;
+            
+            // Para cada serie, definir manualmente la primera asana
+            const seriesStart = {
+                'ādhāra': 'Samasthiti',
+                'yogacikitsā': 'Parsvottanasana', 
+                'nāḍī śodhana': 'Pasasana',
+                'tṛtīya śreṇī': 'Adho Mukha Vrksasana',
+                'pṛṣṭhavakrāsana': 'Urdhva Dhanurasana',
+                'samāpana': 'Sarvangasana'
+            };
+            
+            firstAsana = asanaMap[seriesStart[series]];
+            
+            // Si no encontramos la primera asana definida, usar la primera que no tenga "before"
+            if (!firstAsana) {
+                firstAsana = asanas.find(asana => !asana.before || !asanaMap[extractAsanaName(asana.before)]);
+                if (!firstAsana) firstAsana = asanas[0];
+            }
+            
+            // Construir la secuencia ordenada
+            const sortedAsanas = [];
+            let currentAsana = firstAsana;
+            const visited = new Set();
+            
+            while (currentAsana && !visited.has(currentAsana.name)) {
+                visited.add(currentAsana.name);
+                sortedAsanas.push(currentAsana);
+                
+                // Encontrar la siguiente asana usando el campo "after"
+                if (currentAsana.after) {
+                    const nextAsanaName = extractAsanaName(currentAsana.after);
+                    currentAsana = asanaMap[nextAsanaName];
+                } else {
+                    currentAsana = null;
+                }
+            }
+            
+            // Agregar cualquier asana que no esté en la secuencia (por si hay ramificaciones)
+            asanas.forEach(asana => {
+                if (!visited.has(asana.name)) {
+                    sortedAsanas.push(asana);
+                }
+            });
+            
+            return sortedAsanas;
+        }
+
+        // Extraer nombre del asana de campos como "[[AsanaName]]" o texto simple
+        function extractAsanaName(text) {
+            if (!text) return null;
+            
+            // Buscar patrones como [[AsanaName]]
+            const bracketMatch = text.match(/\[\[(.*?)\]\]/);
+            if (bracketMatch) return bracketMatch[1];
+            
+            // Si es texto simple, tomar la primera palabra
+            return text.split(',')[0].trim();
+        }
+
+        // Obtener nombre display de la serie
+        function getSeriesDisplayName(series) {
+            const names = {
+                'ādhāra': 'ĀDHĀRA: FUNDAMENTALES',
+                'yogacikitsā': 'YOGA CIKITSĀ: PRIMERA',
+                'nāḍī śodhana': 'NĀḌĪ ŚODHANA: SEGUNDA',
+                'tṛtīya śreṇī': 'TṚTĪYA ŚREṆĪ: TERCERA',
+                'pṛṣṭhavakrāsana': 'PṚṢṬHAVAKRĀSANA: ARCOS',
+                'samāpana': 'SAMĀPANA: CIERRE'
+            };
+            return names[series] || series;
+        }
+
+// Mostrar modal de asana
+function showAsanaModal(asana) {
+    const modal = document.createElement('div');
+    modal.className = 'modal asana-modal';
+    modal.style.display = 'flex';
+    
+    // Procesar enlaces en el texto
+    const processLinks = (text) => {
+        if (!text) return '';
+        return text.replace(/\[\[(.*?)\]\]/g, '<span class="asana-link" data-asana="$1">$1</span>');
+    };
+    
+    // Buscar asana por sandhi
+    const findAsanaBySandhi = (sandhi) => {
+        return asanasData.find(a => a.sandhi === sandhi || a.name === sandhi);
+    };
+    
+    modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>INFORMACIÓN DEL ĀSANA</h3>
+                <button class="close-btn"><i class="fa-solid fa-x"></i></button>
+            </div>
+            <div class="modal-asana">
+                <div class="practice-status">${asana.sandhi}</div>
+                                <div class="asana-sanskrit-name" style="margin-top:5px">${asana.devanagari}<br>${asana.english || asana.sanskrit || ''}</div>
+
+
+                <!-- Imagen del asana -->
+                <img src="images/${asana.name}.png" 
+                    alt="${asana.name}" 
+                    class="asana-image"
+                    onerror="this.style.display='none'">
+
+                <div class="asana-info-section" style="margin:10px; border: 2px solid var(--green6); border-radius: 4px";">
+
+                    <div class="asana-info-title" style="text-transform: uppercase;">Etimología</div>
+                
+                ${asana.etymology ? `
+                <div class="asana-sanskrit-name" style="color:#333"><i>${asana.etymology}</i></div>
+                ` : ''}
+                </div>
+
+                
+                <!-- Secuencia Before/After -->
+                ${(asana.before || asana.after) ? `
+                <div class="asana-info-section" style="margin:10px; margin-top:0; border: 2px solid var(--green6); border-radius: 4px";">
+
+                    <div class="asana-info-title">SECUENCIA</div>
+                   
+                    ${asana.yogaSeries ? `
+                    <div class="asana-detail-row">
+                        <span class="asana-detail-label">Antes:</span>${getSeriesDisplayName(asana.yogaSeries)}
+                    </div>
+                    ` : ''}
+
+                    ${asana.before ? `
+                    <div class="asana-detail-row">
+                        <span class="asana-detail-label">Antes:</span> ${processLinks(asana.before)}
+                    </div>
+                    ` : ''}
+                    ${asana.after ? `
+                    <div class="asana-detail-row">
+                        <span class="asana-detail-label">Después:</span> ${processLinks(asana.after)}
+                    </div>
+
+                </div>
+                    ` : ''}
+                ` : ''}
+                
+                <!-- Información adicional -->
+                ${(asana.open || asana.stable || asana.preparation || asana.counterposes) ? `
+                <div class="asana-info-section" style="margin:10px; margin-top:0px; border: 2px solid var(--green6); border-radius: 4px";>
+                    <div class="asana-info-title">INFORMACIÓN ADICIONAL</div>
+                    ${asana.open ? `
+                    <div class="asana-detail-row">
+                        <span class="asana-detail-label">Abre:</span> ${processLinks(asana.open)}
+                    </div>
+                    ` : ''}
+                    ${asana.stable ? `
+                    <div class="asana-detail-row">
+                        <span class="asana-detail-label">Estabiliza:</span> ${processLinks(asana.stable)}
+                    </div>
+                    ` : ''}
+                    ${asana.preparation ? `
+                    <div class="asana-detail-row">
+                        <span class="asana-detail-label">Preparación:</span> ${processLinks(asana.preparation)}
+                    </div>
+                    ` : ''}
+                    ${asana.counterposes ? `
+                    <div class="asana-detail-row">
+                        <span class="asana-detail-label">Contraposturas:</span> ${processLinks(asana.counterposes)}
+                    </div>
+                    ` : ''}
+                </div>
+                ` : ''}
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Event listeners para el modal
+    modal.querySelector('.close-btn').addEventListener('click', function() {
+        document.body.removeChild(modal);
+    });
+    
+    // Cerrar modal al hacer clic fuera
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            document.body.removeChild(modal);
+        }
+    });
+    
+    // Event listeners para los enlaces de asanas
+    modal.querySelectorAll('.asana-link').forEach(link => {
+        link.addEventListener('click', function() {
+            const asanaName = this.getAttribute('data-asana');
+            const linkedAsana = asanasData.find(a => 
+                a.sandhi === asanaName || a.name === asanaName
+            );
+            if (linkedAsana) {
+                document.body.removeChild(modal);
+                showAsanaModal(linkedAsana);
+            }
+        });
+    });
+}
+       // Inicializar la sección de bitácora
+        function initializeLogSection() {
+            // Establecer fecha actual
+            const now = new Date();
+            const formattedDate = now.toLocaleDateString('es-ES', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+            
+            // Establecer fecha actual como valor por defecto en el campo de fecha
+            document.getElementById('practice-date').valueAsDate = now;
+            
+            // Inicializar mood board
+            initializeMoodBoard();
+            
+            // Inicializar búsqueda de asanas
+            initializeAsanaSearch();
+        }
+
+        // Inicializar mood board
+        function initializeMoodBoard() {
+            const moodBoard = document.getElementById('mood-board');
+            moodBoard.innerHTML = '';
+            
+            moodOptions.forEach((mood, index) => {
+                const moodItem = document.createElement('div');
+                moodItem.className = 'mood-item';
+                moodItem.innerHTML = mood.emoji;
+                moodItem.title = mood.label;
+                moodItem.dataset.index = index;
+                moodItem.style.backgroundColor = mood.color;
+                
+                moodItem.addEventListener('click', function() {
+                    toggleMoodSelection(index);
+                });
+                
+                moodBoard.appendChild(moodItem);
+            });
+        }
+
+        // Alternar selección de mood
+        function toggleMoodSelection(index) {
+            const moodItem = document.querySelector(`.mood-item[data-index="${index}"]`);
+            
+            if (selectedMoods.includes(index)) {
+                // Deseleccionar
+                selectedMoods = selectedMoods.filter(i => i !== index);
+                moodItem.classList.remove('selected');
+            } else {
+                // Seleccionar
+                selectedMoods.push(index);
+                moodItem.classList.add('selected');
+            }
+            
+            // Actualizar entrada actual
+            currentLogEntry.moods = selectedMoods.map(i => moodOptions[i]);
+        }
+
+        // Añadir asana a la entrada actual
+        function addAsanaToLog(asana) {
+            if (!currentAsanas.some(a => a.id === asana.id)) {
+                currentAsanas.push(asana);
+                updateAsanasDisplay();
+            }
+        }
+
+        // Actualizar visualización de asanas
+        function updateAsanasDisplay() {
+    const asanasList = document.getElementById('current-asanas-list'); // Cambiado
+            asanasList.innerHTML = '';
+            
+            currentAsanas.forEach((asana, index) => {
+                const asanaElement = document.createElement('span');
+                asanaElement.className = 'asana-tag';
+                asanaElement.textContent = asana.name;
+                
+                const removeBtn = document.createElement('span');
+                removeBtn.innerHTML = ' <i class="fa-solid fa-x"></i>';
+                removeBtn.style.cursor = 'pointer';
+                removeBtn.style.marginLeft = '5px';
+                removeBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    currentAsanas.splice(index, 1);
+                    updateAsanasDisplay();
+                });
+                
+                asanaElement.appendChild(removeBtn);
+                asanasList.appendChild(asanaElement);
+            });
+        }
+
+        // Configurar event listeners
+        function setupEventListeners() {
+            // Toggle de práctica
+            document.getElementById('practice-button').addEventListener('click', function() {
+                this.classList.toggle('yes');
+                const practiceState = this.querySelector('.practice-state');
+                currentLogEntry.practiced = this.classList.contains('yes');
+                practiceState.textContent = currentLogEntry.practiced ? 'SÍ' : 'NO';
+            });
+
+            // Añadir tag
+            document.getElementById('add-tag-btn').addEventListener('click', function() {
+                const tagInput = document.getElementById('tag-input');
+                const tagText = tagInput.value.trim();
+                
+                if (tagText && !currentTags.includes(tagText)) {
+                    addTagToLog(tagText);
+                    tagInput.value = '';
+                }
+            });
+
+            // Añadir asana manualmente
+            document.getElementById('add-asana-btn').addEventListener('click', function() {
+                const asanaInput = document.getElementById('asana-search-input');
+                const asanaText = asanaInput.value.trim();
+                
+                if (asanaText) {
+                    const customAsana = {
+                        id: 'custom_' + Date.now(),
+                        name: asanaText,
+                        sanskrit: '',
+                        english: ''
+                    };
+                    
+                    addAsanaToLog(customAsana);
+                    asanaInput.value = '';
+                }
+            });
+
+            // Guardar entrada
+            document.getElementById('save-log-btn').addEventListener('click', function() {
+                saveLogEntry();
+            });
+
+            // Limpiar entrada actual
+            document.getElementById('clear-log-btn').addEventListener('click', function() {
+                clearCurrentEntry();
+            });
+        }
+
+// Variables para filtros del historial
+let currentHistoryFilters = {
+    tags: [],
+    moods: [], // ← AGREGAR este array para los moods seleccionados
+    period: 'all',
+    dateFrom: null,
+    dateTo: null,
+    practiced: null
+};
+// Inicializar mood board para filtros
+function initializeFilterMoodBoard() {
+    const moodBoard = document.getElementById('filter-mood-board');
+    moodBoard.innerHTML = '';
+    
+    moodOptions.forEach((mood, index) => {
+        const moodItem = document.createElement('div');
+        moodItem.className = 'filter-mood-item';
+        moodItem.innerHTML = mood.emoji;
+        moodItem.title = mood.label;
+        moodItem.dataset.moodName = mood.name;
+        moodItem.style.backgroundColor = mood.color;
+        
+        // Verificar si está seleccionado
+        if (currentHistoryFilters.moods.includes(mood.name)) {
+            moodItem.classList.add('selected');
+        }
+        
+        moodItem.addEventListener('click', function() {
+            toggleFilterMood(mood.name);
+        });
+        
+        moodBoard.appendChild(moodItem);
+    });
+}
+
+// Configurar el modal de filtros del historial
+function setupHistoryFilterModal() {
+    // Event listener para el botón de filtros
+    document.getElementById('history-filter-btn').addEventListener('click', function() {
+        showHistoryFilterModal();
+    });
+    
+    // Event listener para cerrar el modal
+    document.getElementById('close-history-filter-modal').addEventListener('click', function() {
+        hideHistoryFilterModal();
+    });
+    
+    // Configurar botones de periodo
+    setupHistoryPeriodButtons();
+    
+    // Configurar toggle de práctica
+    setupPracticeFilterToggle();
+    
+    // Configurar búsqueda de tags para filtros
+    setupFilterTagSearch();
+    
+    // NUEVO: Inicializar mood board para filtros
+    initializeFilterMoodBoard();
+    
+    // Configurar botones de acción
+    document.getElementById('apply-filters-btn').addEventListener('click', applyHistoryFilters);
+    document.getElementById('clear-filters-btn').addEventListener('click', clearHistoryFilters);
+    
+    // Configurar selector de fecha personalizada
+    setupCustomDateRange();
+    
+    // Inicializar indicador
+    updateFilterIndicator();
+}
+// Configurar botones de periodo para filtros
+function setupHistoryPeriodButtons() {
+    document.querySelectorAll('#history-filter-modal .period-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Remover clase active de todos los botones
+            document.querySelectorAll('#history-filter-modal .period-btn').forEach(b => b.classList.remove('active'));
+            // Agregar clase active al botón clickeado
+            this.classList.add('active');
+            
+            const period = this.dataset.period;
+            currentHistoryFilters.period = period;
+            
+            // Mostrar/ocultar selector de fecha personalizada
+            const customRange = document.getElementById('custom-date-range');
+            customRange.style.display = period === 'custom' ? 'block' : 'none';
+        });
+    });
+}
+
+
+// Alternar mood en los filtros
+function toggleFilterMood(moodName) {
+    const index = currentHistoryFilters.moods.indexOf(moodName);
+    const moodItem = document.querySelector(`.filter-mood-item[data-mood-name="${moodName}"]`);
+    
+    if (index === -1) {
+        // Agregar mood
+        currentHistoryFilters.moods.push(moodName);
+        moodItem.classList.add('selected');
+    } else {
+        // Remover mood
+        currentHistoryFilters.moods.splice(index, 1);
+        moodItem.classList.remove('selected');
+    }
+    
+    // Actualizar indicador visual de filtros activos
+    updateFilterIndicator();
+}
+
+// Configurar toggle de práctica para filtros
+function setupPracticeFilterToggle() {
+    const toggle = document.getElementById('filter-practice-toggle');
+    let practiceState = null; // null = todos, true = sí, false = no
+    
+    toggle.addEventListener('click', function() {
+        if (practiceState === null) {
+            // Primero click: Sí
+            this.classList.add('yes');
+            practiceState = true;
+            currentHistoryFilters.practiced = true;
+        } else if (practiceState === true) {
+            // Segundo click: No
+            this.classList.remove('yes');
+            practiceState = false;
+            currentHistoryFilters.practiced = false;
+        } else {
+            // Tercer click: Todos (reset)
+            practiceState = null;
+            currentHistoryFilters.practiced = null;
+        }
+        
+        const stateText = practiceState === null ? 'NO' : (practiceState ? 'SÍ' : 'NO');
+        this.querySelector('.practice-state').textContent = stateText;
+    });
+}
+// Configurar búsqueda de tags para filtros
+function setupFilterTagSearch() {
+    const tagInput = document.getElementById('filter-tag-input');
+    const tagsList = document.getElementById('filter-tags-list');
+    
+    // Cargar tags disponibles
+    updateFilterTagsList();
+    
+    tagInput.addEventListener('input', function() {
+        const query = this.value.toLowerCase().trim();
+        updateFilterTagsList(query);
+    });
+}
+
+// Actualizar lista de tags para filtros
+function updateFilterTagsList(query = '') {
+    const tagsList = document.getElementById('filter-tags-list');
+    const allTags = getAllExistingTags();
+    
+    let filteredTags = allTags;
+    if (query) {
+        filteredTags = allTags.filter(tag => 
+            tag.toLowerCase().includes(query)
+        );
+    }
+    
+    tagsList.innerHTML = '';
+    
+    filteredTags.forEach(tag => {
+        const isSelected = currentHistoryFilters.tags.includes(tag);
+        const tagElement = document.createElement('span');
+        tagElement.className = `tag ${isSelected ? 'selected' : ''}`;
+        tagElement.textContent = tag;
+        tagElement.style.cursor = 'pointer';
+        tagElement.style.opacity = isSelected ? '1' : '0.7';
+        
+        tagElement.addEventListener('click', function() {
+            toggleFilterTag(tag);
+        });
+        
+        tagsList.appendChild(tagElement);
+    });
+}
+
+// Alternar tag en los filtros
+function toggleFilterTag(tag) {
+    const index = currentHistoryFilters.tags.indexOf(tag);
+    if (index === -1) {
+        currentHistoryFilters.tags.push(tag);
+    } else {
+        currentHistoryFilters.tags.splice(index, 1);
+    }
+    updateFilterTagsList(document.getElementById('filter-tag-input').value);
+}
+
+// Configurar selector de fecha personalizada
+function setupCustomDateRange() {
+    const dateFrom = document.getElementById('filter-date-from');
+    const dateTo = document.getElementById('filter-date-to');
+    
+    // Establecer fechas por defecto (últimos 30 días)
+    const today = new Date();
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(today.getDate() - 30);
+    
+    dateFrom.valueAsDate = thirtyDaysAgo;
+    dateTo.valueAsDate = today;
+    
+    dateFrom.addEventListener('change', function() {
+        currentHistoryFilters.dateFrom = this.value ? new Date(this.value) : null;
+    });
+    
+    dateTo.addEventListener('change', function() {
+        currentHistoryFilters.dateTo = this.value ? new Date(this.value) : null;
+    });
+}
+
+// Aplicar filtros al historial
+function applyHistoryFilters() {
+    // Actualizar fechas si el periodo es personalizado
+    if (currentHistoryFilters.period === 'custom') {
+        const dateFrom = document.getElementById('filter-date-from').value;
+        const dateTo = document.getElementById('filter-date-to').value;
+        
+        currentHistoryFilters.dateFrom = dateFrom ? new Date(dateFrom) : null;
+        currentHistoryFilters.dateTo = dateTo ? new Date(dateTo) : null;
+    } else {
+        currentHistoryFilters.dateFrom = null;
+        currentHistoryFilters.dateTo = null;
+    }
+    
+    displayLogHistory();
+    updateFilterIndicator(); // ← AGREGAR para actualizar indicador
+    hideHistoryFilterModal();
+}
+// Limpiar todos los filtros
+function clearHistoryFilters() {
+    currentHistoryFilters = {
+        tags: [],
+        moods: [], // ← AGREGAR para limpiar moods también
+        period: 'all',
+        dateFrom: null,
+        dateTo: null,
+        practiced: null
+    };
+    
+    // Reset UI
+    document.querySelectorAll('#history-filter-modal .period-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.period === 'all') {
+            btn.classList.add('active');
+        }
+    });
+    
+    document.getElementById('filter-practice-toggle').classList.remove('yes');
+    document.querySelector('#filter-practice-toggle .practice-state').textContent = 'NO';
+    
+    document.getElementById('filter-tag-input').value = '';
+    document.getElementById('custom-date-range').style.display = 'none';
+    
+    document.getElementById('filter-date-from').value = '';
+    document.getElementById('filter-date-to').value = '';
+    
+    // Limpiar selección de moods
+    document.querySelectorAll('.filter-mood-item').forEach(item => {
+        item.classList.remove('selected');
+    });
+    
+    updateFilterTagsList();
+    updateFilterIndicator(); // ← AGREGAR para actualizar indicador
+    displayLogHistory();
+    hideHistoryFilterModal();
+}
+
+// Filtrar entradas según los filtros actuales
+function filterHistoryEntries(entries) {
+    return entries.filter(entry => {
+        // Filtro por tags
+        if (currentHistoryFilters.tags.length > 0) {
+            const entryTags = entry.tags || [];
+            const hasMatchingTag = currentHistoryFilters.tags.some(filterTag => 
+                entryTags.includes(filterTag)
+            );
+            if (!hasMatchingTag) return false;
+        }
+        
+        // NUEVO: Filtro por moods
+        if (currentHistoryFilters.moods.length > 0) {
+            const entryMoods = entry.moods || [];
+            const entryMoodNames = entryMoods.map(mood => mood.name);
+            const hasMatchingMood = currentHistoryFilters.moods.some(filterMood => 
+                entryMoodNames.includes(filterMood)
+            );
+            if (!hasMatchingMood) return false;
+        }
+        
+        // Filtro por práctica
+        if (currentHistoryFilters.practiced !== null) {
+            if (entry.practiced !== currentHistoryFilters.practiced) return false;
+        }
+        
+        // Filtro por periodo
+        if (currentHistoryFilters.period !== 'all') {
+            const entryDate = new Date(entry.date);
+            const today = new Date();
+            
+            switch(currentHistoryFilters.period) {
+                case 'week':
+                    const weekAgo = new Date();
+                    weekAgo.setDate(today.getDate() - 7);
+                    if (entryDate < weekAgo) return false;
+                    break;
+                case 'month':
+                    const monthAgo = new Date();
+                    monthAgo.setMonth(today.getMonth() - 1);
+                    if (entryDate < monthAgo) return false;
+                    break;
+                case 'year':
+                    const yearAgo = new Date();
+                    yearAgo.setFullYear(today.getFullYear() - 1);
+                    if (entryDate < yearAgo) return false;
+                    break;
+                case 'custom':
+                    if (currentHistoryFilters.dateFrom && entryDate < currentHistoryFilters.dateFrom) return false;
+                    if (currentHistoryFilters.dateTo) {
+                        const entryDateEnd = new Date(entryDate);
+                        entryDateEnd.setHours(23, 59, 59, 999);
+                        if (entryDateEnd > currentHistoryFilters.dateTo) return false;
+                    }
+                    break;
+            }
+        }
+        
+        return true;
+    });
+}
+// Mostrar historial de entradas - MODIFICADA
+function displayLogHistory() {
+    const logHistoryContainer = document.getElementById('log-history');
+    
+    // Aplicar filtros al historial
+    let filteredHistory = filterHistoryEntries([...logHistory]);
+    
+    // Ordenar por fecha (más reciente primero)
+    filteredHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    // Generar HTML para las entradas
+    if (filteredHistory.length === 0) {
+        logHistoryContainer.innerHTML = '<div class="practice-box" style="text-align: center; padding: 20px;">No hay entradas que coincidan con los filtros</div>';
+        return;
+    }
+    
+    let historyHTML = '';
+    
+    filteredHistory.forEach(entry => {
+        // Formatear fecha en formato 14.11.2025
+        const formattedDate = entry.date.toLocaleDateString('es-ES', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        }).replace(/\//g, '.');
+        
+        // Moods seleccionados
+        const moodsHTML = entry.moods.map(mood => 
+            `<div class="mood-item" style="background-color: ${mood.color}; width: 33px; height: 33px; border: 2px solid #333333; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ffffff95;">${mood.emoji}</div>`
+        ).join('');
+        
+        // Tags
+        const tagsHTML = entry.tags && entry.tags.length > 0 ? 
+            `<div class="history-detail">
+                <strong>Etiquetas:</strong> 
+                <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px;">
+                    ${entry.tags.map(tag => `<span class="tag" style="margin: 2px; padding: 3px 8px; background: var(--green6); color: white; border-radius: 4px; font-size: 0.8rem;">${tag}</span>`).join('')}
+                </div>
+            </div>` : '';
+        
+        // Asanas
+        const asanasHTML = entry.asanas && entry.asanas.length > 0 ? 
+            `<div class="history-detail">
+                <strong>Asanas practicadas:</strong> 
+                <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px;">
+                    ${entry.asanas.map(asana => `<span class="tag" style="margin: 2px; padding: 3px 8px; background: var(--green6); color: white; border-radius: 4px; font-size: 0.8rem;">${asana.name}</span>`).join('')}
+                </div>
+            </div>` : '';
+        
+        historyHTML += `
+            <div class="history-entry" data-id="${entry.id}">
+                <div class="history-entry-header">
+                    <div class="history-date">${formattedDate}</div>
+                    <div class="history-actions">
+                        <button class="edit-entry-btn" data-id="${entry.id}" title="Modificar Práctica">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button class="delete-entry-btn" data-id="${entry.id}" title="Eliminar Práctica">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="history-mood-section">
+                    <div class="history-practice-toggle">
+                        <div class="history-practice-button ${entry.practiced ? 'yes' : ''}">
+                            <div class="history-practice-state">${entry.practiced ? 'SÍ' : 'NO'}</div>
+                        </div>
+                    </div>
+                    <div class="history-mood-board">
+                        ${moodsHTML}
+                    </div>
+                </div>
+                
+                <div class="history-details">
+                    <div class="history-detail">
+                        <strong>Notas:</strong> ${entry.notes || 'Sin notas'}
+                    </div>
+                    
+                    ${tagsHTML}
+                    ${asanasHTML}
+                </div>
+            </div>
+        `;
+    });
+    
+    logHistoryContainer.innerHTML = historyHTML;
+    
+    // Añadir event listeners para los botones de eliminar
+    document.querySelectorAll('.delete-entry-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const entryId = this.getAttribute('data-id');
+            if (confirm('¿Estás seguro de que quieres eliminar esta entrada?')) {
+                deleteEntryById(entryId);
+            }
+        });
+    });
+    
+    // Añadir event listeners para los botones de editar
+    document.querySelectorAll('.edit-entry-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const entryId = this.getAttribute('data-id');
+            editEntryById(entryId);
+        });
+    });
+}
+
+function showHistoryFilterModal() {
+    document.getElementById('history-filter-modal').style.display = 'flex';
+}
+
+// Ocultar modal de filtros del historial
+function hideHistoryFilterModal() {
+    document.getElementById('history-filter-modal').style.display = 'none';
+}
+
+// MODIFICAR la función setupHistoryFilterButton para el nuevo botón
+function setupHistoryFilterButton() {
+    const historyNewBtn = document.getElementById('history-new-log');
+    const historyFilterBtn = document.getElementById('history-filter-btn');
+    
+    if (historyNewBtn) {
+        historyNewBtn.addEventListener('click', function() {
+            showLogModal(); // Abrir modal de registro
+        });
+    }
+    
+    if (historyFilterBtn) {
+        historyFilterBtn.addEventListener('click', function() {
+            showHistoryFilterModal(); // Abrir modal de filtros
+        });
+    }
+}
+
+// Función para editar entrada - MODIFICADA
+function editEntryById(entryId) {
+    const entry = logHistory.find(entry => entry.id === entryId);
+    if (entry) {
+        showLogModal(entry); // Abrir modal en modo edición
+    }
+}
+
+// Actualizar indicador visual de filtros activos
+function updateFilterIndicator() {
+    const filterBtn = document.getElementById('history-filter-btn');
+    const hasActiveFilters = 
+        currentHistoryFilters.tags.length > 0 ||
+        currentHistoryFilters.moods.length > 0 ||
+        currentHistoryFilters.period !== 'all' ||
+        currentHistoryFilters.practiced !== null;
+    
+    // Remover indicador existente
+    const existingIndicator = filterBtn.querySelector('.filters-active-indicator');
+    if (existingIndicator) {
+        existingIndicator.remove();
+    }
+    
+    // Agregar indicador si hay filtros activos
+    if (hasActiveFilters) {
+        const indicator = document.createElement('div');
+        indicator.className = 'filters-active-indicator';
+        filterBtn.appendChild(indicator);
+    }
+}
+
+// Cargar datos de entrada en el formulario
+function loadEntryIntoForm(entry) {
+    // Cargar práctica
+    const practiceButton = document.getElementById('practice-button');
+    if (entry.practiced) {
+        practiceButton.classList.add('yes');
+    } else {
+        practiceButton.classList.remove('yes');
+    }
+    document.querySelector('.practice-state').textContent = entry.practiced ? 'SÍ' : 'NO';
+    currentLogEntry.practiced = entry.practiced;
+    
+    // Cargar moods
+    selectedMoods = [];
+    document.querySelectorAll('.mood-item').forEach(item => {
+        item.classList.remove('selected');
+    });
+    
+    if (entry.moods && entry.moods.length > 0) {
+        entry.moods.forEach(mood => {
+            const moodIndex = moodOptions.findIndex(m => m.name === mood.name);
+            if (moodIndex !== -1) {
+                selectedMoods.push(moodIndex);
+                const moodItem = document.querySelector(`.mood-item[data-index="${moodIndex}"]`);
+                if (moodItem) {
+                    moodItem.classList.add('selected');
+                }
+            }
+        });
+        currentLogEntry.moods = [...entry.moods];
+    }
+    
+    // Cargar fecha
+    const dateInput = document.getElementById('practice-date');
+    dateInput.valueAsDate = new Date(entry.date);
+    currentLogEntry.date = new Date(entry.date);
+    
+    // Cargar notas
+    const notesTextarea = document.getElementById('practice-notes');
+    notesTextarea.value = entry.notes || '';
+    currentLogEntry.notes = entry.notes || '';
+    
+    // Cargar tags
+    currentTags = [...(entry.tags || [])];
+    updateTagsDisplay();
+    currentLogEntry.tags = [...currentTags];
+    
+    // Cargar asanas
+    currentAsanas = [...(entry.asanas || [])];
+    updateAsanasDisplay();
+    currentLogEntry.asanas = [...currentAsanas];
+    
+    // Guardar el ID original para la actualización
+    currentLogEntry.id = entry.id;
+}
+// Mostrar modal de edición
+function showEditModal(entry) {
+    // Aquí puedes implementar el modal de edición similar al de registro
+    // Por ahora, redirigimos al track de registro con los datos cargados
+    currentLogEntry = {...entry};
+    loadEntryIntoForm(entry);
+    currentSlide = 4; // Track de registro
+    updateCarousel();
+}
+
+// Cargar datos de entrada en el formulario
+function loadEntryIntoForm(entry) {
+    // Cargar práctica
+    const practiceButton = document.getElementById('practice-button');
+    if (entry.practiced) {
+        practiceButton.classList.add('yes');
+    } else {
+        practiceButton.classList.remove('yes');
+    }
+    document.querySelector('.practice-state').textContent = entry.practiced ? 'SÍ' : 'NO';
+    
+    // Cargar moods
+    selectedMoods = [];
+    document.querySelectorAll('.mood-item').forEach(item => {
+        item.classList.remove('selected');
+    });
+    if (entry.moods && entry.moods.length > 0) {
+        entry.moods.forEach(mood => {
+            const moodIndex = moodOptions.findIndex(m => m.name === mood.name);
+            if (moodIndex !== -1) {
+                selectedMoods.push(moodIndex);
+                const moodItem = document.querySelector(`.mood-item[data-index="${moodIndex}"]`);
+                if (moodItem) {
+                    moodItem.classList.add('selected');
+                }
+            }
+        });
+    }
+    
+    // Cargar fecha
+    document.getElementById('practice-date').valueAsDate = new Date(entry.date);
+    
+    // Cargar notas
+    document.getElementById('practice-notes').value = entry.notes || '';
+    
+    // Cargar tags
+    currentTags = [...(entry.tags || [])];
+    updateTagsDisplay();
+    
+    // Cargar asanas
+    currentAsanas = [...(entry.asanas || [])];
+    updateAsanasDisplay();
+    
+    // Actualizar entrada actual
+    currentLogEntry = {...entry};
+}
+
+// Configurar el botón de filtros del historial - MODIFICADO
+function setupHistoryFilterButton() {
+    const historyFilterBtn = document.getElementById('history-new-log');
+    if (historyFilterBtn) {
+        historyFilterBtn.addEventListener('click', function() {
+            showLogModal(); // Abrir modal de registro en lugar de filtros
+        });
+    }
+}
+
+        // Eliminar entrada por ID
+        async function deleteEntryById(entryId) {
+            try {
+                // Eliminar de Supabase
+                const { error } = await supabase
+                    .from('log_entries')
+                    .delete()
+                    .eq('id', entryId);
+
+                if (error) throw error;
+                
+                // Eliminar del historial local
+                logHistory = logHistory.filter(entry => entry.id !== entryId);
+                
+                // Actualizar visualización
+                displayLogHistory();
+                updateStatistics();
+                updateTodayPractice();
+                
+                alert('Entrada eliminada correctamente');
+                
+            } catch (error) {
+                console.error('Error al eliminar en Supabase:', error);
+                alert('Error al eliminar: ' + error.message);
+            }
+        }
+
+// Mostrar modal de registro
+function showLogModal(entry = null) {
+    const modal = document.getElementById('log-modal');
+    const modalTitle = document.getElementById('log-modal-title');
+    // ELIMINAR ESTA LÍNEA: const formTitle = document.getElementById('log-form-title');
+    
+    if (entry) {
+        // Modo edición
+        modalTitle.textContent = 'EDITAR REGISTRO';
+        // ELIMINAR ESTA LÍNEA: formTitle.textContent = 'EDITAR Registro';
+        loadEntryIntoForm(entry);
+    } else {
+        // Modo nuevo
+        modalTitle.textContent = 'NUEVO REGISTRO';
+        // ELIMINAR ESTA LÍNEA: formTitle.textContent = 'NUEVO Registro';
+        clearCurrentEntry();
+    }
+    
+    modal.style.display = 'flex';
+}
+// Ocultar modal de registro
+function hideLogModal() {
+    const modal = document.getElementById('log-modal');
+    modal.style.display = 'none';
+    clearCurrentEntry(); // Limpiar formulario al cerrar
+}
+
+// Configurar event listeners para el modal
+function setupLogModal() {
+    // Cerrar modal
+    document.getElementById('close-log-modal').addEventListener('click', hideLogModal);
+    
+    // Cerrar modal al hacer clic fuera
+    document.getElementById('log-modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            hideLogModal();
+        }
+    });
+}
+
+
+// Guardar entrada de bitácora - MODIFICADA para soportar edición
+async function saveLogEntry() {
+    // Obtener fecha del campo de entrada o usar la actual
+    const dateInput = document.getElementById('practice-date').value;
+    let entryDate;
+
+    if (dateInput) {
+        // Crear fecha sin problemas de huso horario
+        const [year, month, day] = dateInput.split('-');
+        entryDate = new Date(year, month - 1, day);
+    } else {
+        // Usar fecha actual, pero normalizada a medianoche para evitar problemas
+        const now = new Date();
+        entryDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    }
+
+    // Actualizar datos de la entrada actual
+    currentLogEntry.date = entryDate;
+    currentLogEntry.notes = document.getElementById('practice-notes').value;
+    currentLogEntry.tags = [...currentTags];
+    currentLogEntry.asanas = [...currentAsanas];
+
+    // Preparar datos para Supabase
+    const entryData = {
+        date: currentLogEntry.date.toISOString(),
+        practiced: currentLogEntry.practiced,
+        moods: currentLogEntry.moods,
+        notes: currentLogEntry.notes,
+        tags: currentLogEntry.tags,
+        asanas: currentLogEntry.asanas
+    };
+
+    // Si estamos editando una entrada existente, agregar el ID
+    if (currentLogEntry.id) {
+        entryData.id = currentLogEntry.id;
+    }
+
+    // Guardar en Supabase
+    try {
+        const { data, error } = await supabase
+            .from('log_entries')
+            .upsert([entryData]);
+
+        if (error) throw error;
+
+        console.log('Entrada guardada en Supabase:', data);
+
+        // Actualizar el historial local
+        if (currentLogEntry.id) {
+            // Edición: actualizar entrada existente
+            const index = logHistory.findIndex(entry => entry.id === currentLogEntry.id);
+            if (index !== -1) {
+                logHistory[index] = { ...currentLogEntry };
+            }
+        } else {
+            // Nueva entrada: crear nueva
+            const newEntry = {
+                id: Date.now().toString(),
+                ...currentLogEntry
+            };
+            logHistory.unshift(newEntry);
+        }
+
+        // Actualizar visualización
+        displayLogHistory();
+        updateStatistics();
+        clearCurrentEntry();
+        updateTodayPractice();
+
+        alert(currentLogEntry.id ? 'Entrada actualizada correctamente' : 'Entrada guardada correctamente');
+
+    } catch (error) {
+        console.error('Error al guardar en Supabase:', error);
+        alert('Error al guardar: ' + error.message);
+    }
+}
+        // En loadLogHistory(), quitar la duplicación:
+        async function loadLogHistory() {
+            try {
+                const { data, error } = await supabase
+                    .from('log_entries')
+                    .select('*')
+                    .order('date', { ascending: false });
+
+                if (error) throw error;
+
+                if (data) {
+                    logHistory = data.map(entry => {
+                        // Crear fecha sin problemas de huso horario
+                        const dateFromDB = new Date(entry.date);
+                        const normalizedDate = new Date(
+                            dateFromDB.getFullYear(),
+                            dateFromDB.getMonth(),
+                            dateFromDB.getDate()
+                        );
+                        
+                        return {
+                            ...entry,
+                            date: normalizedDate
+                        };
+                    });
+                    displayLogHistory();
+                    updateStatistics();
+                    updateTodayPractice();
+                    loadMoonPhases(); // ← SOLO UNA VEZ aquí
+                    // ← QUITAR la línea duplicada: updateTodayPractice(); loadMoonPhases();
+                }
+            } catch (error) {
+                console.error('Error al cargar desde Supabase:', error);
+            }
+        }
+
+        // Limpiar entrada actual
+        function clearCurrentEntry() {
+            // Restablecer práctica
+            document.getElementById('practice-button').classList.remove('yes');
+            document.querySelector('.practice-state').textContent = 'NO';
+            currentLogEntry.practiced = false;
+
+            // Limpiar moods
+            selectedMoods = [];
+            document.querySelectorAll('.mood-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            currentLogEntry.moods = [];
+
+            // Limpiar fecha (establecer a hoy) - normalizada
+            const now = new Date();
+            const normalizedNow = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            document.getElementById('practice-date').valueAsDate = normalizedNow;
+
+            // Limpiar notas
+            document.getElementById('practice-notes').value = '';
+            currentLogEntry.notes = '';
+
+            // Limpiar tags
+            currentTags = [];
+            updateTagsDisplay();
+            currentLogEntry.tags = [];
+
+            // Limpiar asanas
+            currentAsanas = [];
+            updateAsanasDisplay();
+            currentLogEntry.asanas = [];
+        }
+
+        // Actualizar visualización de tags
+        function updateTagsDisplay() {
+            const tagsList = document.getElementById('tags-list');
+            tagsList.innerHTML = '';
+            
+            currentTags.forEach((tag, index) => {
+                const tagElement = document.createElement('span');
+                tagElement.className = 'tag';
+                tagElement.textContent = tag;
+                
+                const removeBtn = document.createElement('span');
+                removeBtn.innerHTML = ' <i class="fa-solid fa-x"></i>';
+                removeBtn.style.cursor = 'pointer';
+                removeBtn.style.marginLeft = '5px';
+                removeBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    currentTags.splice(index, 1);
+                    updateTagsDisplay();
+                });
+                
+                tagElement.appendChild(removeBtn);
+                tagsList.appendChild(tagElement);
+            });
+        }
+    
+
+
+        // Listener directo para el botón de estadísticas (como respaldo)
+document.addEventListener('click', function(e) {
+    if (e.target && (e.target.id === 'study-stats-btn' || e.target.closest('#study-stats-btn'))) {
+        showStudyStats();
+    }
+});
+
+
+// Variables para el estudio de asanas
+let currentPracticeAsana = null;
+let studyStats = {
+    totalAnswers: 0,
+    correctAnswers: 0,
+    uniqueAsanas: 0
+};
+
+function initializeAsanaPractice() {
+    // Cargar primera asana aleatoria
+    showRandomAsana();
+    
+    // Event listeners - ASEGURAR que se ejecuten
+    document.getElementById('show-answer-btn').addEventListener('click', showSanskritName);
+    document.getElementById('correct-btn').addEventListener('click', () => recordAnswer(true));
+    document.getElementById('incorrect-btn').addEventListener('click', () => recordAnswer(false));
+    
+    // AÑADIR ESTO para el botón de estadísticas
+    const statsBtn = document.getElementById('study-stats-btn');
+    if (statsBtn) {
+        statsBtn.addEventListener('click', showStudyStats);
+    }
+    
+    document.getElementById('close-study-stats-modal').addEventListener('click', hideStudyStats);
+    
+    // Cargar estadísticas iniciales
+    loadStudyStats();
+}
+// Mostrar asana aleatoria
+function showRandomAsana() {
+    // Filtrar solo asanas con YogaSeries (asanas de Ashtanga)
+    const ashtangaAsanas = asanasData.filter(asana => 
+        asana.yogaSeries && asana.yogaSeries.trim() !== ''
+    );
+    
+    if (ashtangaAsanas.length === 0) {
+        console.log('No se encontraron asanas de Aṣṭāṅga');
+        return;
+    }
+    
+    // Seleccionar asana aleatoria
+    const randomIndex = Math.floor(Math.random() * ashtangaAsanas.length);
+    currentPracticeAsana = ashtangaAsanas[randomIndex];
+    
+    // Actualizar la tarjeta de práctica
+    const practiceImage = document.getElementById('practice-asana-image');
+    const seriesCircle = document.getElementById('practice-series-circle');
+    
+    // Establecer imagen
+    practiceImage.src = `images/${currentPracticeAsana.name}.png`;
+    practiceImage.alt = currentPracticeAsana.name;
+    
+    // Manejar imágenes faltantes
+    practiceImage.onerror = function() {
+        this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzAwMDAwMCIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQ291cmllciBOZXcsIG1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+Tk8gSU1BR0UgQVZBSUxBQkxFPC90ZXh0Pjwvc3ZnPg==';
+        this.alt = 'IMAGE NOT AVAILABLE';
+    };
+    
+    // Establecer círculo de serie
+    const seriesIcons = {
+        'ādhāra': '<i class="fa-solid fa-f"></i>',
+        'yogacikitsā': '<i class="fa-solid fa-1"></i>',
+        'nāḍī śodhana': '<i class="fa-solid fa-2"></i>',
+        'tṛtīya śreṇī': '<i class="fa-solid fa-3"></i>',
+        'pṛṣṭhavakrāsana': '<i class="fa-solid fa-b"></i>',
+        'samāpana': '<i class="fa-solid fa-c"></i>'
+    };
+    
+    if (currentPracticeAsana.yogaSeries && seriesIcons[currentPracticeAsana.yogaSeries]) {
+        seriesCircle.innerHTML = seriesIcons[currentPracticeAsana.yogaSeries];
+        seriesCircle.style.display = 'flex';
+        seriesCircle.title = getSeriesDisplayName(currentPracticeAsana.yogaSeries);
+    } else {
+        seriesCircle.style.display = 'none';
+    }
+    
+    // Reiniciar la visualización de respuesta
+    document.getElementById('sanskrit-hidden').style.display = 'block';
+    document.getElementById('sanskrit-revealed').style.display = 'none';
+    
+    // Establecer el nombre en sánscrito (oculto inicialmente)
+    document.getElementById('sanskrit-name').textContent = currentPracticeAsana.sandhi || currentPracticeAsana.sanskrit || 'Nombre no disponible';
+}
+
+// Mostrar nombre en sánscrito
+function showSanskritName() {
+    document.getElementById('sanskrit-hidden').style.display = 'none';
+    document.getElementById('sanskrit-revealed').style.display = 'block';
+}
+
+// Registrar respuesta en Supabase
+async function recordAnswer(isCorrect) {
+    if (!currentPracticeAsana) return;
+    
+    try {
+        const answerData = {
+            fecha: new Date().toISOString().split('T')[0],
+            correct: isCorrect,
+            asana_id: currentPracticeAsana.id
+        };
+
+        const { data, error } = await supabase
+            .from('asana_study')
+            .insert([answerData]);
+
+        if (error) throw error;
+
+        console.log('Respuesta guardada:', answerData);
+        
+        // Recargar estadísticas
+        await loadStudyStats();
+        
+        // Mostrar siguiente asana
+        showRandomAsana();
+
+    } catch (error) {
+        console.error('Error al guardar respuesta:', error);
+        alert('Error al guardar respuesta: ' + error.message);
+    }
+}
+
+// Cargar estadísticas de estudio
+async function loadStudyStats() {
+    try {
+        // Obtener estadísticas totales
+        const { data: totalData, error: totalError } = await supabase
+            .from('asana_study')
+            .select('*', { count: 'exact', head: false });
+
+        if (totalError) throw totalError;
+
+        // Obtener respuestas correctas
+        const { data: correctData, error: correctError } = await supabase
+            .from('asana_study')
+            .select('*')
+            .eq('correct', true);
+
+        if (correctError) throw correctError;
+
+        // Obtener asanas únicas estudiadas
+        const { data: uniqueData, error: uniqueError } = await supabase
+            .from('asana_study')
+            .select('asana_id');
+
+        if (uniqueError) throw uniqueError;
+
+        // Calcular estadísticas
+        studyStats.totalAnswers = totalData?.length || 0;
+        studyStats.correctAnswers = correctData?.length || 0;
+        
+        // Calcular asanas únicas
+        const uniqueAsanaIds = new Set();
+        if (uniqueData) {
+            uniqueData.forEach(item => uniqueAsanaIds.add(item.asana_id));
+        }
+        studyStats.uniqueAsanas = uniqueAsanaIds.size;
+
+        return true; // Indicar que se cargaron correctamente
+
+    } catch (error) {
+        console.error('Error al cargar estadísticas:', error);
+        return false;
+    }
+}
+// Mostrar estadísticas de estudio
+function showStudyStats() {
+    // Cargar estadísticas actualizadas antes de mostrar
+    loadStudyStats().then(() => {
+        const statsContainer = document.getElementById('study-stats-info');
+        
+        const correctPercentage = studyStats.totalAnswers > 0 
+            ? ((studyStats.correctAnswers / studyStats.totalAnswers) * 100).toFixed(1)
+            : 0;
+        
+        statsContainer.innerHTML = `
+            <div class="study-stats-container">
+                <div class="study-stat-item">
+                    <div class="study-stat-label">Total de respuestas:</div>
+                    <div class="study-stat-value">${studyStats.totalAnswers}</div>
+                </div>
+                
+                <div class="study-stat-item">
+                    <div class="study-stat-label">Respuestas correctas:</div>
+                    <div class="study-stat-value">${studyStats.correctAnswers}</div>
+                </div>
+                
+                <div class="study-stat-item">
+                    <div class="study-stat-label">Porcentaje de acierto:</div>
+                    <div class="study-stat-percentage">${correctPercentage}%</div>
+                </div>
+                
+                <div class="study-stat-item">
+                    <div class="study-stat-label">Asanas estudiados:</div>
+                    <div class="study-stat-value">${studyStats.uniqueAsanas}</div>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('study-stats-modal').style.display = 'flex';
+    });
+}
+// Ocultar estadísticas de estudio
+function hideStudyStats() {
+    document.getElementById('study-stats-modal').style.display = 'none';
+}
+
+
+        // Show random asana from Ashtanga series
+        function showRandomAsana() {
+            // Filter only asanas with YogaSeries (Ashtanga asanas)
+            const ashtangaAsanas = asanasData.filter(asana => 
+                asana.yogaSeries && asana.yogaSeries.trim() !== ''
+            );
+            
+            if (ashtangaAsanas.length === 0) {
+                console.log('No se encontraron asanas de Aṣṭāṅga');
+                return;
+            }
+            
+            // Select random asana
+            const randomIndex = Math.floor(Math.random() * ashtangaAsanas.length);
+            currentPracticeAsana = ashtangaAsanas[randomIndex];
+            
+            // Update the practice card
+            const practiceImage = document.getElementById('practice-asana-image');
+            const practiceDetails = document.getElementById('practice-asana-details');
+            const seriesCircle = document.getElementById('practice-series-circle');
+            
+            // Set image
+            practiceImage.src = `images/${currentPracticeAsana.name}.png`;
+            practiceImage.alt = currentPracticeAsana.name;
+            
+            // Handle missing images
+            practiceImage.onerror = function() {
+                this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzAwMDAwMCIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQ291cmllciBOZXcsIG1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+Tk8gSU1BR0UgQVZBSUxBQkxFPC90ZXh0Pjwvc3ZnPg==';
+                this.alt = 'IMAGE NOT AVAILABLE';
+            };
+            
+            // Set series circle
+            const seriesIcons = {
+                'ādhāra': '<i class="fa-solid fa-f"></i>',
+                'yogacikitsā': '<i class="fa-solid fa-1"></i>',
+                'nāḍī śodhana': '<i class="fa-solid fa-2"></i>',
+                'tṛtīya śreṇī': '<i class="fa-solid fa-3"></i>',
+                'pṛṣṭhavakrāsana': '<i class="fa-solid fa-b"></i>',
+                'samāpana': '<i class="fa-solid fa-c"></i>'
+            };
+            
+            if (currentPracticeAsana.yogaSeries && seriesIcons[currentPracticeAsana.yogaSeries]) {
+                seriesCircle.innerHTML = seriesIcons[currentPracticeAsana.yogaSeries];
+                seriesCircle.style.display = 'flex';
+                seriesCircle.title = getSeriesDisplayName(currentPracticeAsana.yogaSeries);
+            } else {
+                seriesCircle.style.display = 'none';
+            }
+            
+            // Reset the answer display
+            document.getElementById('sanskrit-hidden').style.display = 'block';
+            document.getElementById('sanskrit-revealed').style.display = 'none';
+            
+            // Set the Sanskrit name (hidden initially)
+            document.getElementById('sanskrit-name').textContent = currentPracticeAsana.sandhi || currentPracticeAsana.sanskrit || 'Nombre no disponible';
+            
+            console.log('Asana de práctica mostrada:', currentPracticeAsana.name);
+        }
+
+        // Show Sanskrit name when answer button is clicked
+        function showSanskritName() {
+            document.getElementById('sanskrit-hidden').style.display = 'none';
+            document.getElementById('sanskrit-revealed').style.display = 'block';
+        }
+            
+
+// Configurar el modal de periodo de estadísticas
+function setupStatsPeriodModal() {
+    // Event listener para el botón de configuración de periodo
+    document.getElementById('stats-period-btn').addEventListener('click', function() {
+        showStatsPeriodModal();
+    });
+    
+    // Event listener para cerrar el modal
+    document.getElementById('close-stats-period-modal').addEventListener('click', function() {
+        hideStatsPeriodModal();
+    });
+    
+    // Configurar botones de periodo dentro del modal
+    setupPeriodButtons();
+}
+
+// Mostrar modal de configuración de periodo
+function showStatsPeriodModal() {
+    document.getElementById('stats-period-modal').style.display = 'flex';
+}
+
+// Ocultar modal de configuración de periodo
+function hideStatsPeriodModal() {
+    document.getElementById('stats-period-modal').style.display = 'none';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    initializeLogSection();
+    setupEventListeners();
+    setupTodayTrack();
+    setupPeriodButtons();
+    setupAsanasFilterModal();
+    setupStatsPeriodModal();
+    setupHistoryFilterModal(); // ← AGREGAR ESTA LÍNEA
+    setupHistoryFilterButton();
+    setupLogModal();
+    
+    // Inicializar búsqueda de tags
+    initializeTagSearch();
+    
+    loadAsanasFromCSV().then(() => {
+        initializeAsanaSearch();
+        displayAsanasList();
+        initializeAsanaPractice();
+        loadLogHistory();
+    }).catch(error => {
+        console.error('Error al inicializar asanas:', error);
+        initializeAsanaSearch();
+        displayAsanasList();
+        initializeAsanaPractice();
+        loadLogHistory();
+    });
+});
+</script>
 </body>
 </html>
