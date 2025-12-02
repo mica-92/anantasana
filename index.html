@@ -1901,8 +1901,84 @@ body {
     background-color: #8b2e2f;
 }
 
+/* Agregar al final del CSS */
+.asana-notes-container {
+    margin-top: 10px;
+}
+
+.note-textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 8px 12px;
+    border: var(--border1dark);
+    background: var(--yellow-light);
+    color: var(--green6);
+    font-family: 'Inconsolata', monospace;
+    font-size: 0.9rem;
+}
+
+.note-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.save-note-btn, .edit-note-btn, .cancel-edit-btn, .delete-note-btn {
+    padding: 6px 12px;
+    border: var(--border1dark);
+    background: var(--green6);
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+    flex: 1;
+    text-align: center;
+}
+
+.save-note-btn:hover {
+    background: var(--green);
+    color: var(--green6);
+}
+
+.edit-note-btn {
+    background: var(--blue);
+}
+
+.edit-note-btn:hover {
+    background: #2a3fcf;
+}
+
+.delete-note-btn {
+    background: var(--red);
+}
+
+.delete-note-btn:hover {
+    background: #d63031;
+}
+
+.note-content {
+    padding: 10px;
+    background: rgba(188, 71, 73, 0.05);
+    border-radius: 4px;
+    border: 1px solid var(--bordo);
+    white-space: pre-wrap;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.note-meta {
+    font-size: 0.7rem;
+    color: var(--dark36);
+    text-align: right;
+    margin-top: 5px;
+    font-style: italic;
+}
+
 </style>
 </head>
+
 
 <body>
     <header>
@@ -2395,6 +2471,183 @@ function updateCarousel() {
                 }
             });
         }
+
+
+// Función para cargar notas del ásana
+async function loadAsanaNotes(asanaId) {
+    try {
+        const { data, error } = await supabase
+            .from('asana_notes')
+            .select('*')
+            .eq('asana_id', asanaId)
+            .single(); // Solo una nota por ásana
+
+        if (error && error.code !== 'PGRST116') { // PGRST116 es "no encontrado"
+            throw error;
+        }
+
+        return data || null;
+    } catch (error) {
+        console.error('Error al cargar notas:', error);
+        return null;
+    }
+}
+
+// Función para guardar/actualizar nota
+async function saveAsanaNote(asanaId, noteText) {
+    try {
+        const noteData = {
+            asana_id: asanaId,
+            note: noteText,
+            updated_at: new Date().toISOString()
+        };
+
+        // Verificar si ya existe una nota
+        const { data: existingNote } = await supabase
+            .from('asana_notes')
+            .select('id')
+            .eq('asana_id', asanaId)
+            .single();
+
+        let result;
+        
+        if (existingNote) {
+            // Actualizar nota existente
+            result = await supabase
+                .from('asana_notes')
+                .update(noteData)
+                .eq('asana_id', asanaId);
+        } else {
+            // Crear nueva nota
+            result = await supabase
+                .from('asana_notes')
+                .insert([noteData]);
+        }
+
+        if (result.error) throw result.error;
+
+        return true;
+    } catch (error) {
+        console.error('Error al guardar nota:', error);
+        return false;
+    }
+}
+
+// Función para eliminar nota
+async function deleteAsanaNote(asanaId) {
+    try {
+        const { error } = await supabase
+            .from('asana_notes')
+            .delete()
+            .eq('asana_id', asanaId);
+
+        if (error) throw error;
+        return true;
+    } catch (error) {
+        console.error('Error al eliminar nota:', error);
+        return false;
+    }
+}
+
+// Función para mostrar notas en el modal
+async function displayAsanaNotes(asana, container) {
+    // Mostrar estado de carga
+    container.innerHTML = '<div class="loading">Cargando notas...</div>';
+    
+    // Cargar nota existente
+    const note = await loadAsanaNotes(asana.id);
+    
+    if (note) {
+        // Mostrar nota existente con opción de editar
+        const noteDate = new Date(note.updated_at).toLocaleDateString('es-ES', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        
+        container.innerHTML = `
+            <div class="note-content">${note.note || 'Sin notas'}</div>
+            <div class="note-meta">Última edición: ${noteDate}</div>
+            <div class="note-actions">
+                <button class="edit-note-btn" data-asana-id="${asana.id}">Editar</button>
+                <button class="delete-note-btn" data-asana-id="${asana.id}">Eliminar</button>
+            </div>
+        `;
+    } else {
+        // Mostrar editor para nueva nota
+        container.innerHTML = `
+            <textarea class="note-textarea" id="new-note-text" placeholder="Escribe tus notas personales sobre este ásana..."></textarea>
+            <div class="note-actions">
+                <button class="save-note-btn" data-asana-id="${asana.id}">Guardar Nota</button>
+            </div>
+        `;
+    }
+    
+    // Agregar event listeners a los botones
+    container.addEventListener('click', function(e) {
+        const asanaId = e.target.getAttribute('data-asana-id');
+        if (!asanaId) return;
+        
+        if (e.target.classList.contains('save-note-btn')) {
+            const noteText = container.querySelector('.note-textarea').value;
+            saveNoteAndUpdateUI(asanaId, noteText, container);
+        } else if (e.target.classList.contains('edit-note-btn')) {
+            switchToEditMode(asana, container);
+        } else if (e.target.classList.contains('delete-note-btn')) {
+            if (confirm('¿Estás seguro de que quieres eliminar esta nota?')) {
+                deleteNoteAndUpdateUI(asanaId, container);
+            }
+        }
+    });
+}
+
+// Funciones auxiliares
+async function saveNoteAndUpdateUI(asanaId, noteText, container) {
+    const success = await saveAsanaNote(asanaId, noteText);
+    if (success) {
+        // Recargar notas
+        const asana = asanasData.find(a => a.id === asanaId);
+        if (asana) {
+            await displayAsanaNotes(asana, container);
+        }
+    } else {
+        alert('Error al guardar la nota');
+    }
+}
+
+async function deleteNoteAndUpdateUI(asanaId, container) {
+    const success = await deleteAsanaNote(asanaId);
+    if (success) {
+        // Recargar notas
+        const asana = asanasData.find(a => a.id === asanaId);
+        if (asana) {
+            await displayAsanaNotes(asana, container);
+        }
+    } else {
+        alert('Error al eliminar la nota');
+    }
+}
+
+function switchToEditMode(asana, container) {
+    container.innerHTML = `
+        <textarea class="note-textarea" id="edit-note-text" placeholder="Escribe tus notas personales sobre este ásana..."></textarea>
+        <div class="note-actions">
+            <button class="save-note-btn" data-asana-id="${asana.id}">Guardar Cambios</button>
+            <button class="cancel-edit-btn" data-asana-id="${asana.id}">Cancelar</button>
+        </div>
+    `;
+    
+    // Cargar texto existente
+    container.querySelector('.note-textarea').value = asana.note || '';
+    
+    // Event listener para cancelar
+    container.querySelector('.cancel-edit-btn').addEventListener('click', function() {
+        displayAsanaNotes(asana, container);
+    });
+}
+
 
 function getPracticeStatusHTML(entry) {
     // Verificar si hay "special practice" en los moods
@@ -3447,7 +3700,8 @@ function hideAsanasFilterModal() {
 }
 
 
-        // Configuración de Supabase
+// SUPA YO
+
 const SUPABASE_URL = 'https://edkumnfbwzpeuifbxubp.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVka3VtbmZid3pwZXVpZmJ4dWJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyMDI2NjgsImV4cCI6MjA3Nzc3ODY2OH0.EhiZN_2EVDcQ8LdE-V1T3LknzUDsiya697K3P4kbu5E';
 
@@ -3711,7 +3965,7 @@ function sortAsanasBySeriesSequence(asanas, series) {
             return names[series] || series;
         }
 
-// Mostrar modal de asana
+// Mostrar modal de asana - VERSIÓN COMPLETA CON NOTAS
 function showAsanaModal(asana) {
     const modal = document.createElement('div');
     modal.className = 'modal asana-modal';
@@ -3723,11 +3977,6 @@ function showAsanaModal(asana) {
         return text.replace(/\[\[(.*?)\]\]/g, '<span class="asana-link" data-asana="$1">$1</span>');
     };
     
-    // Buscar asana por sandhi
-    const findAsanaBySandhi = (sandhi) => {
-        return asanasData.find(a => a.sandhi === sandhi || a.name === sandhi);
-    };
-    
     modal.innerHTML = `
     <div class="modal-content" style="max-height: 90vh; overflow-y: auto;">
         <div class="modal-header">
@@ -3736,79 +3985,81 @@ function showAsanaModal(asana) {
         </div>
         <div class="modal-asana" style="max-height: calc(90vh - 120px); overflow-y: auto;">
             <div class="practice-status">${asana.sandhi}</div>
-                                <div class="asana-sanskrit-name" style="margin-top:5px">${asana.devanagari}<br>${asana.english || asana.sanskrit || ''}</div>
+            <div class="asana-sanskrit-name" style="margin-top:5px">${asana.devanagari}<br>${asana.english || asana.sanskrit || ''}</div>
 
+            <!-- Imagen del asana -->
+            <img src="images/${asana.name}.png" 
+                alt="${asana.name}" 
+                class="asana-image"
+                onerror="this.style.display='none'">
 
-                <!-- Imagen del asana -->
-                <img src="images/${asana.name}.png" 
-                    alt="${asana.name}" 
-                    class="asana-image"
-                    onerror="this.style.display='none'">
-
-                <div class="asana-info-section" style="margin:10px; border: 2px solid var(--green6); border-radius: 4px";">
-
-                    <div class="asana-info-title" style="text-transform: uppercase;">Etimología</div>
-                
+            <div class="asana-info-section" style="margin:10px; border: 2px solid var(--green6); border-radius: 4px;">
+                <div class="asana-info-title" style="text-transform: uppercase;">Etimología</div>
                 ${asana.etymology ? `
                 <div class="asana-sanskrit-name" style="color:#333"><i>${asana.etymology}</i></div>
                 ` : ''}
+            </div>
+            
+            <!-- Secuencia Before/After -->
+            ${(asana.before || asana.after) ? `
+            <div class="asana-info-section" style="margin:10px; margin-top:0; border: 2px solid var(--green6); border-radius: 4px;">
+                <div class="asana-info-title">SECUENCIA</div>
+                ${asana.yogaSeries ? `
+                <div class="asana-detail-row">
+                    <span class="asana-detail-label">Serie:</span>${getSeriesDisplayName(asana.yogaSeries)}
                 </div>
-
-                
-                <!-- Secuencia Before/After -->
-                ${(asana.before || asana.after) ? `
-                <div class="asana-info-section" style="margin:10px; margin-top:0; border: 2px solid var(--green6); border-radius: 4px";">
-
-                    <div class="asana-info-title">SECUENCIA</div>
-                   
-                    ${asana.yogaSeries ? `
-                    <div class="asana-detail-row">
-                        <span class="asana-detail-label">Antes:</span>${getSeriesDisplayName(asana.yogaSeries)}
-                    </div>
-                    ` : ''}
-
-                    ${asana.before ? `
-                    <div class="asana-detail-row">
-                        <span class="asana-detail-label">Antes:</span> ${processLinks(asana.before)}
-                    </div>
-                    ` : ''}
-                    ${asana.after ? `
-                    <div class="asana-detail-row">
-                        <span class="asana-detail-label">Después:</span> ${processLinks(asana.after)}
-                    </div>
-
-                </div>
-                    ` : ''}
                 ` : ''}
-                
-                <!-- Información adicional -->
-                ${(asana.open || asana.stable || asana.preparation || asana.counterposes) ? `
-                <div class="asana-info-section" style="margin:10px; margin-top:0px; border: 2px solid var(--green6); border-radius: 4px";>
-                    <div class="asana-info-title">INFORMACIÓN ADICIONAL</div>
-                    ${asana.open ? `
-                    <div class="asana-detail-row">
-                        <span class="asana-detail-label">Abre:</span> ${processLinks(asana.open)}
-                    </div>
-                    ` : ''}
-                    ${asana.stable ? `
-                    <div class="asana-detail-row">
-                        <span class="asana-detail-label">Estabiliza:</span> ${processLinks(asana.stable)}
-                    </div>
-                    ` : ''}
-                    ${asana.preparation ? `
-                    <div class="asana-detail-row">
-                        <span class="asana-detail-label">Preparación:</span> ${processLinks(asana.preparation)}
-                    </div>
-                    ` : ''}
-                    ${asana.counterposes ? `
-                    <div class="asana-detail-row">
-                        <span class="asana-detail-label">Contraposturas:</span> ${processLinks(asana.counterposes)}
-                    </div>
-                    ` : ''}
+                ${asana.before ? `
+                <div class="asana-detail-row">
+                    <span class="asana-detail-label">Antes:</span> ${processLinks(asana.before)}
+                </div>
+                ` : ''}
+                ${asana.after ? `
+                <div class="asana-detail-row">
+                    <span class="asana-detail-label">Después:</span> ${processLinks(asana.after)}
                 </div>
                 ` : ''}
             </div>
+            ` : ''}
+            
+            <!-- Información adicional -->
+            ${(asana.open || asana.stable || asana.preparation || asana.counterposes) ? `
+            <div class="asana-info-section" style="margin:10px; margin-top:0px; border: 2px solid var(--green6); border-radius: 4px;">
+                <div class="asana-info-title">INFORMACIÓN ADICIONAL</div>
+                ${asana.open ? `
+                <div class="asana-detail-row">
+                    <span class="asana-detail-label">Abre:</span> ${processLinks(asana.open)}
+                </div>
+                ` : ''}
+                ${asana.stable ? `
+                <div class="asana-detail-row">
+                    <span class="asana-detail-label">Estabiliza:</span> ${processLinks(asana.stable)}
+                </div>
+                ` : ''}
+                ${asana.preparation ? `
+                <div class="asana-detail-row">
+                    <span class="asana-detail-label">Preparación:</span> ${processLinks(asana.preparation)}
+                </div>
+                ` : ''}
+                ${asana.counterposes ? `
+                <div class="asana-detail-row">
+                    <span class="asana-detail-label">Contraposturas:</span> ${processLinks(asana.counterposes)}
+                </div>
+                ` : ''}
+            </div>
+            ` : ''}
+
+            <!-- SECCIÓN DE NOTAS PERSONALES - NUEVO -->
+            <div class="asana-info-section" style="margin:10px; margin-top:0px; border: 2px solid var(--green6); border-radius: 4px;">
+                <div class="asana-info-title">NOTAS PERSONALES</div>
+                <div id="asana-notes-${asana.id}" class="asana-notes-container">
+                    <div class="loading">Cargando notas...</div>
+                </div>
+            </div>
+
+
         </div>
+    </div>
     `;
     
     document.body.appendChild(modal);
@@ -3838,8 +4089,17 @@ function showAsanaModal(asana) {
             }
         });
     });
+    
+    // Cargar notas personales después de que se cree el modal
+    setTimeout(async () => {
+        const notesContainer = modal.querySelector(`#asana-notes-${asana.id}`);
+        if (notesContainer) {
+            await displayAsanaNotes(asana, notesContainer);
+        }
+    }, 100);
 }
-       // Inicializar la sección de bitácora
+
+// Inicializar la sección de bitácora
         function initializeLogSection() {
             // Establecer fecha actual
             const now = new Date();
@@ -4409,13 +4669,31 @@ function displayLogHistory() {
         });
     });
     
-// En la función displayLogHistory, modificar el event listener para editar:
+// En displayLogHistory(), después de renderizar el historial:
 document.querySelectorAll('.edit-entry-btn').forEach(button => {
     button.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
+        
+        // Obtener el ID de la entrada
         const entryId = this.getAttribute('data-id');
-        editEntryById(entryId);
+        console.log('Intentando editar entrada con ID:', entryId);
+        
+        // Buscar la entrada en el historial
+        const entry = logHistory.find(entry => entry.id.toString() === entryId.toString());
+        
+        if (entry) {
+            console.log('Entrada encontrada para editar:', entry);
+            // Cerrar cualquier modal abierto primero
+            hideLogModal();
+            // Mostrar el modal con la entrada
+            setTimeout(() => {
+                showLogModal(entry);
+            }, 50);
+        } else {
+            console.error('No se encontró la entrada con ID:', entryId);
+            console.log('Historial disponible:', logHistory);
+        }
     });
 });
 }
@@ -4478,8 +4756,13 @@ function updateFilterIndicator() {
     }
 }
 
-// Cargar datos de entrada en el formulario
+// Cargar datos de entrada en el formulario - VERSIÓN FINAL
 function loadEntryIntoForm(entry) {
+    console.log('Cargando entrada para editar:', entry);
+    
+    // RESETEAR el formulario primero
+    clearCurrentEntry();
+    
     // Cargar práctica
     const practiceButton = document.getElementById('practice-button');
     if (entry.practiced) {
@@ -4487,15 +4770,15 @@ function loadEntryIntoForm(entry) {
     } else {
         practiceButton.classList.remove('yes');
     }
-    document.querySelector('.practice-state').textContent = entry.practiced ? 'SÍ' : 'NO';
+    const practiceState = document.querySelector('#practice-button .practice-state');
+    if (practiceState) {
+        practiceState.textContent = entry.practiced ? 'SÍ' : 'NO';
+    }
+    
+    // Guardar estado de práctica en currentLogEntry
     currentLogEntry.practiced = entry.practiced;
     
     // Cargar moods
-    selectedMoods = [];
-    document.querySelectorAll('.mood-item').forEach(item => {
-        item.classList.remove('selected');
-    });
-    
     if (entry.moods && entry.moods.length > 0) {
         entry.moods.forEach(mood => {
             const moodIndex = moodOptions.findIndex(m => m.name === mood.name);
@@ -4508,30 +4791,43 @@ function loadEntryIntoForm(entry) {
             }
         });
         currentLogEntry.moods = [...entry.moods];
+    } else {
+        currentLogEntry.moods = [];
     }
     
     // Cargar fecha
     const dateInput = document.getElementById('practice-date');
-    dateInput.valueAsDate = new Date(entry.date);
-    currentLogEntry.date = new Date(entry.date);
+    if (entry.date) {
+        const dateObj = new Date(entry.date);
+        dateInput.valueAsDate = dateObj;
+        currentLogEntry.date = dateObj;
+    }
     
     // Cargar notas
     const notesTextarea = document.getElementById('practice-notes');
-    notesTextarea.value = entry.notes || '';
-    currentLogEntry.notes = entry.notes || '';
+    if (notesTextarea) {
+        notesTextarea.value = entry.notes || '';
+        currentLogEntry.notes = entry.notes || '';
+    }
     
     // Cargar tags
-    currentTags = [...(entry.tags || [])];
-    updateTagsDisplay();
-    currentLogEntry.tags = [...currentTags];
+    if (entry.tags && entry.tags.length > 0) {
+        currentTags = [...entry.tags];
+        updateTagsDisplay();
+        currentLogEntry.tags = [...currentTags];
+    }
     
     // Cargar asanas
-    currentAsanas = [...(entry.asanas || [])];
-    updateAsanasDisplay();
-    currentLogEntry.asanas = [...currentAsanas];
+    if (entry.asanas && entry.asanas.length > 0) {
+        currentAsanas = [...entry.asanas];
+        updateAsanasDisplay();
+        currentLogEntry.asanas = [...currentAsanas];
+    }
     
     // Guardar el ID original para la actualización
     currentLogEntry.id = entry.id;
+    
+    console.log('CurrentLogEntry después de cargar:', currentLogEntry);
 }
 // Mostrar modal de edición
 function showEditModal(entry) {
@@ -4543,52 +4839,6 @@ function showEditModal(entry) {
     updateCarousel();
 }
 
-// Cargar datos de entrada en el formulario
-function loadEntryIntoForm(entry) {
-    // Cargar práctica
-    const practiceButton = document.getElementById('practice-button');
-    if (entry.practiced) {
-        practiceButton.classList.add('yes');
-    } else {
-        practiceButton.classList.remove('yes');
-    }
-    document.querySelector('.practice-state').textContent = entry.practiced ? 'SÍ' : 'NO';
-    
-    // Cargar moods
-    selectedMoods = [];
-    document.querySelectorAll('.mood-item').forEach(item => {
-        item.classList.remove('selected');
-    });
-    if (entry.moods && entry.moods.length > 0) {
-        entry.moods.forEach(mood => {
-            const moodIndex = moodOptions.findIndex(m => m.name === mood.name);
-            if (moodIndex !== -1) {
-                selectedMoods.push(moodIndex);
-                const moodItem = document.querySelector(`.mood-item[data-index="${moodIndex}"]`);
-                if (moodItem) {
-                    moodItem.classList.add('selected');
-                }
-            }
-        });
-    }
-    
-    // Cargar fecha
-    document.getElementById('practice-date').valueAsDate = new Date(entry.date);
-    
-    // Cargar notas
-    document.getElementById('practice-notes').value = entry.notes || '';
-    
-    // Cargar tags
-    currentTags = [...(entry.tags || [])];
-    updateTagsDisplay();
-    
-    // Cargar asanas
-    currentAsanas = [...(entry.asanas || [])];
-    updateAsanasDisplay();
-    
-    // Actualizar entrada actual
-    currentLogEntry = {...entry};
-}
 
 // Configurar el botón de filtros del historial - MODIFICADO
 function setupHistoryFilterButton() {
@@ -4657,8 +4907,109 @@ function handleKeyboardNavigation(e) {
     }
 }
 
+// Guardar entrada de bitácora - VERSIÓN CORREGIDA
+async function saveLogEntry() {
+    console.log('Guardando entrada, ID:', currentLogEntry.id);
+    
+    // Obtener fecha del campo de entrada o usar la actual
+    const dateInput = document.getElementById('practice-date');
+    const practiceNotes = document.getElementById('practice-notes');
+    
+    if (!dateInput || !practiceNotes) {
+        alert('Error: No se pudo acceder a los campos del formulario');
+        return;
+    }
+    
+    let entryDate;
+    if (dateInput.value) {
+        const [year, month, day] = dateInput.value.split('-');
+        entryDate = new Date(year, month - 1, day);
+    } else {
+        const now = new Date();
+        entryDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    }
 
-// Mostrar modal de registro (versión corregida)
+    // Actualizar datos de la entrada actual con los valores del formulario
+    currentLogEntry.date = entryDate;
+    currentLogEntry.practiced = document.getElementById('practice-button').classList.contains('yes');
+    currentLogEntry.notes = practiceNotes.value;
+    currentLogEntry.tags = [...currentTags];
+    currentLogEntry.asanas = [...currentAsanas];
+    
+    // Preparar datos para Supabase
+    const entryData = {
+        date: currentLogEntry.date.toISOString(),
+        practiced: currentLogEntry.practiced,
+        moods: currentLogEntry.moods,
+        notes: currentLogEntry.notes,
+        tags: currentLogEntry.tags,
+        asanas: currentLogEntry.asanas
+    };
+
+    // Si estamos editando una entrada existente, usar el ID
+    if (currentLogEntry.id) {
+        entryData.id = currentLogEntry.id;
+    }
+
+    console.log('Datos a guardar en Supabase:', entryData);
+
+    // Guardar en Supabase
+    try {
+        const { data, error } = await supabase
+            .from('log_entries')
+            .upsert([entryData]);
+
+        if (error) throw error;
+
+        console.log('Entrada guardada en Supabase:', data);
+
+        // Actualizar el historial local
+        if (currentLogEntry.id) {
+            // Edición: actualizar entrada existente
+            const index = logHistory.findIndex(entry => entry.id === currentLogEntry.id);
+            if (index !== -1) {
+                logHistory[index] = { 
+                    id: currentLogEntry.id,
+                    ...entryData,
+                    date: currentLogEntry.date
+                };
+            } else {
+                // Nueva entrada pero con ID
+                logHistory.unshift({ 
+                    id: currentLogEntry.id,
+                    ...entryData,
+                    date: currentLogEntry.date
+                });
+            }
+        } else {
+            // Nueva entrada sin ID (crear nuevo ID)
+            const newId = Date.now().toString();
+            const newEntry = {
+                id: newId,
+                ...entryData,
+                date: currentLogEntry.date
+            };
+            logHistory.unshift(newEntry);
+        }
+
+        // Actualizar visualización
+        displayLogHistory();
+        updateStatistics();
+        updateTodayPractice();
+        
+        // Cerrar el modal
+        hideLogModal();
+
+        alert(currentLogEntry.id ? 'Entrada actualizada correctamente' : 'Entrada guardada correctamente');
+
+    } catch (error) {
+        console.error('Error al guardar en Supabase:', error);
+        alert('Error al guardar: ' + error.message);
+    }
+}
+
+
+
 function showLogModal(entry = null) {
     const modal = document.getElementById('log-modal');
     const modalTitle = document.getElementById('log-modal-title');
@@ -4666,26 +5017,44 @@ function showLogModal(entry = null) {
     // Deshabilitar navegación del carrusel mientras el modal esté abierto
     disableCarouselNavigation(true);
     
-    if (entry) {
+    if (entry && entry.id) {
         // Modo edición
+        console.log('Abriendo modal en modo edición para:', entry);
         modalTitle.textContent = 'EDITAR REGISTRO';
         loadEntryIntoForm(entry);
     } else {
         // Modo nuevo
+        console.log('Abriendo modal en modo nuevo');
         modalTitle.textContent = 'NUEVO REGISTRO';
         clearCurrentEntry();
         
         // Establecer fecha actual en el formulario
         const now = new Date();
         document.getElementById('practice-date').valueAsDate = now;
+        
+        // Asegurar que estamos en modo nuevo
+        currentLogEntry = {
+            date: now,
+            practiced: false,
+            moods: [],
+            notes: "",
+            tags: [],
+            asanas: []
+        };
+        currentLogEntry.id = null; // Asegurar que no haya ID
     }
     
     modal.style.display = 'flex';
     
-    // IMPORTANTE: NO cambiar el slide del carrusel aquí
-    // Solo mostrar el modal sobre el contenido actual
+    // Forzar un redibujado del DOM
+    modal.style.opacity = '0.99';
+    setTimeout(() => {
+        modal.style.opacity = '1';
+    }, 10);
 }
-// Ocultar modal de registro (versión corregida)
+
+
+
 function hideLogModal() {
     const modal = document.getElementById('log-modal');
     modal.style.display = 'none';
@@ -4693,43 +5062,71 @@ function hideLogModal() {
     // Rehabilitar navegación del carrusel
     disableCarouselNavigation(false);
     
-    clearCurrentEntry(); // Limpiar formulario al cerrar
+    // Solo limpiar si no estábamos en modo edición
+    if (!currentLogEntry || !currentLogEntry.id) {
+        clearCurrentEntry();
+    }
 }
-// En setupLogModal(), modifica el cierre del modal:
+
+
 function setupLogModal() {
     // Cerrar modal con el botón X
-    document.getElementById('close-log-modal').addEventListener('click', function(e) {
-        e.stopPropagation(); // Prevenir propagación
-        hideLogModal();
-    });
+    const closeBtn = document.getElementById('close-log-modal');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            hideLogModal();
+        });
+    }
     
     // Cerrar modal al hacer clic fuera
-    document.getElementById('log-modal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            e.stopPropagation(); // Prevenir propagación
-            hideLogModal();
-        }
-    });
+    const modal = document.getElementById('log-modal');
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                e.preventDefault();
+                e.stopPropagation();
+                hideLogModal();
+            }
+        });
+    }
     
     // Prevenir que el clic dentro del modal cierre la ventana
-    document.querySelector('.modal-content').addEventListener('click', function(e) {
-        e.stopPropagation();
-    });
+    const modalContent = document.querySelector('.modal-content');
+    if (modalContent) {
+        modalContent.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    }
+    
+    // Configurar el botón de guardar
+    const saveBtn = document.getElementById('save-log-btn');
+    if (saveBtn) {
+        // Remover cualquier event listener existente primero
+        saveBtn.replaceWith(saveBtn.cloneNode(true));
+        
+        // Agregar nuevo event listener al botón actualizado
+        document.getElementById('save-log-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            saveLogEntry();
+        });
+    }
 }
 
-
 // Guardar entrada de bitácora - MODIFICADA para soportar edición
-async function saveLogEntry() {
+async function saveLogEntry(entryId = null) {
+    console.log('Guardando entrada, ID:', entryId);
+    
     // Obtener fecha del campo de entrada o usar la actual
     const dateInput = document.getElementById('practice-date').value;
     let entryDate;
 
     if (dateInput) {
-        // Crear fecha sin problemas de huso horario
         const [year, month, day] = dateInput.split('-');
         entryDate = new Date(year, month - 1, day);
     } else {
-        // Usar fecha actual, pero normalizada a medianoche para evitar problemas
         const now = new Date();
         entryDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     }
@@ -4750,10 +5147,14 @@ async function saveLogEntry() {
         asanas: currentLogEntry.asanas
     };
 
-    // Si estamos editando una entrada existente, agregar el ID
-    if (currentLogEntry.id) {
+    // Si estamos editando una entrada existente, usar el ID
+    if (entryId) {
+        entryData.id = entryId;
+    } else if (currentLogEntry.id) {
         entryData.id = currentLogEntry.id;
     }
+
+    console.log('Datos a guardar:', entryData);
 
     // Guardar en Supabase
     try {
@@ -4766,17 +5167,28 @@ async function saveLogEntry() {
         console.log('Entrada guardada en Supabase:', data);
 
         // Actualizar el historial local
-        if (currentLogEntry.id) {
+        if (entryData.id) {
             // Edición: actualizar entrada existente
-            const index = logHistory.findIndex(entry => entry.id === currentLogEntry.id);
+            const index = logHistory.findIndex(entry => entry.id === entryData.id);
             if (index !== -1) {
-                logHistory[index] = { ...currentLogEntry };
+                logHistory[index] = { 
+                    ...entryData,
+                    date: currentLogEntry.date
+                };
+            } else {
+                // Nueva entrada pero con ID
+                logHistory.unshift({ 
+                    id: entryData.id,
+                    ...entryData,
+                    date: currentLogEntry.date
+                });
             }
         } else {
-            // Nueva entrada: crear nueva
+            // Nueva entrada sin ID
             const newEntry = {
                 id: Date.now().toString(),
-                ...currentLogEntry
+                ...entryData,
+                date: currentLogEntry.date
             };
             logHistory.unshift(newEntry);
         }
@@ -4786,15 +5198,19 @@ async function saveLogEntry() {
         updateStatistics();
         clearCurrentEntry();
         updateTodayPractice();
+        
+        // Cerrar el modal
+        hideLogModal();
 
-        alert(currentLogEntry.id ? 'Entrada actualizada correctamente' : 'Entrada guardada correctamente');
+        alert(entryData.id ? 'Entrada actualizada correctamente' : 'Entrada guardada correctamente');
 
     } catch (error) {
         console.error('Error al guardar en Supabase:', error);
         alert('Error al guardar: ' + error.message);
     }
 }
-        // En loadLogHistory(), quitar la duplicación:
+
+// En loadLogHistory(), quitar la duplicación:
         async function loadLogHistory() {
             try {
                 const { data, error } = await supabase
