@@ -993,6 +993,8 @@ footer {
 .chart-group {
     border-radius: 8px;
     padding: 0 8px;
+        display: block;
+
 
 }
 
@@ -1841,12 +1843,6 @@ body {
                         </div>
                     </div>
                     
-                    <div class="chart-group" style="display: none;">
-                        <div class="chart-title">OTROS</div>
-                        <div class="stats-chart other-chart" id="other-chart">
-                            <!-- Gráfico de otros -->
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -2249,6 +2245,39 @@ function updateCarousel() {
             });
         }
 
+function getPracticeStatusHTML(entry) {
+    // Verificar si hay "special practice" en los moods
+    const hasSpecialPractice = entry.moods && entry.moods.some(mood => 
+        mood.name === 'special practice'
+    );
+    
+    if (hasSpecialPractice) {
+        // Caso 3: Si hay SP en mood, mostrar "HOY NO PRACTICASTE"
+        return `
+            <div class="practice-status" style="padding-bottom: 5px; border-bottom: var(--border1dark); color: var(--green6);">
+                Hoy no practicaste
+            </div>
+            <div class="practice-detail" style="margin-bottom: 10px; font-size: 0.9rem; color: var(--bordo);">
+                <i class="fa-solid fa-slash"></i> Special Practice registrada
+            </div>
+        `;
+    } else if (entry.practiced) {
+        // Caso 1: Si practiced es true y no hay SP, mostrar "¡HOY PRACTICASTE!"
+        return `
+            <div class="practice-status" style="padding-bottom: 5px; border-bottom: var(--border1dark); color: var(--green6);">
+                ¡Hoy practicaste!
+            </div>
+        `;
+    } else {
+        // Caso 2: Si practiced es false, mostrar "HOY NO PRACTICASTE"
+        return `
+            <div class="practice-status" style="padding-bottom: 5px; border-bottom: var(--border1dark); color: var(--green6);">
+                Hoy no practicaste
+            </div>
+        `;
+    }
+}
+
 // Actualizar la práctica de hoy - VERSIÓN CORREGIDA
 function updateTodayPractice() {
     const todayContent = document.getElementById('today-content');
@@ -2344,46 +2373,89 @@ function updateTodayPractice() {
             `;
         }
         
-        // Mostrar práctica encontrada
-        todayContent.innerHTML = `
-            <div class="today-practice">
-                <div class="current-datetime">
-                    <div class="current-date">${formattedDate} - ${formattedTime}</div>
-                </div>
-                
-                <div class="namaste-title"><i class="fa fa-spa"></i> Namaste, yogi</div>
-                <div class="practice-box" style="padding-bottom: 5px;">
-                    <div class="practice-status" style="padding-bottom: 5px; border-bottom: var(--border1dark);">¡Hoy practicaste!</div>
-                    <div class="practice-details" style="margin-bottom: 10px;">
-                        <div class="practice-detail">
-                            <div class="mood-board">
-                                ${moodsHTML}
-                            </div>
-                        </div>
-                        <div class="practice-detail"><strong>Notas:</strong> ${todayPractice.notes || 'Sin notas'}</div>
-                        ${tagsHTML}
-                        ${asanasHTML}
+todayContent.innerHTML = `
+    <div class="today-practice">
+        <div class="current-datetime">
+            <div class="current-date">${formattedDate} - ${formattedTime}</div>
+        </div>
+        
+        <div class="namaste-title"><i class="fa-solid fa-hands-praying"></i> NAMASTE YOGI</div>
+        <div class="practice-box" style="padding-bottom: 5px;">
+            ${getPracticeStatusHTML(todayPractice)}
+            <div class="practice-details" style="margin-bottom: 10px;">
+                <div class="practice-detail">
+                    <div class="mood-board">
+                        ${moodsHTML}
                     </div>
-                </div>  
+                </div>
+                <div class="practice-detail"><strong>Notas:</strong> ${todayPractice.notes || 'Sin notas'}</div>
+                ${tagsHTML}
+                ${asanasHTML}
+            </div>
+        </div>  
+    </div>
+`;
+
+// Agregar esta función auxiliar para determinar el estado de la práctica
+function getPracticeStatusHTML(entry) {
+    // Verificar si hay "special practice" en los moods
+    const hasSpecialPractice = entry.moods && entry.moods.some(mood => 
+        mood.name === 'special practice'
+    );
+    
+    if (hasSpecialPractice) {
+        // Caso 3: Si hay SP en mood, mostrar "HOY NO PRACTICASTE"
+        return `
+            <div class="practice-status" style="padding-bottom: 5px; border-bottom: var(--border1dark); color: var(--green6);">
+                Hoy no practicaste
+            </div>
+            <div class="practice-detail" style="margin-bottom: 10px; font-size: 0.9rem; color: var(--bordo);">
+                <i class="fa-solid fa-slash"></i> Special Practice registrada
             </div>
         `;
-
+    } else if (entry.practiced) {
+        // Caso 1: Si practiced es true y no hay SP, mostrar "¡HOY PRACTICASTE!"
+        return `
+            <div class="practice-status" style="padding-bottom: 5px; border-bottom: var(--border1dark); color: var(--green6);">
+                ¡Hoy practicaste!
+            </div>
+        `;
     } else {
-        // No hay práctica hoy
-        todayContent.innerHTML = `
-            <div class="today-practice">
-                <div class="current-datetime">
-                    <div class="current-date">${formattedDate} - ${formattedTime}</div>
-                </div>
-                <div class="namaste-title"><i class="fa fa-spa"></i> Namaste, yogi</div>
-                <div class="practice-box">
-                    <div class="practice-status no-practice">Hoy no practicaste</div>
-                    <p>¿Quieres registrar tu práctica de hoy?</p>
-                    <button class="go-to-history-btn" onclick="showLogModal()">Ir a Registrar Práctica</button>
-                </div>
+        // Caso 2: Si practiced es false, mostrar "HOY NO PRACTICASTE"
+        return `
+            <div class="practice-status" style="padding-bottom: 5px; border-bottom: var(--border1dark); color: var(--green6);">
+                Hoy no practicaste
             </div>
         `;
     }
+}
+
+} else {
+    // No hay práctica hoy
+    todayContent.innerHTML = `
+        <div class="today-practice">
+            <div class="current-datetime">
+                <div class="current-date">${formattedDate} - ${formattedTime}</div>
+            </div>
+            <div class="namaste-title"><i class="fa fa-spa"></i> Namaste, yogi</div>
+            <div class="practice-box">
+                <div class="practice-status no-practice">Hoy no practicaste</div>
+                <p>¿Quieres registrar tu práctica de hoy?</p>
+                <button class="go-to-history-btn" id="open-log-modal-today">Ir a Registrar Práctica</button>
+            </div>
+        </div>
+    `;
+    
+    // Agregar event listener después de crear el botón
+    setTimeout(() => {
+        const openModalBtn = document.getElementById('open-log-modal-today');
+        if (openModalBtn) {
+            openModalBtn.addEventListener('click', function() {
+                showLogModal();
+            });
+        }
+    }, 0);
+}
 
     displayNextMoon();
 }
@@ -2511,13 +2583,14 @@ function displayNextMoon() {
         
         // Crear el HTML de la luna
         const moonInfoHTML = `
-            
-        <div class="study-stat-label" style="color: var(--green 6); text-align: left; margin-top:40px;">Próxima Luna</div> 
+        <div class="practice-box" style="background: rgba(47, 73, 256, 0.1); border: 2px solid var(--blue)">
+        <div class="practice-status" style="padding-bottom: 5px; color: var(--blue); text-align: left; border-bottom: 1px solid var(--blue);">Próxima Luna</div> 
             <div class="moon-event-dia" >
-                <div class="moon-date" style="font-size: 1.2rem; font-weight: bold; color: var(--blue)">${moonEmoji}</div>
-                    <div class="moon-date" style="font-size: 1.2rem; font-weight: bold; color: var(--blue)">${nextMoon.type}</div>
-                    <div class="moon-date" style="font-size: 1.2rem; font-weight: normal; color: var(--blue)">${formattedDate}</div>
+                <div class="moon-date" style="font-size: 0.9rem; font-weight: bold; color: var(--blue)">${moonEmoji}</div>
+                    <div class="moon-date" style="font-size: 0.9rem; font-weight: bold; color: var(--blue)">${nextMoon.type}</div>
+                    <div class="moon-date" style="font-size: 0.9rem; font-weight: normal; color: var(--blue)">${formattedDate}</div>
             </div>
+        </div>
         `;
         
         // Agregar la información lunar al contenido existente
@@ -2554,91 +2627,212 @@ function displayNextMoon() {
 
         // Categorías de moods
         const moodCategories = {
-            moods: ['feliz', 'enojado', 'cansancio', 'relajado', 'energico'],
-            practice: ['complete', 'inconclusa', 'primera', 'segunda', 'otro estilo'],
-            other: ['moon day', 'quote']
+            moods: ['feliz', 'enojado', 'cansancio', 'moon day'],
+            practice: ['complete', 'inconclusa', 'primera', 'segunda', 'otro estilo', 'yin'],
+            other: ['quote']
         };
 
-        // Actualizar estadísticas
-        function updateStatistics() {
-            const today = new Date();
-            const statsSummary = document.getElementById('stats-summary');
+
+// Función para calcular estadísticas de práctica (SÍ/NO/SP)
+function getPracticeStats(entries) {
+    let siCount = 0;
+    let noCount = 0;
+    let spCount = 0;
+    
+    // Contar días únicos para evitar duplicados del mismo día
+    const processedDays = new Set();
+    
+    entries.forEach(entry => {
+        const dateStr = new Date(entry.date).toDateString();
+        
+        // Solo contar una entrada por día (tomar la más reciente si hay múltiples)
+        if (!processedDays.has(dateStr)) {
+            processedDays.add(dateStr);
             
-            // Verificar que el elemento existe
-            if (!statsSummary) {
-                console.error('Elemento stats-summary no encontrado');
-                return;
+            // Verificar si tiene "special practice" en los moods
+            const hasSpecialPractice = entry.moods && entry.moods.some(mood => 
+                mood.name === 'special practice'
+            );
+            
+            if (hasSpecialPractice) {
+                spCount++;
+            } else if (entry.practiced) {
+                siCount++;
+            } else {
+                noCount++;
             }
-            
-            // Filtrar entradas según el periodo seleccionado
-            let filteredEntries = filterEntriesByPeriod(logHistory, currentPeriod);
-            
-            // Calcular estadísticas básicas
-            const practiceCount = filteredEntries.filter(entry => entry.practiced).length;
-            const totalEntries = filteredEntries.length;
-            const practiceRatio = totalEntries > 0 ? (practiceCount / totalEntries) * 100 : 0;
-            
-            // Actualizar resumen
-            statsSummary.innerHTML = `
-                <div class="study-stats">
-                    <div class="study-stat-label" style="border-top: 1px solid var(--bordo); padding-top: 5px; color: var(--bordo);">
-                        ${getPeriodDisplayName(currentPeriod)}
-                    </div>
-                    
-                     <div class="study-stat-value" style="border-bottom: 1px solid var(--bordo); padding-bottom: 5px; color: var(--bordo);">
-                        ${practiceCount}/${totalEntries} días de práctica 
-                        - ${practiceRatio.toFixed(1)}%
-                    </div>
-        `;
-            
-            // Actualizar gráficos
-            updateCharts(filteredEntries);
         }
+    });
+    
+    return { siCount, noCount, spCount, totalDays: processedDays.size };
+}
 
-        // Filtrar entradas por periodo
-        function filterEntriesByPeriod(entries, period) {
-            const today = new Date();
-            let startDate;
-            
-            switch(period) {
-                case 'week':
-                    startDate = new Date(today);
-                    startDate.setDate(today.getDate() - 7);
-                    break;
-                case 'month':
-                    startDate = new Date(today);
-                    startDate.setMonth(today.getMonth() - 1);
-                    break;
-                case 'year':
-                    startDate = new Date(today);
-                    startDate.setFullYear(today.getFullYear() - 1);
-                    break;
-                case 'custom':
-                    // Por defecto mostrar todo el historial
-                    return entries;
-                default:
-                    return entries;
+function getTotalValidEntries(entries) {
+    // Contar entradas que NO sean SP (Special Practice)
+    // Y que estén dentro del periodo (no contar días futuros si el periodo no está completo)
+    let validEntries = 0;
+    const today = new Date();
+    
+    entries.forEach(entry => {
+        // Verificar si NO es Special Practice
+        const isSpecialPractice = entry.moods && entry.moods.some(mood => 
+            mood.name === 'special practice'
+        );
+        
+        // Solo contar entradas que no sean SP
+        if (!isSpecialPractice) {
+            // Verificar que la fecha no sea futura (para periodos incompletos)
+            const entryDate = new Date(entry.date);
+            if (entryDate <= today) {
+                validEntries++;
             }
+        }
+    });
+    
+    return validEntries;
+}
+
+
+function updateStatistics() {
+    const today = new Date();
+    const statsSummary = document.getElementById('stats-summary');
+    
+    if (!statsSummary) {
+        console.error('Elemento stats-summary no encontrado');
+        return;
+    }
+    
+    // Filtrar entradas según el periodo seleccionado
+    let filteredEntries = filterEntriesByPeriod(logHistory, currentPeriod);
+    
+    // Contar días únicos con práctica SÍ (no contar SP)
+    const daysWithPractice = new Set();
+    filteredEntries.forEach(entry => {
+        // Verificar si es Special Practice
+        const isSpecialPractice = entry.moods && entry.moods.some(mood => 
+            mood.name === 'special practice'
+        );
+        
+        // Solo contar si practiced es true y NO es SP
+        if (entry.practiced && !isSpecialPractice) {
+            const dateStr = new Date(entry.date).toDateString();
+            daysWithPractice.add(dateStr);
+        }
+    });
+    
+    const practiceCount = daysWithPractice.size;
+    const totalValidEntries = getTotalValidEntries(filteredEntries);
+    const practiceRatio = totalValidEntries > 0 ? (practiceCount / totalValidEntries) * 100 : 0;
+    
+    // Mostrar estadísticas
+    statsSummary.innerHTML = `
+        <div class="study-stats">
+            <div class="study-stat-label" style="border-top: 1px solid var(--bordo); padding-top: 5px; color: var(--bordo);">
+                ${getPeriodDisplayName(currentPeriod)}
+            </div>
             
-            return entries.filter(entry => entry.date >= startDate);
-        }
+            <div class="study-stat-value" style="border-bottom: 1px solid var(--bordo); padding-bottom: 5px; color: var(--bordo);">
+                ${practiceCount}/${totalValidEntries} días de práctica
+                - ${practiceRatio.toFixed(1)}%
+            </div>
+        </div>
+    `;
+    
+    // Actualizar gráficos
+    updateCharts(filteredEntries);
+}
 
-        // Obtener nombre display del periodo
-        function getPeriodDisplayName(period) {
-            const names = {
-                'week': 'Esta última <b>semana</b>',
-                'month': 'Este último <b>mes</b>', 
-                'year': 'Este última <b>año</b>',
-                'custom': 'Todo el historial'
-            };
-            return names[period] || period;
-        }
+function filterEntriesByPeriod(entries, period) {
+    const today = new Date();
+    
+    switch(period) {
+        case 'week':
+            // Semana actual (lunes a domingo)
+            const startOfWeek = new Date(today);
+            const dayOfWeek = today.getDay(); // 0 = Domingo, 1 = Lunes, etc.
+            const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Ir al lunes de esta semana
+            startOfWeek.setDate(today.getDate() - diff);
+            startOfWeek.setHours(0, 0, 0, 0);
+            
+            const endOfWeek = new Date(startOfWeek);
+            endOfWeek.setDate(startOfWeek.getDate() + 6);
+            endOfWeek.setHours(23, 59, 59, 999);
+            
+            return entries.filter(entry => {
+                const entryDate = new Date(entry.date);
+                return entryDate >= startOfWeek && entryDate <= endOfWeek;
+            });
+            
+        case 'month':
+            // Mes calendario actual (ej: 1-31 de diciembre)
+            const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            startOfMonth.setHours(0, 0, 0, 0);
+            
+            const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            endOfMonth.setHours(23, 59, 59, 999);
+            
+            return entries.filter(entry => {
+                const entryDate = new Date(entry.date);
+                return entryDate >= startOfMonth && entryDate <= endOfMonth;
+            });
+            
+        case 'year':
+            // Año calendario actual (ej: 1 enero - 31 diciembre 2025)
+            const startOfYear = new Date(today.getFullYear(), 0, 1);
+            startOfYear.setHours(0, 0, 0, 0);
+            
+            const endOfYear = new Date(today.getFullYear(), 11, 31);
+            endOfYear.setHours(23, 59, 59, 999);
+            
+            return entries.filter(entry => {
+                const entryDate = new Date(entry.date);
+                return entryDate >= startOfYear && entryDate <= endOfYear;
+            });
+            
+        case 'custom':
+            return entries;
+            
+        default:
+            return entries;
+    }
+}
 
+function getPeriodDisplayName(period) {
+    const today = new Date();
+    const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    
+    switch(period) {
+        case 'week':
+            // Calcular inicio y fin de semana para mostrar rango
+            const startOfWeek = new Date(today);
+            const dayOfWeek = today.getDay();
+            const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+            startOfWeek.setDate(today.getDate() - diff);
+            
+            const endOfWeek = new Date(startOfWeek);
+            endOfWeek.setDate(startOfWeek.getDate() + 6);
+            
+            const weekStartStr = startOfWeek.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+            const weekEndStr = endOfWeek.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+            return `Semana <b>${weekStartStr} - ${weekEndStr}</b>`;
+            
+        case 'month':
+            return `Mes de <b>${monthNames[today.getMonth()]}</b>`;
+            
+        case 'year':
+            return `Año <b>${today.getFullYear()}</b>`;
+            
+        case 'custom':
+            return 'Periodo personalizado';
+            
+        default:
+            return period;
+    }
+}
         // Actualizar gráficos
         function updateCharts(entries) {
             updateMoodChart(entries);
             updatePracticeChart(entries);
-            updateOtherChart(entries);
         }
 
         // Actualizar gráfico de moods
@@ -2648,19 +2842,13 @@ function displayNextMoon() {
             renderChart(moodData, chart, 100); // Altura máxima reducida
         }
 
-        // Actualizar gráfico de práctica
         function updatePracticeChart(entries) {
             const chart = document.getElementById('practice-chart');
             const practiceData = getCategoryFrequencyData(entries, moodCategories.practice);
             renderChart(practiceData, chart, 100);
         }
+        
 
-        // Actualizar gráfico de otros
-        function updateOtherChart(entries) {
-            const chart = document.getElementById('other-chart');
-            const otherData = getCategoryFrequencyData(entries, moodCategories.other);
-            renderChart(otherData, chart, 100);
-        }
 
         // Obtener datos de frecuencia por categoría
         function getCategoryFrequencyData(entries, categoryMoods) {
@@ -3031,19 +3219,23 @@ function hideAsanasFilterModal() {
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         const moodOptions = [
+            { name: 'special practice', label: 'SP', emoji: '<i class="fa-solid" style="color:#fff;">SP</i>', color: 'var(--blue)' },    
             { name: 'feliz', label: 'Mood: YEaYy!!', emoji: '<i class="fa-solid fa-face-laugh-beam"></i>', color: '#2a9d8f' },
             { name: 'enojado', label: 'Mood: Ehhh... hubo días mejores', emoji: '<i class="fa-solid fa-face-meh"></i>', color: '#e9c46a' },
             { name: 'cansancio', label: 'Mood: siesta', emoji: '<i class="fa-solid fa-face-tired"></i>', color: '#bc4749' },
-            { name: 'relajado', label: 'Mood: ohmmm', emoji: '<i class="fa-solid fa-heart"></i>', color: '#FF9A76' },
-            { name: 'energico', label: 'Mood: estoy para doblete', emoji: '<i class="fa-solid fa-bolt-lightning"></i>', color: '#95E1D3' },
+            
             { name: 'complete', label: 'Práctica Completa', emoji: '<i class="fa-solid fa-check"></i>', color: '#81b29a' },
             { name: 'inconclusa', label: 'Práctica Inconmpleta', emoji: '<i class="fa-solid fa-xmark"></i>', color: '#bc6c25' },
+            
             { name: 'primera', label: 'Primera Serie', emoji: '<i class="fa-solid fa-1"></i>', color: '#da627d' },
             { name: 'segunda', label: 'Segunda Serie', emoji: '<i class="fa-solid fa-2"></i>', color: '#ffa5ab' },
             { name: 'otro estilo', label: 'vinyasa', emoji: '<i class="fa-solid fa-fire"></i>', color: '#a26769' },
+            { name: 'yin', label: 'vin', emoji: '<i class="fa-solid fa-yin-yang"></i>', color: 'rgb(233, 196, 190)' },
+
+            
             { name: 'moon day', label: 'Moon Day', emoji: '<i class="fa-solid fa-moon"></i>', color: '#ced4da' },
             { name: 'quote', label: 'quote', emoji: '<i class="fa-solid fa-quote-right"></i>', color: '#6d597a' },
-        ];
+            ];
 
         // Variables globales
         let currentLogEntry = {
@@ -4196,43 +4388,91 @@ function setupHistoryFilterButton() {
             }
         }
 
-// Mostrar modal de registro
+// Función para habilitar/deshabilitar navegación del carrusel
+function disableCarouselNavigation(disabled) {
+    // Deshabilitar botones de flecha
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    
+    if (prevBtn) prevBtn.disabled = disabled;
+    if (nextBtn) nextBtn.disabled = disabled;
+    
+    // Deshabilitar navegación con teclado
+    if (disabled) {
+        // Remover event listener de teclado temporalmente
+        document.removeEventListener('keydown', handleKeyboardNavigation);
+    } else {
+        // Restaurar event listener de teclado
+        document.addEventListener('keydown', handleKeyboardNavigation);
+    }
+}
+
+// Mover la función de navegación por teclado a una función separada
+function handleKeyboardNavigation(e) {
+    if (e.key === 'ArrowLeft' && currentSlide > 0) {
+        currentSlide--;
+        updateCarousel();
+    } else if (e.key === 'ArrowRight' && currentSlide < totalSlides - 1) {
+        currentSlide++;
+        updateCarousel();
+    }
+}
+
+
+// Mostrar modal de registro (versión corregida)
 function showLogModal(entry = null) {
     const modal = document.getElementById('log-modal');
     const modalTitle = document.getElementById('log-modal-title');
-    // ELIMINAR ESTA LÍNEA: const formTitle = document.getElementById('log-form-title');
+    
+    // Deshabilitar navegación del carrusel mientras el modal esté abierto
+    disableCarouselNavigation(true);
     
     if (entry) {
         // Modo edición
         modalTitle.textContent = 'EDITAR REGISTRO';
-        // ELIMINAR ESTA LÍNEA: formTitle.textContent = 'EDITAR Registro';
         loadEntryIntoForm(entry);
     } else {
         // Modo nuevo
         modalTitle.textContent = 'NUEVO REGISTRO';
-        // ELIMINAR ESTA LÍNEA: formTitle.textContent = 'NUEVO Registro';
         clearCurrentEntry();
+        
+        // Establecer fecha actual en el formulario
+        const now = new Date();
+        document.getElementById('practice-date').valueAsDate = now;
     }
     
     modal.style.display = 'flex';
 }
-// Ocultar modal de registro
+
+// Ocultar modal de registro (versión corregida)
 function hideLogModal() {
     const modal = document.getElementById('log-modal');
     modal.style.display = 'none';
+    
+    // Rehabilitar navegación del carrusel
+    disableCarouselNavigation(false);
+    
     clearCurrentEntry(); // Limpiar formulario al cerrar
 }
-
-// Configurar event listeners para el modal
+// En setupLogModal(), modifica el cierre del modal:
 function setupLogModal() {
-    // Cerrar modal
-    document.getElementById('close-log-modal').addEventListener('click', hideLogModal);
+    // Cerrar modal con el botón X
+    document.getElementById('close-log-modal').addEventListener('click', function(e) {
+        e.stopPropagation(); // Prevenir propagación
+        hideLogModal();
+    });
     
     // Cerrar modal al hacer clic fuera
     document.getElementById('log-modal').addEventListener('click', function(e) {
         if (e.target === this) {
+            e.stopPropagation(); // Prevenir propagación
             hideLogModal();
         }
+    });
+    
+    // Prevenir que el clic dentro del modal cierre la ventana
+    document.querySelector('.modal-content').addEventListener('click', function(e) {
+        e.stopPropagation();
     });
 }
 
@@ -4743,6 +4983,9 @@ document.addEventListener('DOMContentLoaded', function() {
         initializeAsanaPractice();
         loadLogHistory();
     });
+
+        document.addEventListener('keydown', handleKeyboardNavigation);
+
 });
 </script>
 </body>
