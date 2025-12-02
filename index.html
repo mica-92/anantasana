@@ -1989,22 +1989,44 @@ body {
     </div>
 
 
-    <!-- Modal para configuración de periodo -->
-    <div class="modal" id="stats-period-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>SELECCIONAR PERIODO</h3>
-                <button class="close-btn" id="close-stats-period-modal"><i class="fa-solid fa-x"></i></button>
+<!-- Modal para configuración de periodo - MODIFICADO -->
+<div class="modal" id="stats-period-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>SELECCIONAR PERIODO</h3>
+            <button class="close-btn" id="close-stats-period-modal"><i class="fa-solid fa-x"></i></button>
+        </div>
+        <div class="modal-body" style="display: block; padding: 20px;">
+            <!-- Botones de periodo -->
+            <div class="period-buttons">
+                <button class="period-btn" data-period="week">SEMANA</button>
+                <button class="period-btn active" data-period="month">MES</button>
+                <button class="period-btn" data-period="year">AÑO</button>
+                <button class="period-btn" data-period="custom">PERSONALIZADO</button>
             </div>
-                <!-- Botones de periodo movidos aquí -->
-                <div class="period-buttons">
-                    <button class="period-btn" data-period="week">SEMANA</button>
-                    <button class="period-btn  active" data-period="month">MES</button>
-                    <button class="period-btn" data-period="year">AÑO</button>
-                    <button class="period-btn" data-period="custom">PERSONALIZADO</button>
+            
+            <!-- Selector de fecha personalizada - NUEVO -->
+            <div id="stats-custom-date-range" style="display: none; margin-top: 15px;">
+                <div class="filter-section">
+                    <div class="date-input-label">SELECCIONAR RANGO DE FECHAS</div>
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <div style="flex: 1;">
+                            <label class="date-input-label" style="font-size: 0.8rem;">DESDE:</label>
+                            <input type="date" class="date-input" id="stats-date-from">
+                        </div>
+                        <div style="flex: 1;">
+                            <label class="date-input-label" style="font-size: 0.8rem;">HASTA:</label>
+                            <input type="date" class="date-input" id="stats-date-to">
+                        </div>
+                    </div>
+                    <div style="text-align: center;">
+                        <button class="go-to-history-btn" id="apply-custom-period" style="width: 100%;">APLICAR PERIODO PERSONALIZADO</button>
+                    </div>
                 </div>
+            </div>
         </div>
     </div>
+</div>
 
 <!-- Modal para filtros de series -->
 <div class="modal" id="asanas-filter-modal">
@@ -2610,20 +2632,69 @@ function displayNextMoon() {
 
         // Variables para estadísticas
         let currentPeriod = 'month';
+        let customPeriodRange = null; // ← NUEVA variable para almacenar el rango personalizado
 
-        // Configurar botones de periodo
-        function setupPeriodButtons() {
-            document.querySelectorAll('.period-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    // Remover clase active de todos los botones
-                    document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
-                    // Agregar clase active al botón clickeado
-                    this.classList.add('active');
-                    currentPeriod = this.dataset.period;
-                    updateStatistics();
-                });
-            });
+
+// Configurar botones de periodo - MODIFICADA
+function setupPeriodButtons() {
+    // Establecer fechas por defecto para periodo personalizado
+    const today = new Date();
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(today.getDate() - 30);
+    
+    document.getElementById('stats-date-from').valueAsDate = thirtyDaysAgo;
+    document.getElementById('stats-date-to').valueAsDate = today;
+    
+    // Configurar botones de periodo
+    document.querySelectorAll('.period-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Remover clase active de todos los botones
+            document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+            // Agregar clase active al botón clickeado
+            this.classList.add('active');
+            
+            const period = this.dataset.period;
+            currentPeriod = period;
+            
+            // Mostrar/ocultar selector de fecha personalizada
+            const customRange = document.getElementById('stats-custom-date-range');
+            customRange.style.display = period === 'custom' ? 'block' : 'none';
+            
+            // Si no es custom, actualizar estadísticas inmediatamente
+            if (period !== 'custom') {
+                updateStatistics();
+            }
+        });
+    });
+    
+    // Configurar botón para aplicar periodo personalizado
+    document.getElementById('apply-custom-period').addEventListener('click', function() {
+        const dateFrom = document.getElementById('stats-date-from').value;
+        const dateTo = document.getElementById('stats-date-to').value;
+        
+        if (!dateFrom || !dateTo) {
+            alert('Por favor selecciona ambas fechas');
+            return;
         }
+        
+        const fromDate = new Date(dateFrom);
+        const toDate = new Date(dateTo);
+        
+        if (fromDate > toDate) {
+            alert('La fecha "Desde" no puede ser posterior a la fecha "Hasta"');
+            return;
+        }
+        
+        // Guardar las fechas personalizadas
+        customPeriodRange = {
+            from: fromDate,
+            to: toDate
+        };
+        
+        updateStatistics();
+        hideStatsPeriodModal();
+    });
+}
 
         // Categorías de moods
         const moodCategories = {
@@ -2668,30 +2739,30 @@ function getPracticeStats(entries) {
 }
 
 function getTotalValidEntries(entries) {
-    // Contar entradas que NO sean SP (Special Practice)
-    // Y que estén dentro del periodo (no contar días futuros si el periodo no está completo)
-    let validEntries = 0;
+    // Contar días únicos que NO sean SP (Special Practice)
+    const validDays = new Set();
     const today = new Date();
     
     entries.forEach(entry => {
-        // Verificar si NO es Special Practice
+        // Verificar si es Special Practice
         const isSpecialPractice = entry.moods && entry.moods.some(mood => 
             mood.name === 'special practice'
         );
         
-        // Solo contar entradas que no sean SP
+        // Solo contar días que no sean SP
         if (!isSpecialPractice) {
             // Verificar que la fecha no sea futura (para periodos incompletos)
             const entryDate = new Date(entry.date);
+            const dateStr = entryDate.toDateString();
+            
             if (entryDate <= today) {
-                validEntries++;
+                validDays.add(dateStr);
             }
         }
     });
     
-    return validEntries;
+    return validDays.size;
 }
-
 
 function updateStatistics() {
     const today = new Date();
@@ -2707,20 +2778,27 @@ function updateStatistics() {
     
     // Contar días únicos con práctica SÍ (no contar SP)
     const daysWithPractice = new Set();
+    const daysWithSpecialPractice = new Set(); // Nuevo Set para SP
+    
     filteredEntries.forEach(entry => {
+        const dateStr = new Date(entry.date).toDateString();
+        
         // Verificar si es Special Practice
         const isSpecialPractice = entry.moods && entry.moods.some(mood => 
             mood.name === 'special practice'
         );
         
-        // Solo contar si practiced es true y NO es SP
-        if (entry.practiced && !isSpecialPractice) {
-            const dateStr = new Date(entry.date).toDateString();
+        if (isSpecialPractice) {
+            // Contar como día con SP
+            daysWithSpecialPractice.add(dateStr);
+        } else if (entry.practiced) {
+            // Solo contar si practiced es true y NO es SP
             daysWithPractice.add(dateStr);
         }
     });
     
     const practiceCount = daysWithPractice.size;
+    const spCount = daysWithSpecialPractice.size; // Contador de SP
     const totalValidEntries = getTotalValidEntries(filteredEntries);
     const practiceRatio = totalValidEntries > 0 ? (practiceCount / totalValidEntries) * 100 : 0;
     
@@ -2735,13 +2813,16 @@ function updateStatistics() {
                 ${practiceCount}/${totalValidEntries} días de práctica
                 - ${practiceRatio.toFixed(1)}%
             </div>
+            
+            <div style="font-size: 0.8rem; color: var(--blue); text-align: center; padding: 5px 0;">
+                ${spCount} días de SP
+            </div>
         </div>
     `;
     
     // Actualizar gráficos
     updateCharts(filteredEntries);
 }
-
 function filterEntriesByPeriod(entries, period) {
     const today = new Date();
     
@@ -2790,6 +2871,21 @@ function filterEntriesByPeriod(entries, period) {
             });
             
         case 'custom':
+            // Usar el rango de fechas personalizado
+            if (customPeriodRange) {
+                const { from, to } = customPeriodRange;
+                const fromDate = new Date(from);
+                fromDate.setHours(0, 0, 0, 0);
+                
+                const toDate = new Date(to);
+                toDate.setHours(23, 59, 59, 999);
+                
+                return entries.filter(entry => {
+                    const entryDate = new Date(entry.date);
+                    return entryDate >= fromDate && entryDate <= toDate;
+                });
+            }
+            // Si no hay rango personalizado, devolver todos
             return entries;
             
         default:
@@ -2823,13 +2919,20 @@ function getPeriodDisplayName(period) {
             return `Año <b>${today.getFullYear()}</b>`;
             
         case 'custom':
+            if (customPeriodRange) {
+                const { from, to } = customPeriodRange;
+                const fromStr = from.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+                const toStr = to.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+                return `Personalizado <b>${fromStr} - ${toStr}</b>`;
+            }
             return 'Periodo personalizado';
             
         default:
             return period;
     }
 }
-        // Actualizar gráficos
+
+// Actualizar gráficos
         function updateCharts(entries) {
             updateMoodChart(entries);
             updatePracticeChart(entries);
@@ -4947,8 +5050,22 @@ function setupStatsPeriodModal() {
     setupPeriodButtons();
 }
 
-// Mostrar modal de configuración de periodo
+// Mostrar modal de configuración de periodo - MODIFICADA
 function showStatsPeriodModal() {
+    // Resetear selectores de fecha personalizada
+    const today = new Date();
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(today.getDate() - 30);
+    
+    document.getElementById('stats-date-from').valueAsDate = thirtyDaysAgo;
+    document.getElementById('stats-date-to').valueAsDate = today;
+    
+    // Si ya hay un periodo personalizado activo, mostrar las fechas
+    if (currentPeriod === 'custom' && customPeriodRange) {
+        document.getElementById('stats-date-from').valueAsDate = customPeriodRange.from;
+        document.getElementById('stats-date-to').valueAsDate = customPeriodRange.to;
+    }
+    
     document.getElementById('stats-period-modal').style.display = 'flex';
 }
 
