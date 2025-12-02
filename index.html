@@ -1772,6 +1772,135 @@ body {
     user-select: none;
 }
 
+/* MODALES - Añadir estos estilos al final del CSS */
+
+/* Modal de asanas específico */
+.asana-modal .modal-content {
+    max-width: 400px;
+    max-height: 80vh; /* Altura máxima del 80% de la ventana */
+    overflow-y: auto; /* Scroll vertical cuando es necesario */
+}
+
+/* Scrollbar personalizada para modales */
+.asana-modal .modal-content::-webkit-scrollbar {
+    width: 4px; /* Scrollbar muy delgada */
+}
+
+.asana-modal .modal-content::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 5px 0;
+}
+
+.asana-modal .modal-content::-webkit-scrollbar-thumb {
+    background-color: var(--bordo);
+    border-radius: 2px;
+    border: none;
+}
+
+.asana-modal .modal-content::-webkit-scrollbar-thumb:hover {
+    background-color: #8b2e2f;
+}
+
+/* Para Firefox - mantener scrollbar fina */
+.asana-modal .modal-content {
+    scrollbar-width: thin;
+    scrollbar-color: var(--bordo) transparent;
+}
+
+/* Contenido del modal de asanas */
+.modal-asana {
+    padding: 15px;
+    max-height: calc(80vh - 100px); /* Considerar altura del header */
+    overflow-y: auto; /* Scroll interno si es necesario */
+}
+
+/* Scrollbar también para el contenido interno */
+.modal-asana::-webkit-scrollbar {
+    width: 4px;
+}
+
+.modal-asana::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 5px 0;
+}
+
+.modal-asana::-webkit-scrollbar-thumb {
+    background-color: var(--bordo);
+    border-radius: 2px;
+    border: none;
+}
+
+.modal-asana::-webkit-scrollbar-thumb:hover {
+    background-color: #8b2e2f;
+}
+
+.modal-asana {
+    scrollbar-width: thin;
+    scrollbar-color: var(--bordo) transparent;
+}
+
+/* Ajustar secciones dentro del modal para evitar overflow innecesario */
+.asana-info-section {
+    max-height: none; /* Permitir que crezca según contenido */
+    overflow: visible;
+}
+
+/* Asegurar que las imágenes no sean demasiado grandes */
+.asana-image {
+    max-height: 200px; /* Altura máxima para imágenes */
+    object-fit: contain;
+}
+
+/* Modales en general - aplicar también scrollbar fina */
+.modal-content {
+    scrollbar-width: thin;
+    scrollbar-color: var(--bordo) transparent;
+}
+
+.modal-content::-webkit-scrollbar {
+    width: 4px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 5px 0;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background-color: var(--bordo);
+    border-radius: 2px;
+    border: none;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background-color: #8b2e2f;
+}
+
+/* Para la lista de asanas en el track 4 */
+.asanas-section .asanas-list {
+    scrollbar-width: thin;
+    scrollbar-color: var(--bordo) transparent;
+}
+
+.asanas-section .asanas-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.asanas-section .asanas-list::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 5px 0;
+}
+
+.asanas-section .asanas-list::-webkit-scrollbar-thumb {
+    background-color: var(--bordo);
+    border-radius: 2px;
+    border: none;
+}
+
+.asanas-section .asanas-list::-webkit-scrollbar-thumb:hover {
+    background-color: #8b2e2f;
+}
+
 </style>
 </head>
 
@@ -2473,7 +2602,7 @@ function getPracticeStatusHTML(entry) {
         const openModalBtn = document.getElementById('open-log-modal-today');
         if (openModalBtn) {
             openModalBtn.addEventListener('click', function() {
-                showLogModal();
+                showLogModal(); // Abrir modal de registro
             });
         }
     }, 0);
@@ -3595,13 +3724,13 @@ function showAsanaModal(asana) {
     };
     
     modal.innerHTML = `
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>INFORMACIÓN DEL ĀSANA</h3>
-                <button class="close-btn"><i class="fa-solid fa-x"></i></button>
-            </div>
-            <div class="modal-asana">
-                <div class="practice-status">${asana.sandhi}</div>
+    <div class="modal-content" style="max-height: 90vh; overflow-y: auto;">
+        <div class="modal-header">
+            <h3>INFORMACIÓN DEL ĀSANA</h3>
+            <button class="close-btn"><i class="fa-solid fa-x"></i></button>
+        </div>
+        <div class="modal-asana" style="max-height: calc(90vh - 120px); overflow-y: auto;">
+            <div class="practice-status">${asana.sandhi}</div>
                                 <div class="asana-sanskrit-name" style="margin-top:5px">${asana.devanagari}<br>${asana.english || asana.sanskrit || ''}</div>
 
 
